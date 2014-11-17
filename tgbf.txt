@@ -1,0 +1,54 @@
+tgbf
+
+== encoding
+
+ENTRY: <T>[<TARG>]<PAYLOAD>
+PAYLOAD: [<SIZE>][<DATA>]
+
+<T>: 
+  size: 1 byte
+  values:
+  data   description
+    0 -  N null value           no targ  no size  no data
+    1 -  T true value           no targ  no size  no data
+    2 -  F false value          no targ  no size  no data
+    3 -  1 byte value           no targ  no size  1 byte
+    4 -  2 byte value           no targ  no size  2 bytes
+    5 -  4 byte value           no targ  no size  4 byte
+    6 -  8 byte value           no targ  no size  8 byte
+    7 - 16 byte value           no targ  no size  16 byte
+    8 -  B blob value           no targ  size     count of bytes in size
+    9 -  S structure of values  targ     size     count of bytes in size //that we more need: size or length?
+   10 -  L list of values       no targ  size     count of bytes in size //that we more need: size or length?
+
+// size of DATA-section
+<SIZE>: <Type from [1-16]><1-16 bytes depend on type>
+<DATA>: <some count of bytes>
+
+// structure
+
+S<TARG><SIZE><ENTRY>+
+// integer type id of structure declaration in schema
+<TARG>:  <Type from [1-16]><1-16 bytes depend on type>
+
+//for each field <ENTRY> was written in order described in scheme, 
+//  empty field with null writed as 0x00 (null value)
+//  union written as single field with generic type (union of defferent fields with identical type is not supported)
+//  
+
+// list
+
+// list without type contains full <ENTRY> for each element
+L0<SIZE><ENTRY>+
+// list with type contains only <PAYLOAD> section of each 
+//   element data (because T<TARG> defined in list <TARG> section)
+L<TARG><SIZE><PAYLOAD>+
+// type of list elements
+<TARG>: <T><TARG>
+
+== schema
+
+struct <SNAME><ATTRS> {
+  <TYPE> <FNAME> <DEFAULT_VALUE>
+}
+
