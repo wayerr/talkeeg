@@ -48,7 +48,4 @@ L<TARG><SIZE><PAYLOAD>+
 
 == schema
 
-struct <SNAME><ATTRS> {
-  <TYPE> <FNAME> <DEFAULT_VALUE>
-}
-
+xml based
