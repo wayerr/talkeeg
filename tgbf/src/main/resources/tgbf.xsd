@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2014, wayerr (radiofun@ya.ru).
+  ~
+  ~     This file is part of talkeeg.
+  ~
+  ~     talkeeg is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     talkeeg is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with talkeeg.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://talkeeg/ns/tgbf"
+           xmlns="http://talkeeg/ns/tgbf"
+        >
+    <xs:complexType name="EntryType" mixed="true">
+        <xs:all minOccurs="0">
+            <xs:element name="primitive" type="PrimitiveType"/>
+            <xs:element name="list" type="ListType"/>
+            <xs:element name="struct" type="StructType"/>
+        </xs:all>
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:anyAttribute/>
+    </xs:complexType>
+    <xs:simpleType name="StorageType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="NULL" />
+            <xs:enumeration value="HALF" />
+            <xs:enumeration value="1_BYTE" />
+            <xs:enumeration value="2_BYTE" />
+            <xs:enumeration value="4_BYTE" />
+            <xs:enumeration value="8_BYTE" />
+            <xs:enumeration value="16_BYTE" />
+            <xs:enumeration value="BLOB" />
+            <xs:enumeration value="STRUCT" />
+            <xs:enumeration value="LIST" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="PrimitiveStorageType">
+        <xs:restriction base="StorageType">
+            <xs:enumeration value="BLOB" />
+            <xs:enumeration value="NULL" />
+            <xs:enumeration value="HALF" />
+            <xs:enumeration value="1_BYTE" />
+            <xs:enumeration value="2_BYTE" />
+            <xs:enumeration value="4_BYTE" />
+            <xs:enumeration value="8_BYTE" />
+            <xs:enumeration value="16_BYTE" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="FixedLengthStorageType">
+        <xs:restriction base="PrimitiveStorageType">
+            <xs:enumeration value="NULL" />
+            <xs:enumeration value="HALF" />
+            <xs:enumeration value="1_BYTE" />
+            <xs:enumeration value="2_BYTE" />
+            <xs:enumeration value="4_BYTE" />
+            <xs:enumeration value="8_BYTE" />
+            <xs:enumeration value="16_BYTE" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="PrimitiveType" abstract="true">
+        <xs:complexContent>
+            <xs:extension base="EntryType">
+                <xs:attribute type="StorageType" name="storeAs" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="IntType">
+        <xs:complexContent>
+            <xs:restriction base="PrimitiveType" >
+                <xs:attribute name="signed" type="xs:boolean"/>
+                <xs:attribute type="FixedLengthStorageType" name="storeAs" />
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="FloatType">
+        <xs:complexContent>
+            <xs:restriction base="PrimitiveType" >
+                <xs:attribute type="FixedLengthStorageType" name="storeAs" />
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="DatetimeType">
+        <xs:complexContent>
+            <xs:restriction base="PrimitiveType" >
+                <xs:attribute type="FixedLengthStorageType" name="storeAs" fixed="8_BYTE" use="prohibited"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ListType">
+        <xs:complexContent>
+            <xs:restriction base="EntryType">
+                <xs:all maxOccurs="1"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StructType">
+        <xs:complexContent>
+            <xs:extension base="EntryType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="schema">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="EntryType" >
+                    <xs:attribute name="byteOrder" >
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="BIG_ENDIAN"/>
+                                <xs:enumeration value="LITTLE_ENDIAN"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

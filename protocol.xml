@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://talkeeg/ns/tgbf" byteOrder="BIG_ENDIAN">
+  <list>
+      <list></list>
+  </list>
+</schema>
