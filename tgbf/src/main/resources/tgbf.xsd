@@ -22,12 +22,17 @@
            targetNamespace="http://talkeeg/ns/tgbf"
            xmlns="http://talkeeg/ns/tgbf"
         >
-    <xs:complexType name="EntryType" mixed="true">
-        <xs:all minOccurs="0">
-            <xs:element name="primitive" type="PrimitiveType"/>
-            <xs:element name="list" type="ListType"/>
-            <xs:element name="struct" type="StructType"/>
-        </xs:all>
+    <xs:complexType name="EntryType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="primitive" type="PrimitiveType" />
+            <xs:element name="integer" type="IntType" />
+            <xs:element name="float" type="FloatType" />
+            <xs:element name="datetime" type="DatetimeType" />
+            <xs:element name="blob" type="BlobType" />
+            <xs:element name="string" type="BlobType" />
+            <xs:element name="list" type="ListType" />
+            <xs:element name="struct" type="StructType" />
+        </xs:choice>
         <xs:attribute type="xs:string" name="name"/>
         <xs:anyAttribute/>
     </xs:complexType>
@@ -35,10 +40,10 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="NULL" />
             <xs:enumeration value="HALF" />
-            <xs:enumeration value="1_BYTE" />
-            <xs:enumeration value="2_BYTE" />
-            <xs:enumeration value="4_BYTE" />
-            <xs:enumeration value="8_BYTE" />
+            <xs:enumeration value="01_BYTE" />
+            <xs:enumeration value="02_BYTE" />
+            <xs:enumeration value="04_BYTE" />
+            <xs:enumeration value="08_BYTE" />
             <xs:enumeration value="16_BYTE" />
             <xs:enumeration value="BLOB" />
             <xs:enumeration value="STRUCT" />
@@ -50,10 +55,10 @@
             <xs:enumeration value="BLOB" />
             <xs:enumeration value="NULL" />
             <xs:enumeration value="HALF" />
-            <xs:enumeration value="1_BYTE" />
-            <xs:enumeration value="2_BYTE" />
-            <xs:enumeration value="4_BYTE" />
-            <xs:enumeration value="8_BYTE" />
+            <xs:enumeration value="01_BYTE" />
+            <xs:enumeration value="02_BYTE" />
+            <xs:enumeration value="04_BYTE" />
+            <xs:enumeration value="08_BYTE" />
             <xs:enumeration value="16_BYTE" />
         </xs:restriction>
     </xs:simpleType>
@@ -61,14 +66,14 @@
         <xs:restriction base="PrimitiveStorageType">
             <xs:enumeration value="NULL" />
             <xs:enumeration value="HALF" />
-            <xs:enumeration value="1_BYTE" />
-            <xs:enumeration value="2_BYTE" />
-            <xs:enumeration value="4_BYTE" />
-            <xs:enumeration value="8_BYTE" />
+            <xs:enumeration value="01_BYTE" />
+            <xs:enumeration value="02_BYTE" />
+            <xs:enumeration value="04_BYTE" />
+            <xs:enumeration value="08_BYTE" />
             <xs:enumeration value="16_BYTE" />
         </xs:restriction>
     </xs:simpleType>
-    <xs:complexType name="PrimitiveType" abstract="true">
+    <xs:complexType name="PrimitiveType">
         <xs:complexContent>
             <xs:extension base="EntryType">
                 <xs:attribute type="StorageType" name="storeAs" />
@@ -93,7 +98,14 @@
     <xs:complexType name="DatetimeType">
         <xs:complexContent>
             <xs:restriction base="PrimitiveType" >
-                <xs:attribute type="FixedLengthStorageType" name="storeAs" fixed="8_BYTE" use="prohibited"/>
+                <xs:attribute type="FixedLengthStorageType" name="storeAs" fixed="08_BYTE" use="prohibited"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="BlobType">
+        <xs:complexContent>
+            <xs:restriction base="PrimitiveType" >
+                <xs:attribute type="PrimitiveStorageType" name="storeAs" fixed="BLOB" use="prohibited"/>
             </xs:restriction>
         </xs:complexContent>
     </xs:complexType>
@@ -106,13 +118,24 @@
     </xs:complexType>
     <xs:complexType name="StructType">
         <xs:complexContent>
-            <xs:extension base="EntryType"/>
+            <xs:extension base="EntryType">
+                <xs:attribute name="structId" type="xs:nonNegativeInteger"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="MessageType">
+        <xs:complexContent>
+            <xs:extension base="StructType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:element name="schema">
         <xs:complexType>
             <xs:complexContent>
-                <xs:extension base="EntryType" >
+                <xs:restriction base="xs:anyType">
+                    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                        <xs:element name="message" type="MessageType"/>
+                    </xs:sequence>
                     <xs:attribute name="byteOrder" >
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
@@ -121,7 +144,7 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>
-                </xs:extension>
+                </xs:restriction>
             </xs:complexContent>
         </xs:complexType>
     </xs:element>
