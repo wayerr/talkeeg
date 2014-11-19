@@ -1,4 +1,4 @@
 # Проект takeeg #
 
 
- see [architect](architect)
+ see [architect](./architect.md)
