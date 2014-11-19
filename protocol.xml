@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <schema xmlns="http://talkeeg/ns/tgbf" byteOrder="BIG_ENDIAN">
-    <message name="ping" structId="0">
-        <integer name="id" storeAs="16_BYTE"/>
+    <message name="request" structId="0">
+        <!-- cyclic id of message for prevent duplicating-->
+        <integer name="id" storeAs="02_BYTE"/>
+        <!-- fingerprint of source public key -->
+        <integer name="src" storeAs="16_BYTE"/>
+        <!-- fingerprint of destination public key -->
+        <integer name="dst" storeAs="16_BYTE"/>
+        <struct name="CipherData">
+            <!-- options for cipher:
+              number of HMAC alg (0 - sha1, 1 - sha256)
+               |
+               /  /
+              00 00 00 00 00 00 00 00
+
+             -->
+            <integer name="options" storeAs="04_BYTE"/>
+            <!-- Message authentication code on HMAC alg -->
+            <blob name="mac"/>
+            <!-- crypted data -->
+            <blob name="data" />
+        </struct>
     </message>
     <message name="response" structId="1">
-        <integer name="id" storeAs="16_BYTE"/>
+        <!-- cyclic id of message for prevent duplicating-->
+        <integer name="id" storeAs="02_BYTE"/>
+        <!-- fingerprint of source public key -->
+        <integer name="src" storeAs="16_BYTE"/>
+        <!-- fingerprint of destination public key -->
+        <integer name="dst" storeAs="16_BYTE"/>
     </message>
 </schema>
