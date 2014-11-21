@@ -17,41 +17,28 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.model;
+package talkeeg.bf.schema;
 
-import talkeeg.bf.StructInfo;
+import com.google.common.io.ByteSource;
+import com.google.common.io.Resources;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
+ * tool for loading schema <p/>
+ *
  * Created by wayerr on 21.11.14.
  */
-@StructInfo(id = 2)
-public class ResponseMessage extends BaseSingleMessage {
+public final class SchemaSource {
+    public static Schema fromResource(String resourceUri) throws IOException {
+        final URL url = Resources.getResource(resourceUri);
+        ByteSource bs = Resources.asByteSource(url);
+        try(InputStream is = bs.openStream()) {
 
-    public static class Builder extends BaseSingleMessage.Builder {
-
-        private ResponseCode code;
-
-        public ResponseCode getCode() {
-            return code;
+            Schema schema = new Schema();
+            return schema;
         }
-
-        public void setCode(ResponseCode code) {
-            this.code = code;
-        }
-
-        public ResponseMessage build() {
-            return new ResponseMessage(this);
-        }
-    }
-
-    private final ResponseCode code;
-
-    protected ResponseMessage(Builder b) {
-        super(b);
-        this.code = b.code;
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 }

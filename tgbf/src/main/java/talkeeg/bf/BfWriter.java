@@ -20,6 +20,7 @@
 
 package talkeeg.bf;
 
+import talkeeg.bf.schema.Message;
 import talkeeg.bf.schema.Schema;
 
 import java.io.IOException;
@@ -34,9 +35,13 @@ import java.util.TreeMap;
  * Created by rad on 17.11.14.
  */
 public final class BfWriter {
-    private Map<Integer, Translator> structs = new TreeMap<>();
-    private Schema schema;
+    private final Map<Integer, Translator> structs = new TreeMap<>();
+    private final Schema schema;
     private ByteBuffer buffer;
+
+    public BfWriter(Schema schema) {
+        this.schema = schema;
+    }
 
     /**
      * Write object to it`s binary representation.
@@ -45,7 +50,11 @@ public final class BfWriter {
      * @throws IOException
      */
     public void write(Object obj, WritableByteChannel target) throws IOException {
-        final TranslationContextImpl context = new TranslationContextImpl(schema);
+
+        final int mesageId = getStructId(obj);
+        Message message = schema.getMessage(mesageId);
+
+        final TranslationContextImpl context = new TranslationContextImpl(message);
         final Translator translator = getTranslator(obj);
         translator.to(context, obj, buffer);
         buffer.rewind();
@@ -53,6 +62,15 @@ public final class BfWriter {
     }
 
     protected Translator getTranslator(Object obj) {
+        final int id = getStructId(obj);
+        final Translator translator = structs.get(id);
+        if(translator == null) {
+            throw new RuntimeException("can not get translator for " + obj.getClass() + " it has unknown @StructInfo.id=" + id);
+        }
+        return translator;
+    }
+
+    private static int getStructId(Object obj) {
         final Class<?> clazz = obj.getClass();
 
         // if class is struct
@@ -60,11 +78,6 @@ public final class BfWriter {
         if(si == null) {
             throw new RuntimeException("can not get translator for " + clazz + " it class need " + StructInfo.class.getName() + " annotation.");
         }
-        final int id = si.id();
-        final Translator translator = structs.get(id);
-        if(translator == null) {
-            throw new RuntimeException("can not get translator for " + clazz + " it has unknown @StructInfo.id=" + id);
-        }
-        return translator;
+        return si.id();
     }
 }

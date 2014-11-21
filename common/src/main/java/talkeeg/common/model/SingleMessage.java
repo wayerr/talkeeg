@@ -25,7 +25,7 @@ import talkeeg.common.util.BinaryData;
 /**
  * Created by wayerr on 21.11.14.
  */
-@StructInfo(id = "1")
+@StructInfo(id = 1)
 public class SingleMessage extends BaseSingleMessage {
     public static class Builder extends BaseSingleMessage.Builder {
         private Sign sign;

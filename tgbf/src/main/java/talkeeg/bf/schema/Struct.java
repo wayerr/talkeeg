@@ -20,6 +20,7 @@
 package talkeeg.bf.schema;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,6 +28,15 @@ import java.util.List;
  *
  * Created by wayerr on 21.11.14.
  */
-public class Struct extends Base {
-    private final List<SchemaEntry> fields = new ArrayList<>();
+public class Struct extends Base implements CompositeSchemaEntry {
+    private final List<SchemaEntry> fields;
+
+    public Struct(List<SchemaEntry> fields) {
+        this.fields = Collections.unmodifiableList(new ArrayList<>(fields));
+    }
+
+    @Override
+    public List<SchemaEntry> getChilds() {
+        return fields;
+    }
 }

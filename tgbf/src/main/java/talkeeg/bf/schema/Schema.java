@@ -29,4 +29,8 @@ import java.util.Map;
  */
 public final class Schema {
     private final Map<String, Message> mesages = new HashMap<>();
+
+    public Message getMessage(int mesageId) {
+        return mesages.get(mesageId);
+    }
 }

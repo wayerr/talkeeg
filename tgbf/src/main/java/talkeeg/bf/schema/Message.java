@@ -28,5 +28,7 @@ import java.util.List;
  * Created by wayerr on 21.11.14.
  */
 public final class Message extends Struct {
-
+    public Message(List<SchemaEntry> fields) {
+        super(fields);
+    }
 }
