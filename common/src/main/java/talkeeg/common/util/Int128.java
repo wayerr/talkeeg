@@ -19,6 +19,8 @@
 
 package talkeeg.common.util;
 
+import com.google.common.io.BaseEncoding;
+
 import java.util.Arrays;
 
 /**
@@ -61,10 +63,26 @@ public final class Int128 implements Comparable<Int128> {
 
     @Override
     public int compareTo(Int128 o) {
-
-        if(this.value == o.value) {
+        byte[] thisVal = this.value;
+        byte[] othVal = o.value;
+        if(thisVal == othVal) {
             return 0;
         }
-        return 1;
+        int lenDiff = Integer.compare(thisVal.length, othVal.length);
+        if(lenDiff != 0) {
+            return lenDiff;
+        }
+        for(int i = 0; i < thisVal.length; ++i) {
+            int res = Byte.compare(thisVal[i], othVal[i]);
+            if(res != 0) {
+                return res;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Int128{" + BaseEncoding.base16().encode(value) + '}';
     }
 }

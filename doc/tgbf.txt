@@ -33,7 +33,7 @@ S<TARG><SIZE><ENTRY>+
 
 //for each field <ENTRY> was written in order described in scheme, 
 //  empty field with null writed as 0x00 (null value)
-//  union written as single field with generic type (union of defferent fields with identical type is not supported)
+//  union written as single field with generic type (union of different fields with identical type is not supported)
 //  
 
 // list
