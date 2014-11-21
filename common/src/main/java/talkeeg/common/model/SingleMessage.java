@@ -20,6 +20,7 @@
 package talkeeg.common.model;
 
 import talkeeg.bf.StructInfo;
+import talkeeg.common.util.BinaryData;
 
 /**
  * Created by wayerr on 21.11.14.
@@ -27,11 +28,75 @@ import talkeeg.bf.StructInfo;
 @StructInfo(id = "1")
 public class SingleMessage extends BaseSingleMessage {
     public static class Builder extends BaseSingleMessage.Builder {
+        private Sign sign;
+        private BinaryData data;
+        private MessageCipherType cipher;
 
+        public BinaryData getData() {
+            return data;
+        }
+
+        public void setData(BinaryData data) {
+            this.data = data;
+        }
+
+        public Sign getSign() {
+            return sign;
+        }
+
+        public void setSign(Sign sign) {
+            this.sign = sign;
+        }
+
+        public MessageCipherType getCipher() {
+            return cipher;
+        }
+
+        public void setCipher(MessageCipherType cipher) {
+            this.cipher = cipher;
+        }
+
+        public SingleMessage build() {
+            return new SingleMessage(this);
+        }
     }
 
+    private final Sign sign;
+    private final MessageCipherType cipher;
+    private final BinaryData data;
 
     private SingleMessage(Builder b) {
         super(b);
+        this.sign = b.sign;
+        this.data = b.data;
+        this.cipher = b.cipher;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * signature of data field of this message
+     * @return
+     */
+    public Sign getSign() {
+        return sign;
+    }
+
+    /**
+     * message data
+     * @return
+     */
+    public BinaryData getData() {
+        return data;
+    }
+
+    /**
+     * type of data field cipher
+     * @return
+     */
+    public MessageCipherType getCipher() {
+        return cipher;
     }
 }

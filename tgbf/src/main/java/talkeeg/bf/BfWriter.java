@@ -20,13 +20,51 @@
 
 package talkeeg.bf;
 
+import talkeeg.bf.schema.Schema;
+
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
- * Message writer.
- *
+ * Message writer. <p/>
+ * Not thread safe. <p/>
  * Created by rad on 17.11.14.
  */
 public final class BfWriter {
+    private Map<Integer, Translator> structs = new TreeMap<>();
+    private Schema schema;
     private ByteBuffer buffer;
+
+    /**
+     * Write object to it`s binary representation.
+     * @param obj
+     * @param target
+     * @throws IOException
+     */
+    public void write(Object obj, WritableByteChannel target) throws IOException {
+        final TranslationContextImpl context = new TranslationContextImpl(schema);
+        final Translator translator = getTranslator(obj);
+        translator.to(context, obj, buffer);
+        buffer.rewind();
+        target.write(buffer);
+    }
+
+    protected Translator getTranslator(Object obj) {
+        final Class<?> clazz = obj.getClass();
+
+        // if class is struct
+        final StructInfo si = clazz.getAnnotation(StructInfo.class);
+        if(si == null) {
+            throw new RuntimeException("can not get translator for " + clazz + " it class need " + StructInfo.class.getName() + " annotation.");
+        }
+        final int id = si.id();
+        final Translator translator = structs.get(id);
+        if(translator == null) {
+            throw new RuntimeException("can not get translator for " + clazz + " it has unknown @StructInfo.id=" + id);
+        }
+        return translator;
+    }
 }

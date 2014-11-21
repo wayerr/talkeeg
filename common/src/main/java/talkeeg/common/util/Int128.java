@@ -19,70 +19,51 @@
 
 package talkeeg.common.util;
 
-import com.google.common.io.BaseEncoding;
-
-import java.util.Arrays;
-
 /**
- * Unsgned 128bit integer value.
+ * Unsigned 128bit integer data.
  * Created by wayerr on 21.11.14.
  */
-public final class Int128 implements Comparable<Int128> {
+public final class Int128 extends BinaryData {
     /**
-     * value array length
+     * data array length
      */
     private static final int ARR_LEN = 16;
-    private final byte value[];
+    public static final int STR_LEN = ARR_LEN * 2;
 
-    public Int128(byte[] value) {
-        if(value == null) {
-            throw new IllegalArgumentException("value is null");
-        }
-        if(value.length != ARR_LEN) {
-            throw new IllegalArgumentException("value.length != " + ARR_LEN);
-        }
-        this.value = value.clone();
+    /**
+     * create int128 instance with copy of data
+     * @param data
+     */
+    public Int128(byte[] data) {
+        super(data);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Int128 int128 = (Int128) o;
-
-        if (!Arrays.equals(value, int128.value)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(value);
-    }
-
-    @Override
-    public int compareTo(Int128 o) {
-        byte[] thisVal = this.value;
-        byte[] othVal = o.value;
-        if(thisVal == othVal) {
-            return 0;
+    protected void check(byte[] data) {
+        super.check(data);
+        if(data.length != ARR_LEN) {
+            throw new IllegalArgumentException("data.length != " + ARR_LEN);
         }
-        int lenDiff = Integer.compare(thisVal.length, othVal.length);
-        if(lenDiff != 0) {
-            return lenDiff;
-        }
-        for(int i = 0; i < thisVal.length; ++i) {
-            int res = Byte.compare(thisVal[i], othVal[i]);
-            if(res != 0) {
-                return res;
-            }
-        }
-        return 0;
     }
 
     @Override
     public String toString() {
-        return "Int128{" + BaseEncoding.base16().encode(value) + '}';
+        return "Int128{" + talkeeg.common.util.Arrays.toHexString(getData()) + '}';
+    }
+
+    /**
+     * create Int128 instance from hex string
+     * @param s
+     * @return
+     */
+    public static Int128 fromString(String s) {
+        if(s == null) {
+            throw new NullPointerException("string is null");
+        }
+        if(s.length() != STR_LEN) {
+            throw new NullPointerException("string.length is not " + STR_LEN);
+        }
+        byte[] data = talkeeg.common.util.Arrays.fromHexString(s);
+        return new Int128(data);
     }
 }
