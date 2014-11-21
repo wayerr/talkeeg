@@ -1,5 +1,7 @@
 /*
- * This file is part of talkeeg.
+ * Copyright (c) 2014, wayerr (radiofun@ya.ru).
+ *
+ *     This file is part of talkeeg.
  *
  *     talkeeg is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -15,15 +17,17 @@
  *     along with talkeeg.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'java'
+package talkeeg.bf;
 
-sourceCompatibility = 1.8
-version = '1.0'
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+/**
+ * Created by wayerr on 21.11.14.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface StructInfo {
 }
