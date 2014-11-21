@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5d5b56c3-592d-4056-a6a4-bdddd92dcc4d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/AbstractSingleMessage.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/BaseSingleMessage.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/talkeeg-parent (1).iml" afterPath="$PROJECT_DIR$/desktop-client/desktop-client.iml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/desktop-client/talkeeg-parent (2).iml" afterPath="$PROJECT_DIR$/common/common.iml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/talkeeg-parent (3).iml" afterPath="$PROJECT_DIR$/talkeeg-parent.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Int128.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Int128.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructInfo.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructInfo.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/doc/protocol.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/architect.md" afterPath="$PROJECT_DIR$/doc/architect.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/pom.xml" afterPath="$PROJECT_DIR$/common/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.ipr" afterPath="$PROJECT_DIR$/talkeeg-parent.ipr" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.iws" afterPath="$PROJECT_DIR$/talkeeg-parent.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/tgbf.txt" afterPath="$PROJECT_DIR$/doc/tgbf.txt" />
     </list>
     <ignored path="talkeeg-parent.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -55,11 +45,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="architect.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="architect.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/doc/architect.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3411371" vertical-offset="1512" max-vertical-offset="3474">
-              <caret line="101" column="119" selection-start-line="101" selection-start-column="119" selection-end-line="101" selection-end-column="119" />
+            <state vertical-scroll-proportion="-2.4827585" vertical-offset="0" max-vertical-offset="1800">
+              <caret line="4" column="33" selection-start-line="4" selection-start-column="33" selection-end-line="4" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="MarkdownPreviewEditor">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="protocol.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/doc/protocol.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1818">
+              <caret line="0" column="17" selection-start-line="0" selection-start-column="17" selection-end-line="0" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -139,6 +142,7 @@
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructInfo.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" />
         <option value="$PROJECT_DIR$/doc/architect.md" />
+        <option value="$PROJECT_DIR$/doc/protocol.md" />
       </list>
     </option>
   </component>
@@ -798,8 +802,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/doc/architect.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3411371" vertical-offset="1512" max-vertical-offset="3474">
-          <caret line="101" column="119" selection-start-line="101" selection-start-column="119" selection-end-line="101" selection-end-column="119" />
+        <state vertical-scroll-proportion="-2.4827585" vertical-offset="0" max-vertical-offset="1800">
+          <caret line="4" column="33" selection-start-line="4" selection-start-column="33" selection-end-line="4" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/protocol.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1818">
+          <caret line="0" column="17" selection-start-line="0" selection-start-column="17" selection-end-line="0" selection-end-column="17" />
           <folding />
         </state>
       </provider>
