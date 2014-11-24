@@ -7,7 +7,7 @@
         <integer name="src" storeAs="16_BYTE"/>
         <!-- fingerprint of destination public key -->
         <integer name="dst" storeAs="16_BYTE"/>
-        <struct name="CipherData">
+        <struct name="CipherData" structId="100">
             <!-- options for cipher:
               number of HMAC alg (0 - sha1, 1 - sha256)
                |

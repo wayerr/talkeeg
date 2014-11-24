@@ -39,7 +39,7 @@ import java.nio.channels.Pipe;
 public class Test {
 
     @org.junit.Test
-    public void save() throws IOException {
+    public void save() throws Exception {
         System.out.println("save");
         SingleMessage.Builder smbuilder = SingleMessage.builder();
         smbuilder.setId((short)0);
@@ -61,7 +61,7 @@ public class Test {
         smbuilder.setSign(Sign.fromString(""));
         SingleMessage sm = smbuilder.build();
 
-        BfWriter writer =  new BfWriter(SchemaSource.fromResource("/protocol.xml"));
+        BfWriter writer =  new BfWriter(SchemaSource.fromResource("protocol.xml"));
         Pipe pipe = Pipe.open();
         writer.write(sm, pipe.sink());
     }

@@ -17,18 +17,33 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.bf.schema;
+package talkeeg.bf;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.ByteBuffer;
 
 /**
- * Message schema representation <p/>
- *
- * Created by wayerr on 21.11.14.
+ * Created by wayerr on 24.11.14.
  */
-public final class Message extends Struct {
-    public Message(List<SchemaEntry> fields) {
-        super(fields);
+final class DefaultStructTranslator implements Translator {
+
+
+    @Override
+    public int getSize(Object message) {
+        return 0;
+    }
+
+    @Override
+    public int needSize(ByteBuffer buffer) {
+        return 0;
+    }
+
+    @Override
+    public void to(TranslationContext context, Object message, ByteBuffer buffer) {
+
+    }
+
+    @Override
+    public Object from(TranslationContext context, ByteBuffer buffer) {
+        return null;
     }
 }

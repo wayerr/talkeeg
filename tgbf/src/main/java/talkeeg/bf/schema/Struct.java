@@ -19,8 +19,11 @@
 
 package talkeeg.bf.schema;
 
+import talkeeg.bf.EntryType;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -29,14 +32,57 @@ import java.util.List;
  * Created by wayerr on 21.11.14.
  */
 public class Struct extends Base implements CompositeSchemaEntry {
-    private final List<SchemaEntry> fields;
+    public static class Builder extends Base.Builder {
+        private final List<SchemaEntry> fields = new ArrayList<>();
+        private String id;
 
-    public Struct(List<SchemaEntry> fields) {
-        this.fields = Collections.unmodifiableList(new ArrayList<>(fields));
+        public List<SchemaEntry> getFields() {
+            return fields;
+        }
+
+        public void setFields(List<SchemaEntry> fields) {
+            this.fields.clear();
+            if(fields != null) {
+                this.fields.addAll(fields);
+            }
+        }
+
+        public void addField(SchemaEntry field) {
+            this.fields.add(field);
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public Struct build() {
+            return new Struct(this);
+        }
+    }
+
+    private final List<SchemaEntry> fields;
+    private final String id;
+
+    private Struct(Builder b) {
+        super(EnumSet.of(EntryType.STRUCT), b);
+        this.fields = Collections.unmodifiableList(new ArrayList<>(b.fields));
+        this.id = b.id;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Override
     public List<SchemaEntry> getChilds() {
         return fields;
+    }
+
+    public String getId() {
+        return id;
     }
 }

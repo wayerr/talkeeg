@@ -17,21 +17,36 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.bf;
+package talkeeg.bf.schema;
 
-import talkeeg.bf.schema.Struct;
-import talkeeg.bf.schema.StructNavigator;
+import talkeeg.bf.EntryType;
+
+import java.util.EnumSet;
 
 /**
- * Created by wayerr on 21.11.14.
+ * Created by wayerr on 24.11.14.
  */
-final class TranslationContextImpl implements TranslationContext {
+public final class ListEntry extends Base {
+    public static final class Builder extends Base.Builder {
+        private EntryType itemType;
 
-    private final Struct message;
-    private final StructNavigator navigator;
+        public EntryType getItemType() {
+            return itemType;
+        }
 
-    TranslationContextImpl(Struct message) {
-        this.message = message;
-        this.navigator = new StructNavigator(this.message);
+        public void setItemType(EntryType itemType) {
+            this.itemType = itemType;
+        }
+
+        public ListEntry build() {
+            return new ListEntry(this);
+        }
+    }
+
+    private final EntryType itemType;
+
+    private ListEntry(Builder b) {
+        super(EnumSet.of(EntryType.LIST), b);
+        this.itemType = b.itemType;
     }
 }

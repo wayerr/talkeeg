@@ -20,8 +20,8 @@
 
 package talkeeg.bf;
 
-import talkeeg.bf.schema.Message;
 import talkeeg.bf.schema.Schema;
+import talkeeg.bf.schema.Struct;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -52,7 +52,7 @@ public final class BfWriter {
     public void write(Object obj, WritableByteChannel target) throws IOException {
 
         final int mesageId = getStructId(obj);
-        Message message = schema.getMessage(mesageId);
+        Struct message = schema.getMessage(mesageId);
 
         final TranslationContextImpl context = new TranslationContextImpl(message);
         final Translator translator = getTranslator(obj);

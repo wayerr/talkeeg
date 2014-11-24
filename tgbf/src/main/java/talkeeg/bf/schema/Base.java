@@ -21,11 +21,38 @@ package talkeeg.bf.schema;
 
 import talkeeg.bf.EntryType;
 
+import java.util.Set;
+
 /**
  * Created by wayerr on 21.11.14.
  */
 public abstract class Base implements SchemaEntry {
-    private EntryType type;
+
+    public static abstract class Builder {
+        private EntryType type;
+
+        public EntryType getType() {
+            return type;
+        }
+
+        public void setType(EntryType type) {
+            this.type = type;
+        }
+
+        public abstract Base build();
+    }
+
+    private final EntryType type;
+
+    protected Base(Set<EntryType> allowedTypes, Builder b) {
+        if(b.type == null && allowedTypes.size() == 1) {
+            // most simply way to retrieve first element
+            b.type = (EntryType) allowedTypes.toArray()[0];
+        } else if(!allowedTypes.contains(b.type)) {
+            throw new RuntimeException("type of " + getClass().getName() + " must be from " + allowedTypes + ", but now type is " + b.type);
+        }
+        this.type = b.type;
+    }
 
     @Override
     public EntryType getType() {

@@ -19,6 +19,7 @@
 
 package talkeeg.bf.schema;
 
+import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,9 +29,52 @@ import java.util.Map;
  * Created by wayerr on 21.11.14.
  */
 public final class Schema {
-    private final Map<String, Message> mesages = new HashMap<>();
 
-    public Message getMessage(int mesageId) {
-        return mesages.get(mesageId);
+    public static final class Builder {
+        private final Map<String, Struct> messages = new HashMap<>();
+        private ByteOrder byteOrder;
+
+        public Map<String, Struct> getMessages() {
+            return messages;
+        }
+
+        public void setMessages(Map<String, Struct> messages) {
+            this.messages.clear();
+            if(messages != null) {
+                this.messages.putAll(messages);
+            }
+        }
+
+        public void putMessage(Struct message) {
+            this.messages.put(message.getId(), message);
+        }
+
+        public ByteOrder getByteOrder() {
+            return byteOrder;
+        }
+
+        public void setByteOrder(ByteOrder byteOrder) {
+            this.byteOrder = byteOrder;
+        }
+
+        public Schema build() {
+          return new Schema(this);
+        }
+    }
+
+    private final Map<String, Struct> messages = new HashMap<>();
+    private final ByteOrder byteOrder;
+
+    private Schema(Builder b) {
+        this.messages.putAll(b.messages);
+        this.byteOrder = b.byteOrder;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public Struct getMessage(int mesageId) {
+        return messages.get(mesageId);
     }
 }

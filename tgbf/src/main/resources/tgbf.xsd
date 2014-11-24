@@ -119,7 +119,7 @@
     <xs:complexType name="StructType">
         <xs:complexContent>
             <xs:extension base="EntryType">
-                <xs:attribute name="structId" type="xs:nonNegativeInteger"/>
+                <xs:attribute name="structId" type="xs:nonNegativeInteger" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
