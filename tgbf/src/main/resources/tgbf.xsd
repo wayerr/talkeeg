@@ -26,6 +26,7 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element name="primitive" type="PrimitiveType" />
             <xs:element name="integer" type="IntType" />
+            <xs:element name="id" type="IdType" />
             <xs:element name="float" type="FloatType" />
             <xs:element name="datetime" type="DatetimeType" />
             <xs:element name="blob" type="BlobType" />
@@ -99,6 +100,13 @@
         <xs:complexContent>
             <xs:restriction base="PrimitiveType" >
                 <xs:attribute type="FixedLengthStorageType" name="storeAs" fixed="08_BYTE" use="prohibited"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="IdType">
+        <xs:complexContent>
+            <xs:restriction base="PrimitiveType" >
+                <xs:attribute type="FixedLengthStorageType" name="storeAs" fixed="16_BYTE" use="prohibited"/>
             </xs:restriction>
         </xs:complexContent>
     </xs:complexType>

@@ -4,9 +4,9 @@
         <!-- cyclic id of message for prevent duplicating-->
         <integer fieldName="id" storeAs="02_BYTE"/>
         <!-- fingerprint of source public key -->
-        <integer fieldName="src" storeAs="16_BYTE"/>
+        <id fieldName="src" />
         <!-- fingerprint of destination public key -->
-        <integer fieldName="dst" storeAs="16_BYTE"/>
+        <id fieldName="dst" />
         <struct name="CipherData" structId="100">
             <!-- options for cipher:
               number of HMAC alg (0 - sha1, 1 - sha256)
@@ -26,8 +26,8 @@
         <!-- cyclic id of message for prevent duplicating-->
         <integer fieldName="id" storeAs="02_BYTE"/>
         <!-- fingerprint of source public key -->
-        <integer fieldName="src" storeAs="16_BYTE"/>
+        <id fieldName="src" />
         <!-- fingerprint of destination public key -->
-        <integer fieldName="dst" storeAs="16_BYTE"/>
+        <id fieldName="dst" />
     </message>
 </schema>
