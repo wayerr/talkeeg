@@ -21,11 +21,14 @@
 package talkeeg.bf;
 
 import talkeeg.bf.schema.Schema;
+import talkeeg.bf.schema.SchemaEntry;
 import talkeeg.bf.schema.Struct;
 
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,9 +38,8 @@ import java.util.TreeMap;
  * Created by rad on 17.11.14.
  */
 public final class BfWriter {
-    private final Map<Integer, Translator> structs = new TreeMap<>();
     private final Schema schema;
-    private ByteBuffer buffer;
+    private final MetaTypeResolver resolver = new MetaTypeResolver();
 
     public BfWriter(Schema schema) {
         this.schema = schema;
@@ -46,28 +48,22 @@ public final class BfWriter {
     /**
      * Write object to it`s binary representation.
      * @param obj
-     * @param target
      * @throws IOException
      */
-    public void write(Object obj, WritableByteChannel target) throws IOException {
+    public ByteBuffer write(Object obj) throws Exception {
 
         final int mesageId = getStructId(obj);
         Struct message = schema.getMessage(mesageId);
-
-        final TranslationContextImpl context = new TranslationContextImpl(message);
-        final Translator translator = getTranslator(obj);
+        if(message == null) {
+            throw new RuntimeException("Can not find message for structId=" + mesageId);
+        }
+        final TranslationContextImpl context = new TranslationContextImpl(resolver, message);
+        final Translator translator = context.getTranslator(message);
+        final int size = translator.getSize(context, obj);
+        ByteBuffer buffer = ByteBuffer.allocate(size);
         translator.to(context, obj, buffer);
         buffer.rewind();
-        target.write(buffer);
-    }
-
-    protected Translator getTranslator(Object obj) {
-        final int id = getStructId(obj);
-        final Translator translator = structs.get(id);
-        if(translator == null) {
-            throw new RuntimeException("can not get translator for " + obj.getClass() + " it has unknown @StructInfo.id=" + id);
-        }
-        return translator;
+        return buffer;
     }
 
     private static int getStructId(Object obj) {

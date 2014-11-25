@@ -17,24 +17,23 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.bf.schema;
+package talkeeg.bf;
 
-import talkeeg.bf.EntryType;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * common iface for each schema entry <p/>
- * Must be an immutable.
- * Created by wayerr on 21.11.14.
+ * Created by wayerr on 25.11.14.
  */
-public interface SchemaEntry {
-    /**
-     * storage type of current entry
-     * @return
-     */
-    EntryType getType();
+public class TgbfUtilsTest {
 
-    /**
-     * name of field in ascended (parent) entry
-     */
-    String getFieldName();
+    @Test
+    public void testGetMinimalSize() {
+        System.out.println("test getMinimalSize");
+        assertEquals(1, TgbfUtils.getMinimalSize(0));
+        assertEquals(1, TgbfUtils.getMinimalSize(0xff-1));
+        assertEquals(2, TgbfUtils.getMinimalSize(0xfff-1));
+        assertEquals(2, TgbfUtils.getMinimalSize(0xffff-1));
+        assertEquals(4, TgbfUtils.getMinimalSize(0xfffff-1));
+    }
 }

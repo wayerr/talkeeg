@@ -29,24 +29,26 @@ import java.nio.ByteBuffer;
 public interface Translator {
     /**
      * Calculate size of message in binary representation
+     * @param context
      * @param message
      * @return
      */
-    int getSize(Object message);
+    int getSize(TranslationContext context, Object message) throws Exception;
 
     /**
      * Return count of insufficient bytes for translating buffer to message
+     * @param context
      * @param buffer
      * @return
      */
-    int needSize(ByteBuffer buffer);
+    int needSize(TranslationContext context, ByteBuffer buffer) throws Exception;
 
     /**
      * translate message to buffer
      * @param message
      * @param buffer
      */
-    void to(TranslationContext context, Object message, ByteBuffer buffer);
+    void to(TranslationContext context, Object message, ByteBuffer buffer) throws Exception;
 
     /**
      * Translate buffer to message
@@ -54,5 +56,5 @@ public interface Translator {
      * @param buffer
      * @return
      */
-    Object from(TranslationContext context, ByteBuffer buffer);
+    Object from(TranslationContext context, ByteBuffer buffer) throws Exception;
 }

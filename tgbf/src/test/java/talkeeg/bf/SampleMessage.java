@@ -17,24 +17,22 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.bf.schema;
+package talkeeg.bf;
 
-import talkeeg.bf.EntryType;
+import talkeeg.bf.StructInfo;
 
 /**
- * common iface for each schema entry <p/>
- * Must be an immutable.
- * Created by wayerr on 21.11.14.
+ * Created by wayerr on 24.11.14.
  */
-public interface SchemaEntry {
-    /**
-     * storage type of current entry
-     * @return
-     */
-    EntryType getType();
+@StructInfo(id = 1)
+public class SampleMessage {
+    private long longValue;
 
-    /**
-     * name of field in ascended (parent) entry
-     */
-    String getFieldName();
+    public long getLongValue() {
+        return longValue;
+    }
+
+    public void setLongValue(long longValue) {
+        this.longValue = longValue;
+    }
 }

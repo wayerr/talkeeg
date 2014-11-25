@@ -62,7 +62,6 @@ public class Test {
         SingleMessage sm = smbuilder.build();
 
         BfWriter writer =  new BfWriter(SchemaSource.fromResource("protocol.xml"));
-        Pipe pipe = Pipe.open();
-        writer.write(sm, pipe.sink());
+        ByteBuffer buffer = writer.write(sm);
     }
 }

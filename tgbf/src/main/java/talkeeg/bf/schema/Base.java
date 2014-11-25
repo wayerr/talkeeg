@@ -19,6 +19,7 @@
 
 package talkeeg.bf.schema;
 
+import com.google.common.base.MoreObjects;
 import talkeeg.bf.EntryType;
 
 import java.util.Set;
@@ -30,19 +31,45 @@ public abstract class Base implements SchemaEntry {
 
     public static abstract class Builder {
         private EntryType type;
+        private String fieldName;
 
+        /**
+         * persistence type for current entry
+         * @return
+         */
         public EntryType getType() {
             return type;
         }
 
+        /**
+         * persistence type for current entry
+         * @param type
+         */
         public void setType(EntryType type) {
             this.type = type;
+        }
+
+        /**
+         * name of field in ascended (parent) entry
+         * @return
+         */
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        /**
+         * name of field in ascended (parent) entry
+         * @param fieldName
+         */
+        public void setFieldName(String fieldName) {
+            this.fieldName = fieldName;
         }
 
         public abstract Base build();
     }
 
     private final EntryType type;
+    private final String fieldName;
 
     protected Base(Set<EntryType> allowedTypes, Builder b) {
         if(b.type == null && allowedTypes.size() == 1) {
@@ -52,10 +79,32 @@ public abstract class Base implements SchemaEntry {
             throw new RuntimeException("type of " + getClass().getName() + " must be from " + allowedTypes + ", but now type is " + b.type);
         }
         this.type = b.type;
+        this.fieldName = b.fieldName;
+    }
+
+    /**
+     * name of field in ascended (parent) entry
+     * @return
+     */
+    @Override
+    public String getFieldName() {
+        return fieldName;
     }
 
     @Override
     public EntryType getType() {
         return type;
+    }
+
+    @Override
+    public final String toString() {
+        MoreObjects.ToStringHelper sb = MoreObjects.toStringHelper(this);
+        toString(sb);
+        return sb.toString();
+    }
+
+    protected void toString(MoreObjects.ToStringHelper sb) {
+        sb.add("type", type);
+        sb.add("fieldName", fieldName);
     }
 }

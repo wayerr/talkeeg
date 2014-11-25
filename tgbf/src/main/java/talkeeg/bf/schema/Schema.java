@@ -31,14 +31,14 @@ import java.util.Map;
 public final class Schema {
 
     public static final class Builder {
-        private final Map<String, Struct> messages = new HashMap<>();
+        private final Map<Integer, Struct> messages = new HashMap<>();
         private ByteOrder byteOrder;
 
-        public Map<String, Struct> getMessages() {
+        public Map<Integer, Struct> getMessages() {
             return messages;
         }
 
-        public void setMessages(Map<String, Struct> messages) {
+        public void setMessages(Map<Integer, Struct> messages) {
             this.messages.clear();
             if(messages != null) {
                 this.messages.putAll(messages);
@@ -62,7 +62,7 @@ public final class Schema {
         }
     }
 
-    private final Map<String, Struct> messages = new HashMap<>();
+    private final Map<Integer, Struct> messages = new HashMap<>();
     private final ByteOrder byteOrder;
 
     private Schema(Builder b) {

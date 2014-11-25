@@ -68,14 +68,35 @@ public enum EntryType {
      */
     LIST;
 
+    private static final EntryType vals[] = values();
+
     private final byte value;
 
     EntryType() {
-        this.value = (byte) this.ordinal();
+        this.value = (byte) (this.ordinal() << 4);
+    }
+
+    /**
+     * return binary representation of this entry type. <p/>
+     * value stored in four most significant bits
+     * @return
+     */
+    public byte getValue() {
+        return value;
     }
 
     @Override
     public String toString() {
         return name() + "(" + value + ')';
+    }
+
+    /**
+     * extract EntryType from four must significant bits
+     * @param b
+     * @return
+     */
+    public static EntryType getEntryType(byte b) {
+        final int typeIndex = ((int) b & 0xf0) >> 4;
+        return vals[typeIndex];
     }
 }

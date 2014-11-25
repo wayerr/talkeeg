@@ -33,7 +33,7 @@
             <xs:element name="list" type="ListType" />
             <xs:element name="struct" type="StructType" />
         </xs:choice>
-        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute type="xs:string" name="fieldName"/>
         <xs:anyAttribute/>
     </xs:complexType>
     <xs:simpleType name="StorageType">
@@ -120,6 +120,7 @@
         <xs:complexContent>
             <xs:extension base="EntryType">
                 <xs:attribute name="structId" type="xs:nonNegativeInteger" use="required"/>
+                <xs:attribute name="name" type="xs:string" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

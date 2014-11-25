@@ -19,9 +19,18 @@
 
 package talkeeg.bf;
 
+import talkeeg.bf.schema.SchemaEntry;
+
 /**
  * Contex of {@link talkeeg.bf.Translator }
  * Created by wayerr on 17.11.14.
  */
 public interface TranslationContext {
+    /**
+     * translator for specified schema entry <p/>
+     * If context does not have appropriate translator, then error will be thrown
+     * @param schemaEntry
+     * @return translator
+     */
+    Translator getTranslator(SchemaEntry schemaEntry);
 }

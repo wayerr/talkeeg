@@ -159,7 +159,7 @@ public final class SchemaSource {
     private static Struct loadStruct(Node node) {
         final NamedNodeMap attrs = node.getAttributes();
         Struct.Builder b = Struct.builder();
-        b.setId(getAttributeValue(attrs, "structId"));
+        b.setId(Integer.parseInt(getAttributeValue(attrs, "structId")));
         final NodeList fields = node.getChildNodes();
         final int length = fields.getLength();
         for(int i = 0; i < length; ++i) {
@@ -191,6 +191,8 @@ public final class SchemaSource {
         }
         builder.setType(entryType);
         builder.setJavaType(clazz);
+        builder.setMetaType(node.getLocalName());
+        builder.setFieldName(getAttributeValue(attributes, "fieldName"));
         return builder.build();
     }
 

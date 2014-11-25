@@ -34,7 +34,7 @@ import java.util.List;
 public class Struct extends Base implements CompositeSchemaEntry {
     public static class Builder extends Base.Builder {
         private final List<SchemaEntry> fields = new ArrayList<>();
-        private String id;
+        private int id;
 
         public List<SchemaEntry> getFields() {
             return fields;
@@ -51,11 +51,11 @@ public class Struct extends Base implements CompositeSchemaEntry {
             this.fields.add(field);
         }
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
-        public void setId(String id) {
+        public void setId(int id) {
             this.id = id;
         }
 
@@ -65,7 +65,7 @@ public class Struct extends Base implements CompositeSchemaEntry {
     }
 
     private final List<SchemaEntry> fields;
-    private final String id;
+    private final int id;
 
     private Struct(Builder b) {
         super(EnumSet.of(EntryType.STRUCT), b);
@@ -82,7 +82,7 @@ public class Struct extends Base implements CompositeSchemaEntry {
         return fields;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 }

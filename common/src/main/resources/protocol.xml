@@ -2,11 +2,11 @@
 <schema xmlns="http://talkeeg/ns/tgbf" byteOrder="BIG_ENDIAN">
     <message name="request" structId="0">
         <!-- cyclic id of message for prevent duplicating-->
-        <integer name="id" storeAs="02_BYTE"/>
+        <integer fieldName="id" storeAs="02_BYTE"/>
         <!-- fingerprint of source public key -->
-        <integer name="src" storeAs="16_BYTE"/>
+        <integer fieldName="src" storeAs="16_BYTE"/>
         <!-- fingerprint of destination public key -->
-        <integer name="dst" storeAs="16_BYTE"/>
+        <integer fieldName="dst" storeAs="16_BYTE"/>
         <struct name="CipherData" structId="100">
             <!-- options for cipher:
               number of HMAC alg (0 - sha1, 1 - sha256)
@@ -15,19 +15,19 @@
               00 00 00 00 00 00 00 00
 
              -->
-            <integer name="options" storeAs="04_BYTE"/>
+            <integer fieldName="options" storeAs="04_BYTE"/>
             <!-- Message authentication code on HMAC alg -->
-            <blob name="mac"/>
+            <blob fieldName="mac"/>
             <!-- crypted data -->
-            <blob name="data" />
+            <blob fieldName="data" />
         </struct>
     </message>
     <message name="response" structId="1">
         <!-- cyclic id of message for prevent duplicating-->
-        <integer name="id" storeAs="02_BYTE"/>
+        <integer fieldName="id" storeAs="02_BYTE"/>
         <!-- fingerprint of source public key -->
-        <integer name="src" storeAs="16_BYTE"/>
+        <integer fieldName="src" storeAs="16_BYTE"/>
         <!-- fingerprint of destination public key -->
-        <integer name="dst" storeAs="16_BYTE"/>
+        <integer fieldName="dst" storeAs="16_BYTE"/>
     </message>
 </schema>

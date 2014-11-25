@@ -17,24 +17,25 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.bf.schema;
+package talkeeg.bf;
 
-import talkeeg.bf.EntryType;
+import com.google.common.io.BaseEncoding;
+import talkeeg.bf.schema.SchemaSource;
+
+import java.nio.ByteBuffer;
 
 /**
- * common iface for each schema entry <p/>
- * Must be an immutable.
- * Created by wayerr on 21.11.14.
+ * Created by wayerr on 24.11.14.
  */
-public interface SchemaEntry {
-    /**
-     * storage type of current entry
-     * @return
-     */
-    EntryType getType();
+public class Test {
+    @org.junit.Test
+    public void test() throws Exception {
+        SampleMessage sampleMessage = new SampleMessage();
+        sampleMessage.setLongValue(0xff00ff0000ff00ffl);
 
-    /**
-     * name of field in ascended (parent) entry
-     */
-    String getFieldName();
+        BfWriter writer =  new BfWriter(SchemaSource.fromResource("protocol.xml"));
+
+        ByteBuffer buffer = writer.write(sampleMessage);
+        System.out.println(BaseEncoding.base16().encode(buffer.array()));
+    }
 }
