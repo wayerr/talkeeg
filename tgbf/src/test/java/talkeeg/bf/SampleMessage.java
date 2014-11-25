@@ -64,4 +64,36 @@ public class SampleMessage {
                 ", stringValue='" + stringValue + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) {
+            return true;
+        }
+        if(!(o instanceof SampleMessage)) {
+            return false;
+        }
+
+        final SampleMessage that = (SampleMessage)o;
+
+        if(longValue != that.longValue) {
+            return false;
+        }
+        if(!Arrays.equals(bytesValue, that.bytesValue)) {
+            return false;
+        }
+        if(stringValue != null ? !stringValue.equals(that.stringValue) : that.stringValue != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int)(longValue ^ (longValue >>> 32));
+        result = 31 * result + (bytesValue != null ? Arrays.hashCode(bytesValue) : 0);
+        result = 31 * result + (stringValue != null ? stringValue.hashCode() : 0);
+        return result;
+    }
 }

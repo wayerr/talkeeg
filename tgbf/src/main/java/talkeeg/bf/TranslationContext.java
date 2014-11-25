@@ -20,6 +20,7 @@
 package talkeeg.bf;
 
 import talkeeg.bf.schema.SchemaEntry;
+import talkeeg.bf.schema.Struct;
 
 /**
  * Contex of {@link talkeeg.bf.Translator }
@@ -33,4 +34,18 @@ public interface TranslationContext {
      * @return translator
      */
     Translator getTranslator(SchemaEntry schemaEntry);
+
+    /**
+     * create builder instance for object mapped to specified entry
+     * @param entry
+     * @return
+     */
+    StructureBuilder createBuilder(Struct entry);
+
+    /**
+     * predefined reader for structure
+     * @param entry
+     * @return
+     */
+    StructureReader getReader(Struct entry);
 }

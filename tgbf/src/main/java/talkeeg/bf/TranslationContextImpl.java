@@ -35,10 +35,11 @@ final class TranslationContextImpl implements TranslationContext {
     private final Struct message;
     private final Map<Integer, Translator> structs = new TreeMap<>();
     private final StructNavigator navigator;
-    private final MetaTypeResolver metaTypeResolver;
+    private final Bf bf;
+    private final StructureReader dafaultReader = DefaultStructureReader.getInstance();
 
-    TranslationContextImpl(MetaTypeResolver resolver, Struct message) {
-        this.metaTypeResolver = resolver;
+    TranslationContextImpl(Bf bf, Struct message) {
+        this.bf = bf;
         this.message = message;
         this.navigator = new StructNavigator(this.message);
     }
@@ -50,7 +51,7 @@ final class TranslationContextImpl implements TranslationContext {
         }
         Translator translator = null;
         if(schemaEntry instanceof PrimitiveEntry) {
-            translator = this.metaTypeResolver.createTranslator((PrimitiveEntry) schemaEntry);
+            translator = this.bf.getMetaTypeResolver().createTranslator((PrimitiveEntry)schemaEntry);
         } else if(schemaEntry instanceof Struct) {
             final Struct struct = (Struct) schemaEntry;
             translator = structs.get(struct.getId());
@@ -64,5 +65,15 @@ final class TranslationContextImpl implements TranslationContext {
             throw new RuntimeException("Can not find translator for schemaEntry=" + schemaEntry);
         }
         return translator;
+    }
+
+    @Override
+    public StructureBuilder createBuilder(Struct struct) {
+        return bf.createBulder(struct);
+    }
+
+    @Override
+    public StructureReader getReader(Struct entry) {
+        return dafaultReader;
     }
 }

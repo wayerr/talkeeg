@@ -21,6 +21,7 @@ package talkeeg.bf;
 
 import com.google.common.io.BaseEncoding;
 import talkeeg.bf.schema.SchemaSource;
+import static org.junit.Assert.*;
 
 import java.nio.ByteBuffer;
 
@@ -35,9 +36,12 @@ public class Test {
         sampleMessage.setBytesValue(new byte[]{1, 2, 3, 4, 5, 6, (byte)0xff});
         sampleMessage.setStringValue("simple уникодная строка а-я");
 
-        BfWriter writer =  new BfWriter(SchemaSource.fromResource("protocol.xml"));
+        Bf bf =  new Bf(SchemaSource.fromResource("protocol.xml"), SampleMessage.class);
 
-        ByteBuffer buffer = writer.write(sampleMessage);
+        ByteBuffer buffer = bf.write(sampleMessage);
         System.out.println(BaseEncoding.base16().encode(buffer.array()));
+
+        SampleMessage readed = (SampleMessage)bf.read(buffer);
+        assertEquals(sampleMessage, readed);
     }
 }

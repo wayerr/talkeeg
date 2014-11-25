@@ -292,4 +292,17 @@ public final class TgbfUtils {
             }
         }
     }
+
+    /**
+     * read first byte from buffer and check that it matches with specified
+     * @param buffer
+     * @param expected
+     */
+    public static void readAndCheckType(ByteBuffer buffer, EntryType expected) {
+        final byte typeByte = buffer.get();//read type of entity, we believe that it type is correct
+        final EntryType readedType = EntryType.getEntryType(typeByte);
+        if(readedType != expected) {
+            throw new RuntimeException("unexpected type " + readedType + " when expect " + expected);
+        }
+    }
 }

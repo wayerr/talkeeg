@@ -37,12 +37,17 @@ import java.util.TreeMap;
  * Not thread safe. <p/>
  * Created by rad on 17.11.14.
  */
-public final class BfWriter {
+public final class Bf {
     private final Schema schema;
+    private final Map<Integer, Class<?>> types = new TreeMap<>();
     private final MetaTypeResolver resolver = new MetaTypeResolver();
 
-    public BfWriter(Schema schema) {
+    public Bf(Schema schema, Class<?> ... mappedTypes) {
         this.schema = schema;
+        for(Class<?> type : mappedTypes) {
+            final int id = getStructId(type);
+            types.put(id, type);
+        }
     }
 
     /**
@@ -52,12 +57,12 @@ public final class BfWriter {
      */
     public ByteBuffer write(Object obj) throws Exception {
 
-        final int mesageId = getStructId(obj);
-        Struct message = schema.getMessage(mesageId);
+        final int messageId = getStructId(obj);
+        Struct message = schema.getMessage(messageId);
         if(message == null) {
-            throw new RuntimeException("Can not find message for structId=" + mesageId);
+            throw new RuntimeException("Can not find message for structId=" + messageId);
         }
-        final TranslationContextImpl context = new TranslationContextImpl(resolver, message);
+        final TranslationContextImpl context = new TranslationContextImpl(this, message);
         final Translator translator = context.getTranslator(message);
         final int size = translator.getSize(context, obj);
         ByteBuffer buffer = ByteBuffer.allocate(size);
@@ -70,10 +75,35 @@ public final class BfWriter {
         final Class<?> clazz = obj.getClass();
 
         // if class is struct
+        return getStructId(clazz);
+    }
+
+    private static int getStructId(Class<?> clazz) {
         final StructInfo si = clazz.getAnnotation(StructInfo.class);
         if(si == null) {
             throw new RuntimeException("can not get translator for " + clazz + " it class need " + StructInfo.class.getName() + " annotation.");
         }
         return si.id();
+    }
+
+    public Object read(ByteBuffer buffer) throws Exception {
+        //after reading struct header current buffer position must remain untouched
+        final int structId = DefaultStructTranslator.readStructId(buffer.asReadOnlyBuffer());
+        final Struct message = schema.getMessage(structId);
+        final TranslationContextImpl context = new TranslationContextImpl(this, message);
+        final Translator translator = context.getTranslator(message);
+        return translator.from(context, buffer);
+    }
+
+    StructureBuilder createBulder(Struct struct) {
+        final Class<?> type = types.get(struct.getId());
+        if(type == null) {
+            throw new RuntimeException("no types mapped on specified structId: " + struct.getId());
+        }
+        return new DefaulStructureBuilder(struct, type);
+    }
+
+    MetaTypeResolver getMetaTypeResolver() {
+        return resolver;
     }
 }

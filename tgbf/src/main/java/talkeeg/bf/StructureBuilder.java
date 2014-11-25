@@ -23,5 +23,17 @@ package talkeeg.bf;
  * Factory for objects (messages) mapped to {@link talkeeg.bf.EntryType#STRUCT }
  * Created by wayerr on 17.11.14.
  */
-public interface StructureFactory {
+public interface StructureBuilder {
+    /**
+     * set structure property to mapped object
+     * @param name
+     * @param value
+     */
+    void set(String name, Object value) throws Exception;
+
+    /**
+     * create instance of structure with previously specified property values
+     * @return
+     */
+    Object create() throws Exception;
 }

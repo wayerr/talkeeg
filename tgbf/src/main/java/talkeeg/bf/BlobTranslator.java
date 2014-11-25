@@ -118,7 +118,7 @@ public class BlobTranslator implements Translator {
     public int needSize(TranslationContext context, ByteBuffer buffer) throws Exception {
         final int position = buffer.position();
         try {
-            readAndCheckType(buffer);
+            TgbfUtils.readAndCheckType(buffer, EntryType.BYTES);
             final long length = TgbfUtils.readUnsignedInteger(buffer);
             checkLength(length);
             return (int) length;
@@ -143,17 +143,9 @@ public class BlobTranslator implements Translator {
 
     @Override
     public Object from(TranslationContext context, ByteBuffer buffer) throws Exception {
-        readAndCheckType(buffer);
+        TgbfUtils.readAndCheckType(buffer, EntryType.BYTES);
         final long dataSize = TgbfUtils.readUnsignedInteger(buffer);
         checkLength(dataSize);
         return adapter.from(buffer, (int) dataSize);
-    }
-
-    protected void readAndCheckType(ByteBuffer buffer) {
-        final byte typeByte = buffer.get();//read type of entity, we believe that it type is correct
-        final EntryType readedType = EntryType.getEntryType(typeByte);
-        if(readedType != EntryType.BYTES) {
-            throw new RuntimeException("unexpected type " + readedType + " when expect BYTES");
-        }
     }
 }

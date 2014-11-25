@@ -19,8 +19,7 @@
 
 package talkeeg.bfstore;
 
-import talkeeg.bf.BfWriter;
-import talkeeg.bf.schema.Schema;
+import talkeeg.bf.Bf;
 import talkeeg.bf.schema.SchemaSource;
 import talkeeg.common.model.MessageCipherType;
 import talkeeg.common.model.Sign;
@@ -28,10 +27,7 @@ import talkeeg.common.model.SingleMessage;
 import talkeeg.common.util.BinaryData;
 import talkeeg.common.util.Int128;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-import java.nio.channels.Pipe;
 
 /**
  * Created by wayerr on 21.11.14.
@@ -61,7 +57,7 @@ public class Test {
         smbuilder.setSign(Sign.fromString(""));
         SingleMessage sm = smbuilder.build();
 
-        BfWriter writer =  new BfWriter(SchemaSource.fromResource("protocol.xml"));
+        Bf writer =  new Bf(SchemaSource.fromResource("protocol.xml"));
         ByteBuffer buffer = writer.write(sm);
     }
 }

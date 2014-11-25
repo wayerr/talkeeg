@@ -19,12 +19,9 @@
 
 package talkeeg.bf;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import talkeeg.bf.schema.SchemaEntry;
 import talkeeg.bf.schema.Struct;
-
-import java.beans.PropertyDescriptor;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -54,6 +51,7 @@ final class DefaultStructTranslator implements Translator {
 
     @Override
     public int needSize(TranslationContext context, ByteBuffer buffer) {
+        readStructId(buffer);
         return 0;
     }
 
@@ -62,16 +60,42 @@ final class DefaultStructTranslator implements Translator {
         buffer.put(EntryType.STRUCT.getValue());
         TgbfUtils.writeSignedInteger(buffer, struct.getId());
         final List<SchemaEntry> fields = this.struct.getChilds();
+        final StructureReader reader = context.getReader(struct);
         for(int i = 0; i < fields.size(); ++i) {
-            SchemaEntry field = fields.get(i);
-            Translator translator = context.getTranslator(field);
-            Object fieldValue = PropertyUtils.getProperty(message, field.getFieldName());
+            final SchemaEntry field = fields.get(i);
+            final Translator translator = context.getTranslator(field);
+            final Object fieldValue = reader.get(message, field.getFieldName());
             translator.to(context, fieldValue, buffer);
         }
     }
 
     @Override
-    public Object from(TranslationContext context, ByteBuffer buffer) {
-        return null;
+    public Object from(TranslationContext context, ByteBuffer buffer) throws Exception {
+        final int structId = readStructId(buffer);
+        if(struct.getId() != structId) {
+            throw new RuntimeException("unexpected structure: " + structId + "  when expect: " + struct.getId());
+        }
+        final StructureBuilder builder = context.createBuilder(struct);
+        final List<SchemaEntry> fields = this.struct.getChilds();
+        for(int i = 0; i < fields.size(); ++i) {
+            final SchemaEntry field = fields.get(i);
+            final Translator translator = context.getTranslator(field);
+            final Object value = translator.from(context, buffer);
+            builder.set(field.getFieldName(), value);
+        }
+        return builder.create();
+    }
+
+    /**
+     * read struct type byte and struct id value
+     * @param buffer
+     */
+    static int readStructId(ByteBuffer buffer) {
+        TgbfUtils.readAndCheckType(buffer, EntryType.STRUCT);
+        final long rawStructId = TgbfUtils.readUnsignedInteger(buffer);
+        if(rawStructId > Integer.MAX_VALUE) {
+            throw new RuntimeException("reader structId " + rawStructId + " is greater than integer max value");
+        }
+        return (int)rawStructId;
     }
 }
