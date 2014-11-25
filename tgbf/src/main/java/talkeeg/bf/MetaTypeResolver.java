@@ -44,12 +44,18 @@ final class MetaTypeResolver {
                         return new IntegerTranslator(entry);
                     }
                 })
-                /*.put("float", new TranslatorFactory() {
+                .put("blob", new TranslatorFactory() {
                     @Override
                     public Translator create(PrimitiveEntry entry) {
-                        return new IntegerTranslator(entry);
+                        return new BlobTranslator(entry, BlobTranslator.ADAPTER_BYTES);
                     }
-                })*/
+                })
+                .put("string", new TranslatorFactory() {
+                    @Override
+                    public Translator create(PrimitiveEntry entry) {
+                        return new BlobTranslator(entry, BlobTranslator.ADAPTER_STRING);
+                    }
+                })
                 .build();
     }
 

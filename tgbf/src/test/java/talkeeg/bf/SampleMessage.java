@@ -21,12 +21,16 @@ package talkeeg.bf;
 
 import talkeeg.bf.StructInfo;
 
+import java.util.Arrays;
+
 /**
  * Created by wayerr on 24.11.14.
  */
 @StructInfo(id = 1)
 public class SampleMessage {
     private long longValue;
+    private byte[] bytesValue;
+    private String stringValue;
 
     public long getLongValue() {
         return longValue;
@@ -34,5 +38,30 @@ public class SampleMessage {
 
     public void setLongValue(long longValue) {
         this.longValue = longValue;
+    }
+
+    public byte[] getBytesValue() {
+        return bytesValue;
+    }
+
+    public void setBytesValue(byte[] bytesValue) {
+        this.bytesValue = bytesValue;
+    }
+
+    public String getStringValue() {
+        return stringValue;
+    }
+
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
+    }
+
+    @Override
+    public String toString() {
+        return "SampleMessage{" +
+                "longValue=" + longValue +
+                ", bytesValue=" + Arrays.toString(bytesValue) +
+                ", stringValue='" + stringValue + '\'' +
+                '}';
     }
 }

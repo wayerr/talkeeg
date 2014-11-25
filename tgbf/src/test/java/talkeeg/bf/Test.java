@@ -32,6 +32,8 @@ public class Test {
     public void test() throws Exception {
         SampleMessage sampleMessage = new SampleMessage();
         sampleMessage.setLongValue(0xff00ff0000ff00ffl);
+        sampleMessage.setBytesValue(new byte[]{1, 2, 3, 4, 5, 6, (byte)0xff});
+        sampleMessage.setStringValue("simple уникодная строка а-я");
 
         BfWriter writer =  new BfWriter(SchemaSource.fromResource("protocol.xml"));
 

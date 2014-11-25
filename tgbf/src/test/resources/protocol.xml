@@ -21,5 +21,7 @@
 <schema xmlns="http://talkeeg/ns/tgbf" byteOrder="BIG_ENDIAN">
     <message name="SampleMessage" structId="1">
         <integer fieldName="longValue" storeAs="08_BYTE"/>
+        <blob fieldName="bytesValue"/>
+        <string fieldName="stringValue"/>
     </message>
 </schema>
