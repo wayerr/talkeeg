@@ -91,7 +91,7 @@ public class BlobTranslator implements Translator {
         public Object from(ByteBuffer from, int length) throws Exception {
             final CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
             final ByteBuffer dup = from.duplicate();
-            dup.limit(length);
+            dup.limit(dup.position() + length);
             final CharBuffer res = decoder.decode(dup);
             return res.toString();
         }

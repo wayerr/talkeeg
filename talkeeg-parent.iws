@@ -2,19 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5d5b56c3-592d-4056-a6a4-bdddd92dcc4d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaulStructureBuilder.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructureReader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructureReader.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/BfWriter.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructureFactory.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructureBuilder.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/BlobTranslator.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/BlobTranslator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/SampleMessage.java" afterPath="$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/SampleMessage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java" afterPath="$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/Test.java" afterPath="$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/Test.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TgbfUtils.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TgbfUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslationContext.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslationContext.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslationContextImpl.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslationContextImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.ipr" afterPath="$PROJECT_DIR$/talkeeg-parent.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.iws" afterPath="$PROJECT_DIR$/talkeeg-parent.iws" />
     </list>
@@ -50,21 +38,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Bf.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="642" max-vertical-offset="1584">
-              <caret line="92" column="78" selection-start-line="92" selection-start-column="78" selection-end-line="92" selection-end-column="78" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Test.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Test.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/Test.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5955056" vertical-offset="7" max-vertical-offset="648">
-              <caret line="38" column="86" selection-start-line="38" selection-start-column="86" selection-end-line="38" selection-end-column="86" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="648">
+              <caret line="40" column="52" selection-start-line="40" selection-start-column="52" selection-end-line="40" selection-end-column="52" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -72,46 +50,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DefaultStructTranslator.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java">
+      <file leaf-file-name="BlobTranslator.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/BlobTranslator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="918" max-vertical-offset="1620">
-              <caret line="80" column="18" selection-start-line="80" selection-start-column="18" selection-end-line="80" selection-end-column="18" />
+            <state vertical-scroll-proportion="0.453958" vertical-offset="1177" max-vertical-offset="2520">
+              <caret line="98" column="39" selection-start-line="98" selection-start-column="39" selection-end-line="98" selection-end-column="39" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TranslationContextImpl.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslationContextImpl.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="174" max-vertical-offset="1116">
-              <caret line="71" column="38" selection-start-line="71" selection-start-column="38" selection-end-line="71" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DefaulStructureBuilder.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaulStructureBuilder.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="738">
-              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="StructureBuilder.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructureBuilder.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="504">
-              <caret line="25" column="17" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -163,7 +109,6 @@
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/MetaTypeResolver.java" />
         <option value="$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/SampleMessage.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TgbfUtils.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/BlobTranslator.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructureFactory.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/schema/DefaultStructureReader.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructureReader.java" />
@@ -175,6 +120,7 @@
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslationContextImpl.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java" />
         <option value="$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/Test.java" />
+        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/BlobTranslator.java" />
       </list>
     </option>
   </component>
@@ -198,10 +144,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-2" />
-    <option name="y" value="-1" />
-    <option name="width" value="1924" />
-    <option name="height" value="1083" />
+    <option name="width" value="1920" />
+    <option name="height" value="1078" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -252,7 +196,6 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -551,6 +494,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -589,40 +533,6 @@
     </key>
   </component>
   <component name="RunManager" selected="JUnit.Test">
-    <configuration default="false" name="Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="talkeeg.bfstore.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="common" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="talkeeg.bfstore" />
-      <option name="MAIN_CLASS_NAME" value="talkeeg.bfstore.Test" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
     <configuration default="false" name="Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -844,10 +754,9 @@
       <listeners />
       <method />
     </configuration>
-    <list size="3">
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="JUnit.Test" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.Test" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.TgbfUtilsTest" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.TgbfUtilsTest" />
     </list>
     <recent_temporary>
       <list size="3">
@@ -878,8 +787,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-2" y="-1" width="1924" height="1083" extended-state="6" />
-    <editor active="false" />
+    <frame x="0" y="0" width="1920" height="1078" extended-state="2" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -891,21 +800,21 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32920536" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32848233" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20553781" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32817337" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2053476" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37667698" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37629938" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="true" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.32960597" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" x="100" y="100" width="1720" height="880" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32817337" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -948,7 +857,7 @@
           <option name="timeStamp" value="34" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="35" />
+      <option name="time" value="36" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JUnit">
@@ -1000,9 +909,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="115" max-vertical-offset="738">
           <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1010,7 +916,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="20583" max-vertical-offset="42300">
           <caret line="1181" column="22" selection-start-line="1181" selection-start-column="22" selection-end-line="1181" selection-end-column="22" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1018,7 +923,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.141252" vertical-offset="927" max-vertical-offset="2160">
           <caret line="29" column="19" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1026,7 +930,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.54895663" vertical-offset="0" max-vertical-offset="623">
           <caret line="36" column="47" selection-start-line="36" selection-start-column="47" selection-end-line="36" selection-end-column="47" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1048,7 +951,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.88443017" vertical-offset="187" max-vertical-offset="882">
           <caret line="58" column="79" selection-start-line="58" selection-start-column="79" selection-end-line="58" selection-end-column="79" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1056,7 +958,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.44460028" vertical-offset="493" max-vertical-offset="1206">
           <caret line="64" column="26" selection-start-line="64" selection-start-column="26" selection-end-line="64" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1064,10 +965,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="5553" max-vertical-offset="53910">
           <caret line="346" column="0" selection-start-line="346" selection-start-column="0" selection-end-line="346" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#108799#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1075,7 +972,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334" vertical-offset="46" max-vertical-offset="9054">
           <caret line="43" column="19" selection-start-line="43" selection-start-column="19" selection-end-line="43" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1083,7 +979,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334" vertical-offset="208" max-vertical-offset="28836">
           <caret line="53" column="19" selection-start-line="53" selection-start-column="19" selection-end-line="53" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1091,7 +986,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334" vertical-offset="28" max-vertical-offset="9360">
           <caret line="42" column="19" selection-start-line="42" selection-start-column="19" selection-end-line="42" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1125,7 +1019,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="786" max-vertical-offset="1728">
           <caret line="94" column="18" selection-start-line="94" selection-start-column="18" selection-end-line="94" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1141,17 +1034,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1296" max-vertical-offset="2844">
           <caret line="123" column="103" selection-start-line="123" selection-start-column="103" selection-end-line="123" selection-end-column="103" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/doc/tgbf.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1494">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1167,7 +1049,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3119584" vertical-offset="0" max-vertical-offset="1098">
           <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1175,7 +1056,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="623">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1183,7 +1063,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="623">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1199,7 +1078,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.8153846" vertical-offset="5391" max-vertical-offset="5976">
           <caret line="334" column="0" selection-start-line="334" selection-start-column="0" selection-end-line="334" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1207,7 +1085,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.53932583" vertical-offset="24432" max-vertical-offset="28404">
           <caret line="1399" column="15" selection-start-line="1399" selection-start-column="15" selection-end-line="1399" selection-end-column="15" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1225,7 +1102,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7399679" vertical-offset="673" max-vertical-offset="1296">
           <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1241,7 +1117,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.6211878" vertical-offset="4581" max-vertical-offset="6678">
           <caret line="272" column="25" selection-start-line="272" selection-start-column="25" selection-end-line="272" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1279,16 +1154,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/BlobTranslator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45104334" vertical-offset="1573" max-vertical-offset="2520">
-          <caret line="120" column="64" selection-start-line="120" selection-start-column="64" selection-end-line="120" selection-end-column="64" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/MetaTypeResolver.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="447" max-vertical-offset="1422">
@@ -1304,9 +1169,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="493" max-vertical-offset="1116">
           <caret line="56" column="0" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1314,7 +1176,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.49117175" vertical-offset="0" max-vertical-offset="623">
           <caret line="34" column="56" selection-start-line="34" selection-start-column="56" selection-end-line="34" selection-end-column="56" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1322,7 +1183,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.317817" vertical-offset="0" max-vertical-offset="623">
           <caret line="28" column="57" selection-start-line="28" selection-start-column="57" selection-end-line="28" selection-end-column="57" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1330,9 +1190,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7110754" vertical-offset="7" max-vertical-offset="720">
           <caret line="42" column="41" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1380,10 +1237,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/doc/tgbf.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1494">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/Test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5955056" vertical-offset="7" max-vertical-offset="648">
-          <caret line="38" column="86" selection-start-line="38" selection-start-column="86" selection-end-line="38" selection-end-column="86" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="648">
+          <caret line="40" column="52" selection-start-line="40" selection-start-column="52" selection-end-line="40" selection-end-column="52" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/BlobTranslator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.453958" vertical-offset="1177" max-vertical-offset="2520">
+          <caret line="98" column="39" selection-start-line="98" selection-start-column="39" selection-end-line="98" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
