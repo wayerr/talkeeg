@@ -21,6 +21,8 @@ package talkeeg.common.util;
 
 import com.google.common.io.BaseEncoding;
 
+import java.nio.ByteBuffer;
+
 /**
  * Some common utilities for arrays
  * Created by wayerr on 21.11.14.
@@ -59,6 +61,16 @@ public final class Arrays {
      */
     public static String toHexString(byte[] value) {
         return BaseEncoding.base16().encode(value);
+    }
+
+    /**
+     * return hex representation of bytebuffer data
+     * @param value
+     * @return
+     */
+    public static String toHexString(ByteBuffer value) {
+        final int position = value.position();
+        return BaseEncoding.base16().encode(value.array(), position, value.limit() - position);
     }
 
     /**
