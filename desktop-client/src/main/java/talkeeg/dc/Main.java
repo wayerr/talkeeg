@@ -22,6 +22,9 @@ package talkeeg.dc;
 import dagger.ObjectGraph;
 import talkeeg.common.conf.Config;
 import talkeeg.common.ipc.IpcServiceManager;
+import talkeeg.dc.ui.GuiManager;
+
+import java.awt.*;
 
 /**
  * the main class for desktop client
@@ -29,12 +32,23 @@ import talkeeg.common.ipc.IpcServiceManager;
  * Created by wayerr on 26.11.14.
  */
 public final class Main {
+    private final ObjectGraph graph;
+    private final IpcServiceManager serviceManager;
+    private final GuiManager guiManager;
+
+    private Main() {
+        this.graph = ObjectGraph.create(new ConfigModule());
+        this.serviceManager = new IpcServiceManager(graph.get(Config.class));
+        this.guiManager = new GuiManager();
+    }
 
     public static void main(String args[]) throws Exception {
-        ObjectGraph graph = ObjectGraph.create(new ConfigModule());
-        IpcServiceManager serviceManager = new IpcServiceManager(graph.get(Config.class));
+        Main main = new Main();
+        main.start();
+    }
+
+    private void start() {
         serviceManager.start();
-        Thread.sleep(1000_00);
-        serviceManager.stop();
+        EventQueue.invokeLater(this.guiManager);
     }
 }

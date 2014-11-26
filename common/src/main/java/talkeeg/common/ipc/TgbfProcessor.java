@@ -22,6 +22,7 @@ package talkeeg.common.ipc;
 import talkeeg.common.util.Arrays;
 
 import java.net.SocketAddress;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
@@ -32,33 +33,17 @@ import java.nio.channels.DatagramChannel;
  */
 final class TgbfProcessor implements Io {
 
-    private static final int INITIAL_BUFFER_SIZE = 1024;
 
     @Override
     public void read(DatagramChannel channel) throws Exception {
-        ByteBuffer readBuffer = ByteBuffer.allocate(INITIAL_BUFFER_SIZE);
+        final Integer bufferSize = channel.getOption(StandardSocketOptions.SO_RCVBUF);
+        ByteBuffer readBuffer = ByteBuffer.allocate(bufferSize);
         final SocketAddress remote = channel.receive(readBuffer);
         if(remote == null) {
             return;
         }
-        System.out.println("remote " + remote);
-        try {
-            channel.connect(remote);
-            int res = 1;
-            while(res > 0) {
-                res = channel.read(readBuffer);
-                if(res == 0 && readBuffer.limit() == readBuffer.position()) {//buffer is full
-                    ByteBuffer newBuffer = ByteBuffer.allocate(readBuffer.capacity() * 2);
-                    readBuffer.flip();
-                    newBuffer.put(readBuffer);
-                    readBuffer = newBuffer;
-                }
-            }
-        } finally {
-            channel.disconnect();
-        }
+        System.out.println("receive " + remote);
         System.out.println("  data " + Arrays.toHexString((ByteBuffer)readBuffer.duplicate().flip()));
-
     }
 
     @Override
