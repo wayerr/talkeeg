@@ -19,6 +19,8 @@
 
 package talkeeg.common.conf;
 
+import java.io.File;
+
 /**
  * iface for encapsulate configured parameters
  *
@@ -44,4 +46,10 @@ public interface Config {
      * @return
      */
     Node getRoot();
+
+    /**
+     * directory where configuration will be stored
+     * @return
+     */
+    File getConfigDir();
 }

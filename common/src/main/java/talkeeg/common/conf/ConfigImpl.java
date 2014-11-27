@@ -19,6 +19,12 @@
 
 package talkeeg.common.conf;
 
+import com.google.common.base.Function;
+import talkeeg.common.util.OS;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,17 +36,35 @@ public final class ConfigImpl implements Config {
 
     public static class Builder {
         private String applicationName;
+        private Function<String, File> configDirFunction = DefaultConfigDirFunction.INSTANCE;
+        private Function<String, File> cacheDirFunction;
         private final Map<String, Object> map = new HashMap<>();
 
+        /**
+         * application specific name in [a-z.-_] letters <p/>
+         * usualy used as prefix for files, tmp dir names and etc.
+         * @return
+         */
         public String getApplicationName() {
             return applicationName;
         }
 
+        /**
+         * application specific name in [a-z.-_] letters <p/>
+         * usualy used as prefix for files, tmp dir names and etc.
+         * @param applicationName
+         * @return
+         */
         public Builder applicationName(String applicationName) {
             setApplicationName(applicationName);
             return this;
         }
 
+        /**
+         * application specific name in [a-z.-_] letters <p/>
+         * usualy used as prefix for files, tmp dir names and etc.
+         * @param applicationName
+         */
         public void setApplicationName(String applicationName) {
             this.applicationName = applicationName;
         }
@@ -59,6 +83,45 @@ public final class ConfigImpl implements Config {
             this.map.putAll(map);
         }
 
+        /**
+         * function which provide configuration dir based on app name
+         * @see talkeeg.common.conf.DefaultConfigDirFunction
+         * @see Config#getConfigDir()
+         * @return
+         */
+        public Function<String, File> getConfigDirFunction() {
+            return configDirFunction;
+        }
+
+        /**
+         * * function which provide configuration dir based on app name
+         * @see talkeeg.common.conf.DefaultConfigDirFunction
+         * @see Config#getConfigDir()
+         * @param configDirFunction
+         * @return
+         */
+        public Builder configDirFunction(Function<String, File> configDirFunction) {
+            setConfigDirFunction(configDirFunction);
+            return this;
+        }
+
+        /**
+         * function which provide configuration dir based on app name
+         * @see talkeeg.common.conf.DefaultConfigDirFunction
+         * @see Config#getConfigDir()
+         * @param configDirFunction
+         */
+        public void setConfigDirFunction(Function<String, File> configDirFunction) {
+            this.configDirFunction = configDirFunction;
+        }
+
+        public Function<String, File> getCacheDirFunction() {
+            return cacheDirFunction;
+        }
+
+        public void setCacheDirFunction(Function<String, File> cacheDirFunction) {
+            this.cacheDirFunction = cacheDirFunction;
+        }
 
         public ConfigImpl build() {
             return new ConfigImpl(this);
@@ -68,9 +131,14 @@ public final class ConfigImpl implements Config {
     private final String applicationName;
     private final Map<String, Object> map = new HashMap<>();
     private final NodeImpl root;
+    private final Function<String, File> configDirFunction;
+    private final Function<String, File> cacheDirFunction;
+    private volatile File _configDir;
 
     private ConfigImpl(Builder b) {
         this.applicationName = b.applicationName;
+        this.configDirFunction = b.configDirFunction;
+        this.cacheDirFunction = b.cacheDirFunction;
         this.map.putAll(b.map);
         this.root = new NodeImpl(this);
     }
@@ -84,6 +152,7 @@ public final class ConfigImpl implements Config {
      * usualy used as prefix for files, tmp dir names and etc.
      * @return
      */
+    @Override
     public String getApplicationName() {
         return applicationName;
     }
@@ -101,5 +170,13 @@ public final class ConfigImpl implements Config {
     @Override
     public Node getRoot() {
         return root;
+    }
+
+    @Override
+    public File getConfigDir() {
+        if(_configDir == null) {
+            _configDir = this.configDirFunction.apply(applicationName);
+        }
+        return _configDir;
     }
 }

@@ -57,7 +57,7 @@ final class Whirligig implements Runnable {
 
             final int port = net.getValue("port", 11662);
 
-            InetSocketAddress socketAddress6 = getInetSocketAddress(port, net.getValue("listenIp6", null));
+            InetSocketAddress socketAddress6 = getInetSocketAddress(port, net.<String>getValue("listenIp6", null));
             if(socketAddress6 != null) {
                 // check that it ipv6 address
                 if(!(socketAddress6.getAddress() instanceof Inet6Address)) {

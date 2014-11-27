@@ -23,6 +23,8 @@ import dagger.Module;
 import dagger.Provides;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
+import talkeeg.common.core.CryptoService;
+import talkeeg.common.ipc.IpcServiceManager;
 
 import javax.inject.Singleton;
 
@@ -32,16 +34,32 @@ import javax.inject.Singleton;
  * Created by wayerr on 26.11.14.
  */
 @Module(
-        injects = {
-                Config.class
-        }
+    injects = {
+        Config.class,
+        IpcServiceManager.class,
+        CryptoService.class
+    }
 )
 final class ConfigModule {
-    @Provides @Singleton
+
+    @Provides
+    @Singleton
     Config provideConfg() {
         return ConfigImpl.builder()
                 .applicationName("talkeeg-dc")
                 .putMap("net.port", 11661)
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    IpcServiceManager provideIpcServiceManager(Config config) {
+        return new IpcServiceManager(config);
+    }
+
+    @Provides
+    @Singleton
+    CryptoService provideCryptoService(Config config) {
+        return new CryptoService(config);
     }
 }
