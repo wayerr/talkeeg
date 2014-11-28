@@ -19,26 +19,8 @@
 
 package talkeeg.common.core;
 
-import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.RSAKeyGenParameterSpec;
-
 /**
- * constants for crypto services
- *
  * Created by wayerr on 28.11.14.
  */
-final class CryptoConstants {
-    /**
-     * default algorithm for key asymmetric ciphering
-     */
-    public static final String ALG_ASYMMETRIC = "RSA";
-    /**
-     * https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature
-     */
-    public static final String ALG_HASH = "SHA1";
-
-    /**
-     * https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#MessageDigest
-     */
-    public static final String ALG_MESSAGE_DIGEST = "SHA-1";
+final class AcquaintedClient {
 }

@@ -54,7 +54,7 @@ public class Test {
                 "D3FD2404ED9E9F42ABC56AEFFFF887F2FD499E3F6430613E829E9226F9BA" +
                 "28312C30206B42292C20302C30303031373830303220632C20352C38204D" +
                 "422F630A"));
-        smbuilder.setSign(Sign.fromString(""));
+        smbuilder.setClientSign(Sign.fromString(""));
         SingleMessage sm = smbuilder.build();
 
         Bf writer =  new Bf(SchemaSource.fromResource("protocol.xml"));

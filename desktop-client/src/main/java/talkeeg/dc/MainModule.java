@@ -19,39 +19,43 @@
 
 package talkeeg.dc;
 
-import dagger.ObjectGraph;
-import talkeeg.common.core.CryptoService;
+import dagger.Module;
+import dagger.Provides;
+import talkeeg.common.conf.Config;
+import talkeeg.common.conf.ConfigImpl;
+import talkeeg.common.core.CoreModule;
 import talkeeg.common.ipc.IpcServiceManager;
-import talkeeg.dc.ui.GuiManager;
 
-import java.awt.*;
+import javax.inject.Singleton;
 
 /**
- * the main class for desktop client
+ * IoC container configuration module
  *
  * Created by wayerr on 26.11.14.
  */
-public final class Main {
-    private final ObjectGraph graph;
-    private final IpcServiceManager serviceManager;
-    private final GuiManager guiManager;
-    private final CryptoService cryptoService;
+@Module(
+    injects = {
+        Config.class,
+        IpcServiceManager.class
+    },
+    includes = {
+        CoreModule.class
+    }
+)
+final class MainModule {
 
-    private Main() {
-        this.graph = ObjectGraph.create(new MainModule());
-        this.serviceManager = this.graph.get(IpcServiceManager.class);
-        this.cryptoService = this.graph.get(CryptoService.class);
-        this.guiManager = new GuiManager();
+    @Provides
+    @Singleton
+    Config provideConfg() {
+        return ConfigImpl.builder()
+                .applicationName("talkeeg-dc")
+                .putMap("net.port", 11661)
+                .build();
     }
 
-    public static void main(String args[]) throws Exception {
-        Main main = new Main();
-        main.start();
-    }
-
-    private void start() {
-        serviceManager.start();
-        cryptoService.init();
-        EventQueue.invokeLater(this.guiManager);
+    @Provides
+    @Singleton
+    IpcServiceManager provideIpcServiceManager(Config config) {
+        return new IpcServiceManager(config);
     }
 }

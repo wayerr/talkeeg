@@ -2,12 +2,29 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5d5b56c3-592d-4056-a6a4-bdddd92dcc4d" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedClient.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedUser.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedUsersService.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CoreModule.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CurrentAddressesService.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedIdentityCardsService.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/UserIdentityCard.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ConfigModule.java" afterPath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/MainModule.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java" afterPath="$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Int128.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Int128.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/Main.java" afterPath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/Main.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java" afterPath="$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/common.iml" afterPath="$PROJECT_DIR$/common/common.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop-client/desktop-client.iml" afterPath="$PROJECT_DIR$/desktop-client/desktop-client.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/pom.xml" afterPath="$PROJECT_DIR$/common/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop-client/pom.xml" afterPath="$PROJECT_DIR$/desktop-client/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/protocol.md" afterPath="$PROJECT_DIR$/doc/protocol.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/resources/protocol.xml" afterPath="$PROJECT_DIR$/common/src/main/resources/protocol.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/structure.md" afterPath="$PROJECT_DIR$/doc/structure.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.iws" afterPath="$PROJECT_DIR$/talkeeg-parent.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/resources/tgbf.xsd" afterPath="$PROJECT_DIR$/tgbf/src/main/resources/tgbf.xsd" />
     </list>
     <ignored path="talkeeg-parent.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,64 +58,102 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="structure.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/doc/structure.md">
+      <file leaf-file-name="protocol.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/resources/protocol.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.1034484" vertical-offset="0" max-vertical-offset="576">
-              <caret line="5" column="9" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="684">
+              <caret line="0" column="38" selection-start-line="0" selection-start-column="38" selection-end-line="0" selection-end-column="38" />
               <folding />
             </state>
           </provider>
-          <provider editor-type-id="MarkdownPreviewEditor">
-            <state />
+        </entry>
+      </file>
+      <file leaf-file-name="SingleMessage.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="2286">
+              <caret line="62" column="58" selection-start-line="62" selection-start-column="58" selection-end-line="62" selection-end-column="58" />
+              <folding>
+                <element signature="e#0#3520#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+              </folding>
+            </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CryptoServiceTest.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java">
+      <file leaf-file-name="UserIdentityCard.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/UserIdentityCard.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.46685472" vertical-offset="623" max-vertical-offset="1332">
-              <caret line="53" column="128" selection-start-line="53" selection-start-column="128" selection-end-line="53" selection-end-column="128" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="994" max-vertical-offset="2430">
+              <caret line="107" column="30" selection-start-line="107" selection-start-column="30" selection-end-line="107" selection-end-column="30" />
               <folding>
-                <element signature="e#0#2403#0" expanded="true" />
+                <element signature="e#0#3874#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OwnedIdentityCardsService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedIdentityCardsService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="972">
+              <caret line="37" column="11" selection-start-line="37" selection-start-column="11" selection-end-line="37" selection-end-column="11" />
+              <folding>
                 <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="KeyPairGen.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java">
+      <file leaf-file-name="AcquaintedClient.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="371" max-vertical-offset="1080">
-              <caret line="40" column="85" selection-start-line="40" selection-start-column="85" selection-end-line="40" selection-end-column="85" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
+              <caret line="24" column="6" selection-start-line="24" selection-start-column="6" selection-end-line="24" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CurrentAddressesService.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CurrentAddressesService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.19354838" vertical-offset="0" max-vertical-offset="930">
+              <caret line="27" column="4" selection-start-line="27" selection-start-column="4" selection-end-line="27" selection-end-column="4" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CoreModule.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CoreModule.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="1098">
+              <caret line="50" column="53" selection-start-line="50" selection-start-column="53" selection-end-line="50" selection-end-column="53" />
               <folding>
+                <element signature="e#0#1572#0" expanded="true" />
                 <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CryptoConstants.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
-              <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="4" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0" vertical-offset="29" max-vertical-offset="738">
+              <caret line="33" column="25" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CryptoService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java">
+      <file leaf-file-name="MainModule.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/MainModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="335" max-vertical-offset="1044">
-              <caret line="62" column="59" selection-start-line="62" selection-start-column="59" selection-end-line="62" selection-end-column="59" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="774">
+              <caret line="41" column="14" selection-start-line="41" selection-start-column="14" selection-end-line="41" selection-end-column="14" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -111,22 +166,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructureBuilder.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaulStructureBuilder.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslationContextImpl.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/BlobTranslator.java" />
-        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ipc/IpcService.java" />
-        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ipc/IpcCallback.java" />
-        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ipc/CallingContext.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/CallingContext.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Parcel.java" />
-        <option value="$PROJECT_DIR$/desktop-client/pom.xml" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/Node.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcServiceManager.java" />
-        <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/common/conf/ConfigImplTest.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/NodeImpl.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Io.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcServiceImpl.java" />
         <option value="$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/Test.java" />
@@ -135,13 +174,11 @@
         <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/GuiManager.java" />
         <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/SimpleAction.java" />
         <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/GuiManager.java" />
-        <option value="$PROJECT_DIR$/doc/protocol.md" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/OS.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/Config.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/DefaultConfigDirFunction.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/ConfigImpl.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Whirligig.java" />
-        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ConfigModule.java" />
         <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/Main.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoDefaults.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OnedKeysManager.java" />
@@ -154,14 +191,32 @@
         <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/core/CryptoServiceTest.java" />
         <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/common/Env.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Fs.java" />
-        <option value="$PROJECT_DIR$/doc/structure.md" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/BytesIterator.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/SignService.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java" />
         <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Int128.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedUsersService.java" />
+        <option value="$PROJECT_DIR$/doc/structure.md" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedClient.java" />
+        <option value="$PROJECT_DIR$/tgbf/src/main/resources/tgbf.xsd" />
+        <option value="$PROJECT_DIR$/common/src/main/resources/protocol.xml" />
+        <option value="$PROJECT_DIR$/doc/protocol.md" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedUser.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/UserIdentityCard.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedIdentityCardsService.java" />
+        <option value="$PROJECT_DIR$/desktop-client/pom.xml" />
+        <option value="$PROJECT_DIR$/common/pom.xml" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/InjectionModule.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/InjectionModule.java" />
+        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ConfigModule.java" />
+        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/MainModule.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CoreModule.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CurrentAddressesService.java" />
       </list>
     </option>
   </component>
@@ -237,6 +292,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -252,132 +308,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="talkeeg" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg-parent" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tgbf" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg-parent" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tgbf" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg-parent" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tgbf" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="bf" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg-parent" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tgbf" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg-parent" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="talkeeg" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tgbf" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="bf" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -873,7 +803,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -899,6 +828,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="talkeeg.common.core" />
       <recent name="talkeeg.dc" />
       <recent name="talkeeg.common.ipc" />
       <recent name="talkeeg.dc.ipc" />
@@ -915,7 +845,7 @@
       <recent name="talkeeg.bf" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.CryptoServiceTest">
+  <component name="RunManager" selected="Application.Main">
     <configuration default="false" name="Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -1242,10 +1172,10 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.CryptoServiceTest" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.ConfigImplTest" />
-        <item index="2" class="java.lang.String" itemvalue="Application.Main" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.Test" />
+        <item index="0" class="java.lang.String" itemvalue="Application.Main" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.Test" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.CryptoServiceTest" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.ConfigImplTest" />
         <item index="4" class="java.lang.String" itemvalue="JUnit.Test" />
       </list>
     </recent_temporary>
@@ -1315,11 +1245,11 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23092999" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23092999" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2053476" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32817337" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3274244" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1404,152 +1334,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/net/Inet4Address.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1483" max-vertical-offset="6498">
-          <caret line="107" column="4" selection-start-line="107" selection-start-column="4" selection-end-line="107" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/nio/channels/SelectableChannel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1450" max-vertical-offset="5850">
-          <caret line="117" column="24" selection-start-line="117" selection-start-column="24" selection-end-line="117" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/common/conf/ConfigImplTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="702">
-          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Io.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33050847" vertical-offset="0" max-vertical-offset="708">
-          <caret line="30" column="56" selection-start-line="30" selection-start-column="56" selection-end-line="30" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/nio/channels/spi/AbstractSelectableChannel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.29096046" vertical-offset="2962" max-vertical-offset="5400">
-          <caret line="200" column="0" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="145" max-vertical-offset="1080">
-          <caret line="29" column="3" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/jre/lib/rt.jar!/sun/nio/ch/DatagramChannelImpl.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-29.32" vertical-offset="8429" max-vertical-offset="21204">
-          <caret line="554" column="0" selection-start-line="554" selection-start-column="0" selection-end-line="554" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/nio/channels/DatagramChannel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.521815" vertical-offset="6307" max-vertical-offset="10224">
-          <caret line="397" column="34" selection-start-line="397" selection-start-column="34" selection-end-line="397" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TgbfUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4633" max-vertical-offset="5346">
-          <caret line="274" column="42" selection-start-line="274" selection-start-column="42" selection-end-line="274" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tgbf/src/test/java/talkeeg/bf/Test.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="576">
-          <caret line="40" column="52" selection-start-line="40" selection-start-column="52" selection-end-line="40" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/nio/Buffer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33279485" vertical-offset="3952" max-vertical-offset="9954">
-          <caret line="254" column="21" selection-start-line="254" selection-start-column="21" selection-end-line="254" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/TgbfProcessor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="183" max-vertical-offset="756">
-          <caret line="44" column="35" selection-start-line="44" selection-start-column="35" selection-end-line="44" selection-end-column="35" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/awt/peer/TrayIconPeer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.63350785" vertical-offset="543" max-vertical-offset="1116">
-          <caret line="34" column="17" selection-start-line="34" selection-start-column="17" selection-end-line="34" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/awt/event/MouseListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="550" max-vertical-offset="1206">
-          <caret line="56" column="17" selection-start-line="56" selection-start-column="17" selection-end-line="56" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/awt/TrayIcon.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="6796" max-vertical-offset="13626">
-          <caret line="420" column="55" selection-start-line="420" selection-start-column="55" selection-end-line="420" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/javax/swing/AbstractAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1663" max-vertical-offset="6102">
-          <caret line="137" column="11" selection-start-line="137" selection-start-column="11" selection-end-line="137" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/awt/event/ActionEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.9284468" vertical-offset="1717" max-vertical-offset="4860">
-          <caret line="59" column="13" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/SimpleAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="569" max-vertical-offset="1368">
-          <caret line="63" column="22" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/javax/swing/JPopupMenu.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.37713534" vertical-offset="2681" max-vertical-offset="27432">
-          <caret line="176" column="11" selection-start-line="176" selection-start-column="11" selection-end-line="176" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/GuiManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="481" max-vertical-offset="2376">
           <caret line="67" column="66" selection-start-line="67" selection-start-column="66" selection-end-line="67" selection-end-column="66" />
-          <folding>
-            <element signature="e#0#4399#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1568,17 +1356,6 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="932">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/doc/protocol.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.793103" vertical-offset="0" max-vertical-offset="1764">
-          <caret line="19" column="119" selection-start-line="19" selection-start-column="119" selection-end-line="19" selection-end-column="119" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/OS.java">
@@ -1628,14 +1405,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ConfigModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="141" max-vertical-offset="846">
-          <caret line="37" column="7" selection-start-line="37" selection-start-column="7" selection-end-line="37" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/jre/lib/rt.jar!/sun/security/pkcs/PKCS8Key.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.34411764" vertical-offset="0" max-vertical-offset="4770">
@@ -1643,19 +1412,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="738">
-          <caret line="54" column="25" selection-start-line="54" selection-start-column="25" selection-end-line="54" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/security/spec/PKCS8EncodedKeySpec.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="616" max-vertical-offset="1422">
           <caret line="72" column="11" selection-start-line="72" selection-start-column="11" selection-end-line="72" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1663,7 +1423,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.4107382" vertical-offset="1433" max-vertical-offset="8118">
           <caret line="169" column="29" selection-start-line="169" selection-start-column="29" selection-end-line="169" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1671,7 +1430,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.38626608" vertical-offset="0" max-vertical-offset="932">
           <caret line="43" column="39" selection-start-line="43" selection-start-column="17" selection-end-line="43" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1679,7 +1437,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7532189" vertical-offset="0" max-vertical-offset="1224">
           <caret line="63" column="11" selection-start-line="63" selection-start-column="11" selection-end-line="63" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1687,7 +1444,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.29213482" vertical-offset="694" max-vertical-offset="1800">
           <caret line="53" column="62" selection-start-line="53" selection-start-column="62" selection-end-line="53" selection-end-column="62" />
-          <folding />
         </state>
       </provider>
       <provider editor-type-id="MarkdownPreviewEditor">
@@ -1715,7 +1471,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="384" max-vertical-offset="954">
           <caret line="60" column="24" selection-start-line="60" selection-start-column="24" selection-end-line="60" selection-end-column="24" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1726,17 +1482,6 @@
           <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
           <folding />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/doc/structure.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.1034484" vertical-offset="0" max-vertical-offset="576">
-          <caret line="5" column="9" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/ConfigImpl.java">
@@ -1752,7 +1497,7 @@
         <state vertical-scroll-proportion="0.43157893" vertical-offset="744" max-vertical-offset="1314">
           <caret line="72" column="67" selection-start-line="72" selection-start-column="67" selection-end-line="72" selection-end-column="67" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1762,7 +1507,7 @@
         <state vertical-scroll-proportion="0.5684062" vertical-offset="1307" max-vertical-offset="2142">
           <caret line="112" column="34" selection-start-line="112" selection-start-column="34" selection-end-line="112" selection-end-column="34" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1771,7 +1516,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33286318" vertical-offset="700" max-vertical-offset="6606">
           <caret line="81" column="28" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1783,44 +1527,246 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="335" max-vertical-offset="1044">
-          <caret line="62" column="59" selection-start-line="62" selection-start-column="59" selection-end-line="62" selection-end-column="59" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
-          <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="4" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="371" max-vertical-offset="1080">
           <caret line="40" column="85" selection-start-line="40" selection-start-column="85" selection-end-line="40" selection-end-column="85" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46685472" vertical-offset="623" max-vertical-offset="1332">
-          <caret line="53" column="128" selection-start-line="53" selection-start-column="128" selection-end-line="53" selection-end-column="128" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="623" max-vertical-offset="1332">
+          <caret line="45" column="15" selection-start-line="45" selection-start-column="15" selection-end-line="45" selection-end-column="15" />
           <folding>
-            <element signature="e#0#2403#0" expanded="true" />
+            <element signature="e#0#2403#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="594">
+          <caret line="40" column="103" selection-start-line="40" selection-start-column="103" selection-end-line="40" selection-end-column="103" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedUsersService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="371" max-vertical-offset="1080">
+          <caret line="32" column="41" selection-start-line="32" selection-start-column="19" selection-end-line="32" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#1828#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/structure.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.172414" vertical-offset="0" max-vertical-offset="576">
+          <caret line="18" column="24" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ResponseCode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2538787" vertical-offset="0" max-vertical-offset="828">
+          <caret line="28" column="12" selection-start-line="28" selection-start-column="12" selection-end-line="28" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/Sign.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.27926657" vertical-offset="0" max-vertical-offset="709">
+          <caret line="29" column="19" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ResponseMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="828">
+          <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/util/Objects.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33286318" vertical-offset="376" max-vertical-offset="4968">
+          <caret line="57" column="26" selection-start-line="57" selection-start-column="26" selection-end-line="57" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedUser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="479" max-vertical-offset="1188">
+          <caret line="70" column="43" selection-start-line="70" selection-start-column="43" selection-end-line="70" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/protocol.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="1890">
+          <caret line="10" column="14" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tgbf/src/main/resources/tgbf.xsd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2477" max-vertical-offset="3186">
+          <caret line="157" column="32" selection-start-line="157" selection-start-column="32" selection-end-line="157" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="2286">
+          <caret line="62" column="58" selection-start-line="62" selection-start-column="58" selection-end-line="62" selection-end-column="58" />
+          <folding>
+            <element signature="e#0#3520#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/BinaryData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.32832617" vertical-offset="486" max-vertical-offset="1566">
+          <caret line="27" column="13" selection-start-line="27" selection-start-column="13" selection-end-line="27" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Int128.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.15450644" vertical-offset="0" max-vertical-offset="1098">
+          <caret line="25" column="37" selection-start-line="25" selection-start-column="37" selection-end-line="25" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/UserIdentityCard.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="994" max-vertical-offset="2430">
+          <caret line="107" column="30" selection-start-line="107" selection-start-column="30" selection-end-line="107" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#3874#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/desktop-client/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="828">
+          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="705">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.1177305" vertical-offset="688" max-vertical-offset="1656">
+          <caret line="82" column="51" selection-start-line="82" selection-start-column="51" selection-end-line="82" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/MainModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="774">
+          <caret line="41" column="14" selection-start-line="41" selection-start-column="14" selection-end-line="41" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="29" max-vertical-offset="738">
+          <caret line="33" column="25" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CoreModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="1098">
+          <caret line="50" column="53" selection-start-line="50" selection-start-column="53" selection-end-line="50" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#1572#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedIdentityCardsService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="972">
+          <caret line="37" column="11" selection-start-line="37" selection-start-column="11" selection-end-line="37" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/AcquaintedClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
+          <caret line="24" column="6" selection-start-line="24" selection-start-column="6" selection-end-line="24" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.716129" vertical-offset="0" max-vertical-offset="930">
+          <caret line="37" column="17" selection-start-line="37" selection-start-column="17" selection-end-line="37" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/resources/protocol.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="684">
+          <caret line="0" column="38" selection-start-line="0" selection-start-column="38" selection-end-line="0" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CurrentAddressesService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.19354838" vertical-offset="0" max-vertical-offset="930">
+          <caret line="27" column="4" selection-start-line="27" selection-start-column="4" selection-end-line="27" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>

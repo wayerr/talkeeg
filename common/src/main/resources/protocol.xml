@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <schema xmlns="http://talkeeg/ns/tgbf" byteOrder="BIG_ENDIAN">
-    <message name="request" structId="0">
+    <message name="SingleMessage" structId="1">
         <!-- cyclic id of message for prevent duplicating-->
         <integer fieldName="id" storeAs="02_BYTE"/>
         <!-- fingerprint of source public key -->
         <id fieldName="src" />
         <!-- fingerprint of destination public key -->
         <id fieldName="dst" />
-        <struct name="CipherData" structId="100">
-            <!-- options for cipher:
-              number of HMAC alg (0 - sha1, 1 - sha256)
-               |
-               /  /
-              00 00 00 00 00 00 00 00
+        <!-- -->
+        <blob fieldName="clientSign" />
+        <blob fieldName="userSign" />
+        <integer fieldName="cipherType" storeAs="HALF"/>
+        <blob fieldName="data" />
+    </message>
+    <message name="ResponseMessage" structId="2">
+        <!-- cyclic id of message for prevent duplicating-->
+        <integer fieldName="id" storeAs="02_BYTE"/>
+        <!-- fingerprint of source public key -->
+        <id fieldName="src" />
+        <!-- fingerprint of destination public key -->
+        <id fieldName="dst" />
+    </message>
 
-             -->
-            <integer fieldName="options" storeAs="04_BYTE"/>
-            <!-- Message authentication code on HMAC alg -->
-            <blob fieldName="mac"/>
-            <!-- crypted data -->
-            <blob fieldName="data" />
-        </struct>
-    </message>
-    <message name="response" structId="1">
-        <!-- cyclic id of message for prevent duplicating-->
-        <integer fieldName="id" storeAs="02_BYTE"/>
-        <!-- fingerprint of source public key -->
-        <id fieldName="src" />
-        <!-- fingerprint of destination public key -->
-        <id fieldName="dst" />
-    </message>
+    <struct name="UserIdentityCard" structId="11">
+        <blob fieldName="key"/>
+        <!-- list of custom user attrs, like nickname and vCard -->
+        <list fieldName="attrs" />
+        <list fieldName="clients" >
+            <integer storeAs="16_BYTE" />
+        </list>
+    </struct>
 </schema>

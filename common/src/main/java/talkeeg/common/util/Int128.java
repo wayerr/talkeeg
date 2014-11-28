@@ -27,8 +27,11 @@ public final class Int128 extends BinaryData {
     /**
      * data array length
      */
-    private static final int ARR_LEN = 16;
-    public static final int STR_LEN = ARR_LEN * 2;
+    public static final int LENGTH = 16;
+    /**
+     * length of hex string representation
+     */
+    public static final int HEX_STRING_LENGTH = LENGTH * 2;
 
     /**
      * create int128 instance with copy of data
@@ -41,8 +44,8 @@ public final class Int128 extends BinaryData {
     @Override
     protected void check(byte[] data) {
         super.check(data);
-        if(data.length != ARR_LEN) {
-            throw new IllegalArgumentException("data.length != " + ARR_LEN);
+        if(data.length != LENGTH) {
+            throw new IllegalArgumentException("data.length != " + LENGTH);
         }
     }
 
@@ -60,8 +63,8 @@ public final class Int128 extends BinaryData {
         if(s == null) {
             throw new NullPointerException("string is null");
         }
-        if(s.length() != STR_LEN) {
-            throw new NullPointerException("string.length is not " + STR_LEN);
+        if(s.length() != HEX_STRING_LENGTH) {
+            throw new NullPointerException("string.length is not " + HEX_STRING_LENGTH);
         }
         byte[] data = talkeeg.common.util.Arrays.fromHexString(s);
         return new Int128(data);

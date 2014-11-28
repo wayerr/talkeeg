@@ -23,12 +23,15 @@ import talkeeg.bf.StructInfo;
 import talkeeg.common.util.BinaryData;
 
 /**
+ * simple single message with signed and optionally ciphered data
+ *
  * Created by wayerr on 21.11.14.
  */
 @StructInfo(id = 1)
 public class SingleMessage extends BaseSingleMessage {
     public static class Builder extends BaseSingleMessage.Builder {
-        private Sign sign;
+        private Sign clientSign;
+        private Sign userSign;
         private BinaryData data;
         private MessageCipherType cipher;
 
@@ -40,12 +43,36 @@ public class SingleMessage extends BaseSingleMessage {
             this.data = data;
         }
 
-        public Sign getSign() {
-            return sign;
+        /**
+         * signature of data field of this message by client key
+         * @return
+         */
+        public Sign getClientSign() {
+            return clientSign;
         }
 
-        public void setSign(Sign sign) {
-            this.sign = sign;
+        /**
+         * signature of data field of this message by client key
+         * @param clientSign
+         */
+        public void setClientSign(Sign clientSign) {
+            this.clientSign = clientSign;
+        }
+
+        /**
+         * signature of data field of this message by user key
+         * @return
+         */
+        public Sign getUserSign() {
+            return userSign;
+        }
+
+        /**
+         * signature of data field of this message by user key
+         * @param userSign
+         */
+        public void setUserSign(Sign userSign) {
+            this.userSign = userSign;
         }
 
         public MessageCipherType getCipher() {
@@ -61,13 +88,15 @@ public class SingleMessage extends BaseSingleMessage {
         }
     }
 
-    private final Sign sign;
+    private final Sign clientSign;
+    private final Sign userSign;
     private final MessageCipherType cipher;
     private final BinaryData data;
 
     private SingleMessage(Builder b) {
         super(b);
-        this.sign = b.sign;
+        this.clientSign = b.clientSign;
+        this.userSign = b.userSign;
         this.data = b.data;
         this.cipher = b.cipher;
     }
@@ -77,11 +106,19 @@ public class SingleMessage extends BaseSingleMessage {
     }
 
     /**
-     * signature of data field of this message
+     * signature of data field of this message by client key
      * @return
      */
-    public Sign getSign() {
-        return sign;
+    public Sign getClientSign() {
+        return clientSign;
+    }
+
+    /**
+     * signature of data field of this message by user key
+     * @return
+     */
+    public Sign getUserSign() {
+        return userSign;
     }
 
     /**

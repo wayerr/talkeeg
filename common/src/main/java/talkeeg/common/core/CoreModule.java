@@ -17,49 +17,39 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.dc;
+package talkeeg.common.core;
 
 import dagger.Module;
 import dagger.Provides;
 import talkeeg.common.conf.Config;
-import talkeeg.common.conf.ConfigImpl;
-import talkeeg.common.core.CryptoService;
-import talkeeg.common.ipc.IpcServiceManager;
 
 import javax.inject.Singleton;
 
 /**
- * IoC container configuration module
- *
- * Created by wayerr on 26.11.14.
+ * module for configure instances of services
+ * <p>
+ * Created by wayerr on 28.11.14.
  */
 @Module(
+    library = true, complete = false,
     injects = {
-        Config.class,
-        IpcServiceManager.class,
-        CryptoService.class
+        CryptoService.class,
+        OwnedIdentityCardsService.class
     }
 )
-final class ConfigModule {
-
-    @Provides
-    @Singleton
-    Config provideConfg() {
-        return ConfigImpl.builder()
-                .applicationName("talkeeg-dc")
-                .putMap("net.port", 11661)
-                .build();
-    }
-
-    @Provides
-    @Singleton
-    IpcServiceManager provideIpcServiceManager(Config config) {
-        return new IpcServiceManager(config);
-    }
+public final class CoreModule {
 
     @Provides
     @Singleton
     CryptoService provideCryptoService(Config config) {
         return new CryptoService(config);
     }
+
+    @Provides
+    @Singleton
+    OwnedIdentityCardsService provideOwnedIdentityCardsService(Config config, CryptoService cryptoService) {
+        return new OwnedIdentityCardsService(config, cryptoService);
+    }
+
+
 }

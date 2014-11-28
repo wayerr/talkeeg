@@ -20,10 +20,9 @@
 package talkeeg.common.core;
 
 import talkeeg.common.conf.Config;
+import talkeeg.common.util.Int128;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Signature;
+import java.security.*;
 import java.util.logging.Logger;
 
 /**
@@ -65,5 +64,23 @@ public final class CryptoService {
         } catch(InvalidKeyException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    Int128 getFingerprint(Key key) {
+        final byte[] data = key.getEncoded();
+        try {
+            final MessageDigest md = MessageDigest.getInstance(CryptoConstants.ALG_MESSAGE_DIGEST);
+            byte[] digest = md.digest(data);
+            if(digest.length > Int128.LENGTH) {//truncate to 128 bit
+                digest = java.util.Arrays.copyOf(digest, Int128.LENGTH);
+            }
+            return new Int128(digest);
+        } catch(NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public OwnedKeysManager getOwnedKeysManager() {
+        return ownedKeysManager;
     }
 }
