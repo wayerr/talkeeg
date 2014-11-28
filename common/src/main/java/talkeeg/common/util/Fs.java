@@ -17,27 +17,33 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.core;
+package talkeeg.common.util;
 
-import talkeeg.common.conf.Config;
-
-import java.util.logging.Logger;
+import java.io.File;
 
 /**
- * service which provide some cryptographic functions for ciphering, signing and etc.
- * also this service manage user and client private keys
+ * filesystem utils
  *
- * Created by wayerr on 27.11.14.
+ * Created by wayerr on 28.11.14.
  */
-public final class CryptoService {
-    private static final Logger LOG = Logger.getLogger(CryptoService.class.getName());
-    private final OwnedKeysManager ownedKeysManager;
-
-    public CryptoService(Config config) {
-        this.ownedKeysManager = new OwnedKeysManager(config, new KeyPairGen());
+public final class Fs {
+    private Fs() {
     }
 
-    public void init() {
-        this.ownedKeysManager.loadKeys();
+    /**
+     * recursively delete file, or directory
+     * @param file
+     */
+    public static void delete(File file) {
+        if(!file.exists()) {
+            return;
+        }
+        final File[] files = file.listFiles();
+        if(files != null) {
+            for(File child: files) {
+                delete(child);
+            }
+        }
+        file.delete();
     }
 }

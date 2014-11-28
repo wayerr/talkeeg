@@ -19,25 +19,20 @@
 
 package talkeeg.common.core;
 
-import talkeeg.common.conf.Config;
-
-import java.util.logging.Logger;
+import java.security.KeyPair;
 
 /**
- * service which provide some cryptographic functions for ciphering, signing and etc.
- * also this service manage user and client private keys
+ * source of new asymmetric keys, it may be a `open file dialog` for loading key from file system, or custom key generator <p/>
  *
- * Created by wayerr on 27.11.14.
+ * @see KeyPairGen
+ * Created by wayerr on 28.11.14.
  */
-public final class CryptoService {
-    private static final Logger LOG = Logger.getLogger(CryptoService.class.getName());
-    private final OwnedKeysManager ownedKeysManager;
+public interface KeyPairSource {
 
-    public CryptoService(Config config) {
-        this.ownedKeysManager = new OwnedKeysManager(config, new KeyPairGen());
-    }
-
-    public void init() {
-        this.ownedKeysManager.loadKeys();
-    }
+    /**
+     * create new key pair
+     * @param keyType
+     * @return
+     */
+    public KeyPair create(OwnedKeyType keyType);
 }

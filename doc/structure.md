@@ -1,21 +1,27 @@
 ## structure ##
 
-* crypto service - хранит внутри приватный ключ клиента и пользвателя
+* СryptoService - совокупность всех сервисов связанных с криптографией в приложении
+    * OwnedKeysManager
     * code(options{}) - шифрует и дешифрует
     * sign - сервис подписки
     * symmetric
     * mac - сервис генерации MAC
 
-*ACQUAINTED_USERS*
+* OwnedKeysManager - хранит внутри приватный ключ клиента и пользвателя
+    * keySource - список источников из которых может быть запрошен ключ при его отсутствии в хранилище
 
-* map uid ->
+
+### сервис хранящий известных пользователей и клиентов
+
+Также этот сервис отвечает за определение ситуаций "присвоение клиента" и присвоение "пользователя" (когда объект `A`
+анонсирует себя как хозяина с `B`, но `B` аннонсирует что опринадлежит `C` )
+
+* map uid *ACQUAINTED_USERS*
     * UIC
-    * list clients ->
+    * list clients
         * cid
 
-*ACQUAINTED_CLIENTS*
-
-* map cid ->
+* map cid *ACQUAINTED_CLIENTS*
     * uid
     * cic
     * client_address

@@ -19,25 +19,21 @@
 
 package talkeeg.common.core;
 
-import talkeeg.common.conf.Config;
-
-import java.util.logging.Logger;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.RSAKeyGenParameterSpec;
 
 /**
- * service which provide some cryptographic functions for ciphering, signing and etc.
- * also this service manage user and client private keys
+ * constants for crypto services
  *
- * Created by wayerr on 27.11.14.
+ * Created by wayerr on 28.11.14.
  */
-public final class CryptoService {
-    private static final Logger LOG = Logger.getLogger(CryptoService.class.getName());
-    private final OwnedKeysManager ownedKeysManager;
-
-    public CryptoService(Config config) {
-        this.ownedKeysManager = new OwnedKeysManager(config, new KeyPairGen());
-    }
-
-    public void init() {
-        this.ownedKeysManager.loadKeys();
-    }
+final class CryptoConstants {
+    /**
+     * default algorithm for key asymmetric ciphering
+     */
+    public static final String ALG_ASYMMETRIC = "RSA";
+    /**
+     * params for key generation of algorithm defined in {@link #ALG_ASYMMETRIC }
+     */
+    static final AlgorithmParameterSpec ALG_ASYMMETRIC_KEYGEN_PARAMS = new RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F4);
 }

@@ -19,25 +19,18 @@
 
 package talkeeg.common.core;
 
-import talkeeg.common.conf.Config;
-
-import java.util.logging.Logger;
-
 /**
- * service which provide some cryptographic functions for ciphering, signing and etc.
- * also this service manage user and client private keys
+ * type of owned keys
  *
- * Created by wayerr on 27.11.14.
+ * Created by wayerr on 28.11.14.
  */
-public final class CryptoService {
-    private static final Logger LOG = Logger.getLogger(CryptoService.class.getName());
-    private final OwnedKeysManager ownedKeysManager;
-
-    public CryptoService(Config config) {
-        this.ownedKeysManager = new OwnedKeysManager(config, new KeyPairGen());
-    }
-
-    public void init() {
-        this.ownedKeysManager.loadKeys();
-    }
+public enum OwnedKeyType {
+    /**
+     * key which owned by user
+     */
+    USER,
+    /**
+     * key which owned by client
+     */
+    CLIENT
 }
