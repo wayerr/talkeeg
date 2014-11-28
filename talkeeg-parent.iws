@@ -2,18 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5d5b56c3-592d-4056-a6a4-bdddd92dcc4d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/test/java/talkeeg/common/Env.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Fs.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairSource.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeyType.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/architect.md" afterPath="$PROJECT_DIR$/doc/architect.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/common.iml" afterPath="$PROJECT_DIR$/common/common.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/doc/structure.md" afterPath="$PROJECT_DIR$/doc/structure.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java" afterPath="$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.iws" afterPath="$PROJECT_DIR$/talkeeg-parent.iws" />
     </list>
     <ignored path="talkeeg-parent.iws" />
@@ -48,11 +41,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="structure.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="structure.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/doc/structure.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.54545456" vertical-offset="0" max-vertical-offset="576">
-              <caret line="16" column="31" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+            <state vertical-scroll-proportion="-3.1034484" vertical-offset="0" max-vertical-offset="576">
+              <caret line="5" column="9" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -61,48 +54,27 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CryptoService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="6" max-vertical-offset="576">
-              <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CryptoServiceTest.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="CryptoServiceTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="114" max-vertical-offset="684">
-              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.46685472" vertical-offset="623" max-vertical-offset="1332">
+              <caret line="53" column="128" selection-start-line="53" selection-start-column="128" selection-end-line="53" selection-end-column="128" />
               <folding>
+                <element signature="e#0#2403#0" expanded="true" />
                 <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OwnedKeysManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java">
+      <file leaf-file-name="KeyPairGen.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="744" max-vertical-offset="1530">
-              <caret line="88" column="22" selection-start-line="88" selection-start-column="22" selection-end-line="88" selection-end-column="22" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="371" max-vertical-offset="1080">
+              <caret line="40" column="85" selection-start-line="40" selection-start-column="85" selection-end-line="40" selection-end-column="85" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ConfigImpl.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/ConfigImpl.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2952">
-              <caret line="40" column="25" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -110,8 +82,20 @@
       <file leaf-file-name="CryptoConstants.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="504">
-              <caret line="37" column="62" selection-start-line="37" selection-start-column="62" selection-end-line="37" selection-end-column="62" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+              <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="4" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CryptoService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="335" max-vertical-offset="1044">
+              <caret line="62" column="59" selection-start-line="62" selection-start-column="59" selection-end-line="62" selection-end-column="59" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -127,8 +111,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructureReader.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslationContext.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructureBuilder.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaulStructureBuilder.java" />
@@ -165,19 +147,21 @@
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OnedKeysManager.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeySource.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/Keygen.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java" />
         <option value="$PROJECT_DIR$/doc/architect.md" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OnedKeyType.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeyType.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairSource.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java" />
         <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/core/CryptoServiceTest.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java" />
         <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/common/Env.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Fs.java" />
-        <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java" />
         <option value="$PROJECT_DIR$/doc/structure.md" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/BytesIterator.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/SignService.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java" />
+        <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java" />
       </list>
     </option>
   </component>
@@ -1331,7 +1315,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23092999" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23092999" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2053476" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1340,7 +1324,7 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.37617555" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37617555" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -1420,20 +1404,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/NodeImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="361" max-vertical-offset="1296">
-          <caret line="77" column="31" selection-start-line="77" selection-start-column="31" selection-end-line="77" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/net/InetSocketAddress.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="4.1972075" vertical-offset="43" max-vertical-offset="7146">
-          <caret line="164" column="11" selection-start-line="164" selection-start-column="11" selection-end-line="164" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/net/Inet4Address.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1483" max-vertical-offset="6498">
@@ -1511,13 +1481,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33279485" vertical-offset="3952" max-vertical-offset="9954">
           <caret line="254" column="21" selection-start-line="254" selection-start-column="21" selection-end-line="254" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Arrays.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="741" max-vertical-offset="1314">
-          <caret line="72" column="67" selection-start-line="72" selection-start-column="67" selection-end-line="72" selection-end-column="67" />
         </state>
       </provider>
     </entry>
@@ -1704,14 +1667,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/ConfigImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2952">
-          <caret line="40" column="25" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/security/spec/AlgorithmParameterSpec.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.38626608" vertical-offset="0" max-vertical-offset="932">
@@ -1747,41 +1702,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.19313304" vertical-offset="0" max-vertical-offset="932">
-          <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairSource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3090129" vertical-offset="0" max-vertical-offset="932">
           <caret line="33" column="21" selection-start-line="33" selection-start-column="21" selection-end-line="33" selection-end-column="21" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="744" max-vertical-offset="1530">
-          <caret line="88" column="22" selection-start-line="88" selection-start-column="22" selection-end-line="88" selection-end-column="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="504">
-          <caret line="37" column="62" selection-start-line="37" selection-start-column="62" selection-end-line="37" selection-end-column="62" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1803,35 +1728,100 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="114" max-vertical-offset="684">
-          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="6" max-vertical-offset="576">
-          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/doc/structure.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.54545456" vertical-offset="0" max-vertical-offset="576">
-          <caret line="16" column="31" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+        <state vertical-scroll-proportion="-3.1034484" vertical-offset="0" max-vertical-offset="576">
+          <caret line="5" column="9" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
           <folding />
         </state>
       </provider>
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/conf/ConfigImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.50526315" vertical-offset="0" max-vertical-offset="2952">
+          <caret line="40" column="25" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Arrays.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43157893" vertical-offset="744" max-vertical-offset="1314">
+          <caret line="72" column="67" selection-start-line="72" selection-start-column="67" selection-end-line="72" selection-end-column="67" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5684062" vertical-offset="1307" max-vertical-offset="2142">
+          <caret line="112" column="34" selection-start-line="112" selection-start-column="34" selection-end-line="112" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/security/SignatureSpi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33286318" vertical-offset="700" max-vertical-offset="6606">
+          <caret line="81" column="28" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/jdk-8-oracle-x64/src.zip!/java/security/Signature.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.38363892" vertical-offset="8170" max-vertical-offset="23040">
+          <caret line="511" column="21" selection-start-line="511" selection-start-column="21" selection-end-line="511" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="335" max-vertical-offset="1044">
+          <caret line="62" column="59" selection-start-line="62" selection-start-column="59" selection-end-line="62" selection-end-column="59" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CryptoConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+          <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="4" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/KeyPairGen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="371" max-vertical-offset="1080">
+          <caret line="40" column="85" selection-start-line="40" selection-start-column="85" selection-end-line="40" selection-end-column="85" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/CryptoServiceTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.46685472" vertical-offset="623" max-vertical-offset="1332">
+          <caret line="53" column="128" selection-start-line="53" selection-start-column="128" selection-end-line="53" selection-end-column="128" />
+          <folding>
+            <element signature="e#0#2403#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
   </component>

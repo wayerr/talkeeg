@@ -23,6 +23,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.RSAKeyGenParameterSpec;
 
 /**
  * generator for public and private keys <p/>
@@ -31,20 +33,39 @@ import java.security.NoSuchAlgorithmException;
  * Created by wayerr on 28.11.14.
  */
 final class KeyPairGen implements KeyPairSource {
-
+    /**
+     * user key used as root key for subscribing client public keys
+     */
+    public static final AlgorithmParameterSpec RSA_USER = new RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F4);
+    /**
+     * client key used very often, therefore may be shorter for improving performance
+     */
+    public static final AlgorithmParameterSpec RSA_CLIENT = new RSAKeyGenParameterSpec(1024, RSAKeyGenParameterSpec.F4);
     private final KeyPairGenerator generator;
 
     KeyPairGen() {
         try {
             this.generator = KeyPairGenerator.getInstance(CryptoConstants.ALG_ASYMMETRIC);
-            this.generator.initialize(CryptoConstants.ALG_ASYMMETRIC_KEYGEN_PARAMS);
-        } catch(InvalidAlgorithmParameterException | NoSuchAlgorithmException e) {
+        } catch(NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public KeyPair create(OwnedKeyType keyType) {
+        try {
+            final AlgorithmParameterSpec params;
+            if(keyType == OwnedKeyType.CLIENT) {
+                params = RSA_CLIENT;
+            } else if(keyType == OwnedKeyType.USER) {
+                params = RSA_USER;
+            } else {
+                throw new RuntimeException("Unsupported key type: " + keyType);
+            }
+            this.generator.initialize(params);
+        } catch(InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
+        }
         return this.generator.generateKeyPair();
     }
 }

@@ -32,8 +32,5 @@ final class CryptoConstants {
      * default algorithm for key asymmetric ciphering
      */
     public static final String ALG_ASYMMETRIC = "RSA";
-    /**
-     * params for key generation of algorithm defined in {@link #ALG_ASYMMETRIC }
-     */
-    static final AlgorithmParameterSpec ALG_ASYMMETRIC_KEYGEN_PARAMS = new RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F4);
+    public static final String ALG_HASH = "SHA1";
 }

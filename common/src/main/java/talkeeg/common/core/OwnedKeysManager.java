@@ -42,6 +42,7 @@ class OwnedKeysManager {
     private final File keysDir;
     private final KeyFactory keyFactory;
     private final KeyPairSource keyPairSource;
+    private final Object lock = new Object();
     private KeyPair clientKeys;
     private KeyPair userKeys;
 
@@ -90,7 +91,40 @@ class OwnedKeysManager {
     }
 
     void loadKeys() {
-        this.clientKeys = loadKeys(OwnedKeyType.CLIENT);
-        this.userKeys = loadKeys(OwnedKeyType.USER);
+        synchronized(lock) {
+            this.clientKeys = loadKeys(OwnedKeyType.CLIENT);
+            this.userKeys = loadKeys(OwnedKeyType.USER);
+        }
     }
+
+    PrivateKey getPrivateKey(OwnedKeyType keyType) {
+        KeyPair keyPair = getKeyPair(keyType);
+        if(keyPair == null) {
+            throw new NullPointerException("Key type " + keyType + " is not loaded.");
+        }
+        return keyPair.getPrivate();
+    }
+
+    PublicKey getPublicKey(OwnedKeyType keyType) {
+        KeyPair keyPair = getKeyPair(keyType);
+        if(keyPair == null) {
+            throw new NullPointerException("Key type " + keyType + " is not loaded.");
+        }
+        return keyPair.getPublic();
+    }
+
+    private KeyPair getKeyPair(OwnedKeyType keyType) {
+        KeyPair keyPair;
+        synchronized(lock) {
+            if(keyType == OwnedKeyType.USER) {
+                keyPair = this.userKeys;
+            } else if(keyType == OwnedKeyType.CLIENT) {
+                keyPair = this.clientKeys;
+            } else {
+                throw new IllegalArgumentException("Key type: " + keyType + " is unsupported.");
+            }
+        }
+        return keyPair;
+    }
+
 }

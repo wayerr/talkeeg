@@ -21,6 +21,9 @@ package talkeeg.common.core;
 
 import talkeeg.common.conf.Config;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
 import java.util.logging.Logger;
 
 /**
@@ -32,12 +35,35 @@ import java.util.logging.Logger;
 public final class CryptoService {
     private static final Logger LOG = Logger.getLogger(CryptoService.class.getName());
     private final OwnedKeysManager ownedKeysManager;
+    private final Config config;
+    private static final String ALG_SIGN = CryptoConstants.ALG_HASH + "with" + CryptoConstants.ALG_ASYMMETRIC;
 
     public CryptoService(Config config) {
+        this.config = config;
         this.ownedKeysManager = new OwnedKeysManager(config, new KeyPairGen());
     }
 
     public void init() {
         this.ownedKeysManager.loadKeys();
+    }
+
+    public Signature getSignService(OwnedKeyType keyType) {
+        try {
+            Signature signature = Signature.getInstance(ALG_SIGN);
+            signature.initSign(ownedKeysManager.getPrivateKey(keyType));
+            return signature;
+        } catch(InvalidKeyException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Signature getVerifyService(OwnedKeyType keyType) {
+        try {
+            Signature signature = Signature.getInstance(ALG_SIGN);
+            signature.initVerify(ownedKeysManager.getPublicKey(keyType));
+            return signature;
+        } catch(InvalidKeyException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

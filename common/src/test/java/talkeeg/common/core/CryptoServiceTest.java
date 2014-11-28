@@ -19,10 +19,16 @@
 
 package talkeeg.common.core;
 
+import com.google.common.io.BaseEncoding;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import talkeeg.common.Env;
+import talkeeg.common.util.Arrays;
+
+import java.security.Signature;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by wayerr on 28.11.14.
@@ -43,7 +49,20 @@ public class CryptoServiceTest {
     }
 
     @Test
-    public void testInit() throws Exception {
-        System.out.println("test");
+    public void testSign() throws Exception {
+        System.out.println("sign");
+        byte[] data = BaseEncoding.base64().decode("CIwymlw80QfbmrYwK8iL9HoVbV2OT/P/Le1t3qsv7NjoGhTRv7J+upscoWIVm3UDRIh1s7teHmey" +
+                "IHdnAYGlkjErMCDQt9Cw0L/QuNGB0LXQuSDQv9C+0LvRg9GH0LXQvdC+CjErMCDQt9Cw0L/QuNGB" +
+                "0LXQuSDQvtGC0L/RgNCw0LLQu9C10L3Qvgog0YHQutC+0L/QuNGA0L7QstCw0L3QviA2NCDQsdCw" +
+                "0LnRgtCwICg2NCBCKSwgMCwwMDAxMjIxNDQgYywgNTI0IGtCL2MK");
+        final Signature signature = service.getSignService(OwnedKeyType.CLIENT);
+        signature.update(data);
+        final byte[] sign = signature.sign();
+        System.out.println("sign(len=" + sign.length + "):" + Arrays.toHexString(sign));
+
+        final Signature verify = service.getVerifyService(OwnedKeyType.CLIENT);
+        verify.update(data);
+        final boolean verified = verify.verify(sign);
+        assertTrue(verified);
     }
 }
