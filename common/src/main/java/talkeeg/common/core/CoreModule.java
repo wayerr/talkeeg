@@ -51,5 +51,10 @@ public final class CoreModule {
         return new OwnedIdentityCardsService(config, cryptoService);
     }
 
-
+    @Provides
+    @Singleton
+    CurrentAddressesService provideCurrentAddressesService(Config config) {
+        final PublicIpService externalIpFunction = new PublicIpService(config);
+        return new CurrentAddressesService(externalIpFunction);
+    }
 }

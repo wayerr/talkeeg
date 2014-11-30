@@ -19,11 +19,70 @@
 
 package talkeeg.common.core;
 
+import com.google.common.base.Function;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * service which provides current addresses
  *
  * Created by wayerr on 28.11.14.
  */
 public final class CurrentAddressesService {
-    
+
+    private static final Logger LOG = Logger.getLogger(CurrentAddressesService.class.getName());
+    private final Function<InetAddress, InetAddress> externalIpFunction;
+    private final Cache<InetAddress, InetAddress> cache;
+
+    CurrentAddressesService(Function<InetAddress, InetAddress> externalIpFunction) {
+        this.externalIpFunction = externalIpFunction;
+        if(this.externalIpFunction == null) {
+            throw new IllegalArgumentException("ExternalIpFunction is null");
+        }
+        this.cache = CacheBuilder.newBuilder()
+                .expireAfterWrite(1, TimeUnit.HOURS)
+                .build(CacheLoader.from(this.externalIpFunction));
+    }
+
+    public List<InetAddress> getAddreses() {
+        final List<InetAddress> addresses = new ArrayList<>();
+        try {
+            final Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+            while(ifaces.hasMoreElements()) {
+                final NetworkInterface iface = ifaces.nextElement();
+                final Enumeration<InetAddress> ifaceAddresses = iface.getInetAddresses();
+                while(ifaceAddresses.hasMoreElements()) {
+                    final InetAddress address = ifaceAddresses.nextElement();
+                    addAddress(addresses, address);
+                }
+            }
+        } catch(Exception e) {
+            LOG.log(Level.SEVERE, "can not retrieve network ifaces", e);
+        }
+        return addresses;
+    }
+
+    protected void addAddress(List<InetAddress> addresses, InetAddress address) {
+        addresses.add(address);
+        try {
+            final InetAddress externalAddress = cache.get(address, null);
+            if(externalAddress != null) {
+                addresses.add(externalAddress);
+            }
+        } catch(ExecutionException e) {
+            LOG.log(Level.SEVERE, "can not retrieve external ip for " + address, e);
+        }
+    }
 }
