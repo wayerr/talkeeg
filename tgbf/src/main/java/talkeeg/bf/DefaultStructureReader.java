@@ -19,6 +19,7 @@
 
 package talkeeg.bf;
 
+import com.google.common.primitives.Primitives;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import java.beans.PropertyDescriptor;
@@ -38,7 +39,11 @@ public class DefaultStructureReader implements StructureReader {
     public DefaultStructureReader(Class<?> type) {
         this.type = type;
         for(PropertyDescriptor descriptor: PropertyUtils.getPropertyDescriptors(this.type)) {
-            this.map.put(descriptor.getName(), descriptor.getPropertyType());
+            Class<?> propertyType = descriptor.getPropertyType();
+            if(propertyType.isPrimitive()) {
+                propertyType = Primitives.wrap(propertyType);
+            }
+            this.map.put(descriptor.getName(), propertyType);
         }
     }
 
@@ -49,6 +54,10 @@ public class DefaultStructureReader implements StructureReader {
 
     @Override
     public Class<?> getType(String name) {
-        return null;
+        final Class<?> type = map.get(name);
+        if(type == null) {
+            throw new RuntimeException("can not find property: " + name);
+        }
+        return type;
     }
 }

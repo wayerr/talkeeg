@@ -17,28 +17,30 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.bf;
+package talkeeg.common.model;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import talkeeg.bf.StructureBuilder;
 
 /**
- * iface for accessing to properties of objects mapped to structures <p/>
+ * builder utility for immutable structures
  *
- * iface instance will be created for each sctructure (not an structure instance) defined in schema
- * Created by wayerr on 25.11.14.
+ * Created by wayerr on 01.12.14.
  */
-public interface StructureReader {
-    /**
-     *
-     * @param obj
-     * @param name
-     * @return
-     */
-    Object get(Object obj, String name) throws Exception;
+public final class ImmutableStructureBuilder implements StructureBuilder {
+    private final BuilderInterface builder;
 
-    /**
-     * type of property <p/>
-     * <b>this method must not return a primitive types</b>
-     * @param name
-     * @return
-     */
-    Class<?> getType(String name);
+    public ImmutableStructureBuilder(BuilderInterface builder) {
+        this.builder = builder;
+    }
+
+    @Override
+    public void set(String name, Object value) throws Exception {
+        PropertyUtils.setProperty(this.builder, name, value);
+    }
+
+    @Override
+    public Object create() throws Exception {
+        return builder.build();
+    }
 }

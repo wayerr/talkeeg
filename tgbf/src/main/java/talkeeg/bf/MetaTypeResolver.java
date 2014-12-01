@@ -145,7 +145,14 @@ public final class MetaTypeResolver {
                 .putFactory(MetaTypes.INTEGER, new Function<TranslatorStaticContext, Translator>() {
                     @Override
                     public Translator apply(TranslatorStaticContext context) {
-                        return new IntegerTranslator((PrimitiveEntry)context.getEntry());
+                        final Class<?> type = context.getType();
+                        final PrimitiveEntry entry = (PrimitiveEntry)context.getEntry();
+                        if(Number.class.isAssignableFrom(type)) {
+                            return new IntegerTranslator(entry);
+                        } else if(Enum.class.isAssignableFrom(type)) {
+                            return new EnumTranslator(entry, (Class<Enum<?>>)type);
+                        }
+                        throw new RuntimeException("can not create translator between " + entry.getType() + " and " + type);
                     }
                 })
                 .putFactory(MetaTypes.BLOB, new Function<TranslatorStaticContext, Translator>() {

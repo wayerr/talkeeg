@@ -61,9 +61,10 @@ public class Test {
                 .resolver(MetaTypeResolver.builder()
                         .putFactory(MetaTypes.BLOB, (e) -> new BlobTranslator((PrimitiveEntry)e.getEntry(), BlobTranslator.ADAPTER_BINARY_DATA))
                         .build())
+                .putTypes(SingleMessage.class)
                 .build();
         ByteBuffer buffer = bf.write(sm);
-        buffer.flip();
+        Arrays.toHexString(buffer);
         final SingleMessage restored = (SingleMessage)bf.read(buffer);
         assertEquals(sm, restored);
     }

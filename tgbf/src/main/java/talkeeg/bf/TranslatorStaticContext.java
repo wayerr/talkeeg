@@ -19,6 +19,7 @@
 
 package talkeeg.bf;
 
+import com.google.common.base.Preconditions;
 import talkeeg.bf.schema.SchemaEntry;
 import talkeeg.bf.schema.Struct;
 
@@ -37,6 +38,9 @@ public final class TranslatorStaticContext {
         this.parent = parent;
         this.entry = entry;
         this.type = type;
+        Preconditions.checkNotNull(this.bf, "bf is null");
+        Preconditions.checkNotNull(this.entry, "entry is null");
+        Preconditions.checkNotNull(this.type, "type is null");
     }
 
     public Bf getBf() {
