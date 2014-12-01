@@ -27,25 +27,5 @@ import talkeeg.bf.schema.Struct;
  * Created by wayerr on 17.11.14.
  */
 public interface TranslationContext {
-    /**
-     * translator for specified schema entry <p/>
-     * If context does not have appropriate translator, then error will be thrown
-     * @param schemaEntry
-     * @return translator
-     */
-    Translator getTranslator(SchemaEntry schemaEntry);
 
-    /**
-     * create builder instance for object mapped to specified entry
-     * @param entry
-     * @return
-     */
-    StructureBuilder createBuilder(Struct entry);
-
-    /**
-     * predefined reader for structure
-     * @param entry
-     * @return
-     */
-    StructureReader getReader(Struct entry);
 }

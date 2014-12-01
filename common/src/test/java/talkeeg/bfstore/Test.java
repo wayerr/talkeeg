@@ -20,6 +20,7 @@
 package talkeeg.bfstore;
 
 import talkeeg.bf.*;
+import talkeeg.bf.schema.PrimitiveEntry;
 import talkeeg.bf.schema.SchemaSource;
 import talkeeg.common.model.MessageCipherType;
 import talkeeg.common.model.SingleMessage;
@@ -58,7 +59,7 @@ public class Test {
         Bf bf =  Bf.build()
                 .schema(SchemaSource.fromResource("protocol.xml"))
                 .resolver(MetaTypeResolver.builder()
-                        .putFactory(MetaTypes.BLOB, (e) -> new BlobTranslator(e, BlobTranslator.ADAPTER_BINARY_DATA))
+                        .putFactory(MetaTypes.BLOB, (e) -> new BlobTranslator((PrimitiveEntry)e.getEntry(), BlobTranslator.ADAPTER_BINARY_DATA))
                         .build())
                 .build();
         ByteBuffer buffer = bf.write(sm);

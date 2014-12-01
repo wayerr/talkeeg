@@ -21,6 +21,10 @@ package talkeeg.bf;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
+import java.beans.PropertyDescriptor;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * default implementation based on reflection access to mapped object properties <p/>
  *
@@ -28,17 +32,23 @@ import org.apache.commons.beanutils.PropertyUtils;
  */
 public class DefaultStructureReader implements StructureReader {
 
-    private static StructureReader INSTANCE = new DefaultStructureReader();
+    private final Class<?> type;
+    private final Map<String, Class<?>> map = new HashMap<>();
 
-    private DefaultStructureReader() {
-    }
-
-    public static StructureReader getInstance() {
-        return INSTANCE;
+    public DefaultStructureReader(Class<?> type) {
+        this.type = type;
+        for(PropertyDescriptor descriptor: PropertyUtils.getPropertyDescriptors(this.type)) {
+            this.map.put(descriptor.getName(), descriptor.getPropertyType());
+        }
     }
 
     @Override
     public Object get(Object obj, String name) throws Exception {
         return PropertyUtils.getProperty(obj, name);
+    }
+
+    @Override
+    public Class<?> getType(String name) {
+        return null;
     }
 }

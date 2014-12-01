@@ -33,4 +33,11 @@ public interface StructureReader {
      * @return
      */
     Object get(Object obj, String name) throws Exception;
+
+    /**
+     * type of property
+     * @param name
+     * @return
+     */
+    Class<?> getType(String name);
 }

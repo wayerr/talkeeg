@@ -33,7 +33,7 @@ import java.util.Map;
 public final class MetaTypeResolver {
 
     public static final class Builder {
-        private final Map<String, Function<TranslatorFactoryContext, Translator>> map = new HashMap<>();
+        private final Map<String, Function<TranslatorStaticContext, Translator>> map = new HashMap<>();
         private MetaTypeResolver parent = MetaTypeResolver.DEFAULT;
 
         /**
@@ -41,7 +41,7 @@ public final class MetaTypeResolver {
          * @see talkeeg.bf.MetaTypes
          * @return
          */
-        public Map<String, Function<TranslatorFactoryContext, Translator>> getFactories() {
+        public Map<String, Function<TranslatorStaticContext, Translator>> getFactories() {
             return map;
         }
 
@@ -50,7 +50,7 @@ public final class MetaTypeResolver {
          * @see talkeeg.bf.MetaTypes
          * @param map
          */
-        public void setFactories(Map<String, Function<TranslatorFactoryContext, Translator>> map) {
+        public void setFactories(Map<String, Function<TranslatorStaticContext, Translator>> map) {
             this.map.clear();
             this.map.putAll(map);
         }
@@ -62,7 +62,7 @@ public final class MetaTypeResolver {
          * @param factory
          * @return
          */
-        public Builder putFactory(String name, Function<TranslatorFactoryContext, Translator> factory) {
+        public Builder putFactory(String name, Function<TranslatorStaticContext, Translator> factory) {
             this.map.put(name, factory);
             return this;
         }
@@ -103,7 +103,7 @@ public final class MetaTypeResolver {
     public static final MetaTypeResolver DEFAULT = createDefaultResolver();
 
     private final MetaTypeResolver parent;
-    private final Map<String, Function<TranslatorFactoryContext, Translator>> map;
+    private final Map<String, Function<TranslatorStaticContext, Translator>> map;
 
     private MetaTypeResolver(Builder b) {
         this.map = ImmutableMap.copyOf(b.map);
@@ -118,21 +118,21 @@ public final class MetaTypeResolver {
         return new Builder();
     }
 
-    Translator createTranslator(TranslatorFactoryContext context) {
+    Translator createTranslator(TranslatorStaticContext context) {
         PrimitiveEntry entry = (PrimitiveEntry)context.getEntry();
         final String metaType = entry.getMetaType();
         if(metaType == null) {
             throw new NullPointerException("meta type in " + entry + " is null");
         }
-        final Function<TranslatorFactoryContext, Translator> factory = getTranslatorFactory(metaType);
+        final Function<TranslatorStaticContext, Translator> factory = getTranslatorFactory(metaType);
         if(factory == null) {
             throw new RuntimeException("can not find factory for " + metaType);
         }
         return factory.apply(context);
     }
 
-    private Function<TranslatorFactoryContext, Translator> getTranslatorFactory(String metaType) {
-        Function<TranslatorFactoryContext, Translator> factory = map.get(metaType);
+    private Function<TranslatorStaticContext, Translator> getTranslatorFactory(String metaType) {
+        Function<TranslatorStaticContext, Translator> factory = map.get(metaType);
         if(factory != null || this.parent == null) {
             return factory;
         }
@@ -142,27 +142,27 @@ public final class MetaTypeResolver {
     private static MetaTypeResolver createDefaultResolver() {
         return builder()
                 .parent(null)
-                .putFactory(MetaTypes.INTEGER, new Function<TranslatorFactoryContext, Translator>() {
+                .putFactory(MetaTypes.INTEGER, new Function<TranslatorStaticContext, Translator>() {
                     @Override
-                    public Translator apply(TranslatorFactoryContext context) {
+                    public Translator apply(TranslatorStaticContext context) {
                         return new IntegerTranslator((PrimitiveEntry)context.getEntry());
                     }
                 })
-                .putFactory(MetaTypes.BLOB, new Function<TranslatorFactoryContext, Translator>() {
+                .putFactory(MetaTypes.BLOB, new Function<TranslatorStaticContext, Translator>() {
                     @Override
-                    public Translator apply(TranslatorFactoryContext context) {
+                    public Translator apply(TranslatorStaticContext context) {
                         return new BlobTranslator((PrimitiveEntry)context.getEntry(), BlobTranslator.ADAPTER_BYTES);
                     }
                 })
-                .putFactory(MetaTypes.STRING, new Function<TranslatorFactoryContext, Translator>() {
+                .putFactory(MetaTypes.STRING, new Function<TranslatorStaticContext, Translator>() {
                     @Override
-                    public Translator apply(TranslatorFactoryContext context) {
+                    public Translator apply(TranslatorStaticContext context) {
                         return new BlobTranslator((PrimitiveEntry)context.getEntry(), BlobTranslator.ADAPTER_STRING);
                     }
                 })
-                .putFactory(MetaTypes.ID, new Function<TranslatorFactoryContext, Translator>() {
+                .putFactory(MetaTypes.ID, new Function<TranslatorStaticContext, Translator>() {
                     @Override
-                    public Translator apply(TranslatorFactoryContext context) {
+                    public Translator apply(TranslatorStaticContext context) {
                         return new IdTranslator();
                     }
                 })

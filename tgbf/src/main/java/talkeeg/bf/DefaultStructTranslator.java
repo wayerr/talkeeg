@@ -19,21 +19,39 @@
 
 package talkeeg.bf;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import com.google.common.collect.ImmutableList;
 import talkeeg.bf.schema.SchemaEntry;
 import talkeeg.bf.schema.Struct;
 import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
+ * default translator for structures
+ *
  * Created by wayerr on 24.11.14.
  */
 final class DefaultStructTranslator implements Translator {
 
     private final Struct struct;
+    private final List<Translator> fieldTranslators;
+    private final Bf bf;
+    private final Class<?> type;
+    private final StructureReader reader;
+    private final TranslatorStaticContext factoryContext;
 
-    public DefaultStructTranslator(Struct struct) {
-        this.struct = struct;
+    public DefaultStructTranslator(TranslatorStaticContext context) {
+        this.struct = (Struct)context.getEntry();
+        this.type = context.getType();
+        this.bf = context.getBf();
+        this.reader = this.bf.createReader(context);
+        this.factoryContext = context;
+        ImmutableList.Builder<Translator> builder = ImmutableList.builder();
+        for(SchemaEntry fieldEntry: this.struct.getChilds()) {
+            final String fieldName = fieldEntry.getFieldName();
+            final Class<?> propertyType = this.reader.getType(fieldName);
+            builder.add(context.getTranslator(fieldEntry, propertyType));
+        }
+        this.fieldTranslators = builder.build();
     }
 
     @Override
@@ -42,19 +60,19 @@ final class DefaultStructTranslator implements Translator {
         final List<SchemaEntry> fields = this.struct.getChilds();
         for(int i = 0; i < fields.size(); ++i) {
             SchemaEntry field = fields.get(i);
-            Object fieldValue = PropertyUtils.getProperty(message, field.getFieldName());
-            Translator translator = getWriteTranslator(context, field, fieldValue);
+            Object fieldValue = this.reader.get(message, field.getFieldName());
+            Translator translator = getWriteTranslator(context, i, fieldValue);
             size += translator.getSize(context, fieldValue);
         }
         return size;
     }
 
-    protected Translator getWriteTranslator(TranslationContext context, SchemaEntry field, Object fieldValue) {
+    protected Translator getWriteTranslator(TranslationContext context, int i, Object fieldValue) {
         Translator translator;
         if(fieldValue == null) {
             translator = NullTranslator.INSTANCE;
         } else {
-            translator = context.getTranslator(field);
+            translator = this.fieldTranslators.get(i);
         }
         return translator;
     }
@@ -70,11 +88,10 @@ final class DefaultStructTranslator implements Translator {
         buffer.put(EntryType.STRUCT.getValue());
         TgbfUtils.writeSignedInteger(buffer, struct.getId());
         final List<SchemaEntry> fields = this.struct.getChilds();
-        final StructureReader reader = context.getReader(struct);
         for(int i = 0; i < fields.size(); ++i) {
             final SchemaEntry field = fields.get(i);
-            final Object fieldValue = reader.get(message, field.getFieldName());
-            final Translator translator = getWriteTranslator(context, field, fieldValue);
+            final Object fieldValue = this.reader.get(message, field.getFieldName());
+            final Translator translator = getWriteTranslator(context, i, fieldValue);
             translator.to(context, fieldValue, buffer);
         }
     }
@@ -85,11 +102,11 @@ final class DefaultStructTranslator implements Translator {
         if(struct.getId() != structId) {
             throw new RuntimeException("unexpected structure: " + structId + "  when expect: " + struct.getId());
         }
-        final StructureBuilder builder = context.createBuilder(struct);
+        final StructureBuilder builder = this.factoryContext.createBuilder();
         final List<SchemaEntry> fields = this.struct.getChilds();
         for(int i = 0; i < fields.size(); ++i) {
             final SchemaEntry field = fields.get(i);
-            final Translator translator = context.getTranslator(field);
+            final Translator translator = this.fieldTranslators.get(i);
             final Object value = translator.from(context, buffer);
             builder.set(field.getFieldName(), value);
         }

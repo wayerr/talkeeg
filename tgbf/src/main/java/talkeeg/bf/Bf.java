@@ -21,15 +21,13 @@
 package talkeeg.bf;
 
 import com.google.common.base.Preconditions;
+import talkeeg.bf.schema.PrimitiveEntry;
 import talkeeg.bf.schema.Schema;
 import talkeeg.bf.schema.SchemaEntry;
 import talkeeg.bf.schema.Struct;
 
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -94,6 +92,7 @@ public final class Bf {
     private final Schema schema;
     private final Map<Integer, Class<?>> types = new TreeMap<>();
     private final MetaTypeResolver resolver;
+    private final Map<Integer, Translator> structs = new TreeMap<>();
 
     private Bf(Builder b) {
         this.resolver = b.resolver;
@@ -120,7 +119,7 @@ public final class Bf {
             throw new RuntimeException("Can not find message for structId=" + messageId);
         }
         final TranslationContextImpl context = new TranslationContextImpl(this, message);
-        final Translator translator = context.getTranslator(message);
+        final Translator translator = getTranslator(message);
         final int size = translator.getSize(context, obj);
         ByteBuffer buffer = ByteBuffer.allocate(size);
         translator.to(context, obj, buffer);
@@ -148,19 +147,79 @@ public final class Bf {
         final int structId = DefaultStructTranslator.readStructId(buffer.asReadOnlyBuffer());
         final Struct message = schema.getMessage(structId);
         final TranslationContextImpl context = new TranslationContextImpl(this, message);
-        final Translator translator = context.getTranslator(message);
+        final Translator translator = getTranslator(message);
         return translator.from(context, buffer);
     }
 
-    StructureBuilder createBulder(Struct struct) {
+    /**
+     * create builder instance for object mapped to specified entry
+     * @param struct
+     * @return
+     */
+    public StructureBuilder createBuilder(Struct struct, Class<?> type) {
+        return new DefaulStructureBuilder(struct, type);
+    }
+
+    /**
+     * structure representation type
+     * @param struct
+     * @return a class or throw exception if no mapping
+     */
+    public Class<?> getType(Struct struct) {
         final Class<?> type = types.get(struct.getId());
         if(type == null) {
             throw new RuntimeException("no types mapped on specified structId: " + struct.getId());
         }
-        return new DefaulStructureBuilder(struct, type);
+        return type;
     }
 
     MetaTypeResolver getMetaTypeResolver() {
         return resolver;
+    }
+
+
+    /**
+     * translator for specified schema entry (allow only structs and messages) <p/>
+     * If context does not have appropriate translator, then error will be thrown
+     * @param schemaEntry
+     * @return translator
+     */
+    public Translator getTranslator(final SchemaEntry schemaEntry) {
+        if(schemaEntry == null) {
+            throw  new NullPointerException("schemaEntry is null");
+        }
+        final Class<?> type = getType((Struct)schemaEntry);
+        final TranslatorStaticContext factoryContext = new TranslatorStaticContext(this, null, schemaEntry, type);
+        final Translator translator = getTranslator(factoryContext);
+        return translator;
+    }
+
+    Translator getTranslator(TranslatorStaticContext factoryContext) {
+        Translator translator = null;
+        SchemaEntry schemaEntry = factoryContext.getEntry();
+        if(schemaEntry instanceof PrimitiveEntry) {
+            translator = resolver.createTranslator(factoryContext);
+        } else if(schemaEntry instanceof Struct) {
+            final Struct struct = (Struct) schemaEntry;
+            translator = structs.get(struct.getId());
+            if(translator == null) {
+                // create default translator
+                translator = new DefaultStructTranslator(factoryContext);
+                structs.put(struct.getId(), translator);
+            }
+        }
+        if(translator == null) {
+            throw new RuntimeException("Can not find translator for schemaEntry=" + schemaEntry);
+        }
+        return translator;
+    }
+
+    /**
+     * predefined reader for structure
+     * @param context
+     * @return
+     */
+    public StructureReader createReader(TranslatorStaticContext context) {
+        return new DefaultStructureReader(context.getType());
     }
 }
