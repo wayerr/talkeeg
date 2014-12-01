@@ -55,7 +55,7 @@ public final class PrimitiveEntry extends Base {
         }
 
         /**
-         * id of {@link talkeeg.bf.MetaType}
+         * value of {@link talkeeg.bf.MetaTypes}
          * @return
          */
         public String getMetaType() {
@@ -63,7 +63,7 @@ public final class PrimitiveEntry extends Base {
         }
 
         /**
-         * id of {@link talkeeg.bf.MetaType}
+         * value of {@link talkeeg.bf.MetaTypes}
          * @param metaType
          */
         public void setMetaType(String metaType) {
