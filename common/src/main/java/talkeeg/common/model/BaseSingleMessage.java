@@ -26,7 +26,7 @@ import talkeeg.bf.Int128;
  */
 public class BaseSingleMessage {
 
-    public static abstract class Builder {
+    public static abstract class Builder implements BuilderInterface {
         /**
          * `id(T02)`:  циклический идентификатор (используется для фильтрации дублей, уникален для каждого src)
          */

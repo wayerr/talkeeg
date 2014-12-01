@@ -83,6 +83,7 @@ public class SingleMessage extends BaseSingleMessage {
             this.cipherType = cipherType;
         }
 
+        @Override
         public SingleMessage build() {
             return new SingleMessage(this);
         }

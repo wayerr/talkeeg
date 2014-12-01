@@ -22,10 +22,13 @@ package talkeeg.bfstore;
 import talkeeg.bf.*;
 import talkeeg.bf.schema.PrimitiveEntry;
 import talkeeg.bf.schema.SchemaSource;
+import talkeeg.common.model.ImmutableStructureBuilder;
 import talkeeg.common.model.MessageCipherType;
 import talkeeg.common.model.SingleMessage;
 
 import java.nio.ByteBuffer;
+import java.util.function.Supplier;
+
 import static org.junit.Assert.*;
 
 /**
@@ -61,7 +64,12 @@ public class Test {
                 .resolver(MetaTypeResolver.builder()
                         .putFactory(MetaTypes.BLOB, (e) -> new BlobTranslator((PrimitiveEntry)e.getEntry(), BlobTranslator.ADAPTER_BINARY_DATA))
                         .build())
-                .putTypes(SingleMessage.class)
+                .putType(SingleMessage.class, new Supplier<StructureBuilder>() {
+                    @Override
+                    public StructureBuilder get() {
+                        return new ImmutableStructureBuilder(SingleMessage.builder());
+                    }
+                })
                 .build();
         ByteBuffer buffer = bf.write(sm);
         Arrays.toHexString(buffer);

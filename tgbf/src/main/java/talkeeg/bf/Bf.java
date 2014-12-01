@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 
 /**
  * Message writer. <p/>
@@ -39,22 +40,36 @@ import java.util.TreeMap;
 public final class Bf {
 
     public static class Builder {
-        private final Map<Integer, Class<?>> types = new TreeMap<>();
+        private final Map<Integer, TypeData.Builder> types = new TreeMap<>();
         private Schema schema;
         private MetaTypeResolver resolver = MetaTypeResolver.DEFAULT;
 
-        public Map<Integer, Class<?>> getTypes() {
-            return types;
-        }
-
         public Builder putTypes(Class<?> ... types) {
             for(Class<?> type : types) {
-                final int id = getStructId(type);
-                final Class<?> oldType = this.types.put(id, type);
+                putType(type, null);
+            }
+            return this;
+        }
+
+        /**
+         * register type
+         * @param type
+         * @param structureBuilder builders factory of objects this type, allow null value
+         * @return this
+         */
+        public Builder putType(Class<?> type, Supplier<StructureBuilder> structureBuilder) {
+            final int id = getStructId(type);
+            TypeData.Builder source = this.types.get(id);
+            if(source == null) {
+                source = new TypeData.Builder(id, type);
+                this.types.put(id, source);
+            } else {
+                Class<?> oldType = source.getType();
                 if(oldType != null && oldType != type) {
                     throw new RuntimeException("Conflict, two types with equal id: " + oldType + ", " + type);
                 }
             }
+            source.setBuilderFactory(structureBuilder);
             return this;
         }
 
@@ -90,7 +105,7 @@ public final class Bf {
     }
 
     private final Schema schema;
-    private final Map<Integer, Class<?>> types = new TreeMap<>();
+    private final Map<Integer, TypeData> types = new TreeMap<>();
     private final MetaTypeResolver resolver;
     private final Map<Integer, Translator> structs = new TreeMap<>();
 
@@ -99,7 +114,10 @@ public final class Bf {
         this.schema = b.schema;
         Preconditions.checkNotNull(this.resolver, "resolver is null");
         Preconditions.checkNotNull(this.schema, "schema is null");
-        types.putAll(b.types);
+        for(TypeData.Builder typeDataBuilder: b.types.values()) {
+            TypeData typeData = typeDataBuilder.build();
+            this.types.put(typeData.getId(), typeData);
+        }
     }
 
     public static Builder build() {
@@ -157,6 +175,11 @@ public final class Bf {
      * @return
      */
     public StructureBuilder createBuilder(Struct struct, Class<?> type) {
+        final TypeData typeData = getTypeData(struct);
+        final Supplier<StructureBuilder> factory = typeData.getBuilderFactory();
+        if(factory != null) {
+            return factory.get();
+        }
         return new DefaulStructureBuilder(struct, type);
     }
 
@@ -166,11 +189,17 @@ public final class Bf {
      * @return a class or throw exception if no mapping
      */
     public Class<?> getType(Struct struct) {
-        final Class<?> type = types.get(struct.getId());
-        if(type == null) {
+        final TypeData typeData = getTypeData(struct);
+        final Class<?> type = typeData.getType();
+        return type;
+    }
+
+    private TypeData getTypeData(Struct struct) {
+        final TypeData typeData = types.get(struct.getId());
+        if(typeData == null) {
             throw new RuntimeException("no types mapped on specified structId: " + struct.getId());
         }
-        return type;
+        return typeData;
     }
 
     MetaTypeResolver getMetaTypeResolver() {
