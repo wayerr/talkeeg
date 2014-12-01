@@ -46,6 +46,8 @@ public final class Env implements AutoCloseable {
                     return new File(System.getProperty("java.io.tmpdir"), appName);
                 }
             })
+            .putMap("net.port", 11661)
+            .putMap("net.publicIpServices", "http://checkip.amazonaws.com http://curlmyip.com http://www.trackip.net/ip http://whatismyip.akamai.com http://ifconfig.me/ip http://ipv4.icanhazip.com http://shtuff.it/myip/text http://cydev.ru/ip")
             .build();
     }
 

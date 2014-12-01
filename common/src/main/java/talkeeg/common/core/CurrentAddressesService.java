@@ -20,17 +20,15 @@
 package talkeeg.common.core;
 
 import com.google.common.base.Function;
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,8 +42,12 @@ public final class CurrentAddressesService {
 
     private static final Logger LOG = Logger.getLogger(CurrentAddressesService.class.getName());
     private final Function<InetAddress, InetAddress> externalIpFunction;
-    private final Cache<InetAddress, InetAddress> cache;
+    private final LoadingCache<InetAddress, InetAddress> cache;
 
+    /**
+     * construct current addresses service
+     * @param externalIpFunction function which return external ip or argument, function <b>must<b/> not return null
+     */
     CurrentAddressesService(Function<InetAddress, InetAddress> externalIpFunction) {
         this.externalIpFunction = externalIpFunction;
         if(this.externalIpFunction == null) {
@@ -56,12 +58,16 @@ public final class CurrentAddressesService {
                 .build(CacheLoader.from(this.externalIpFunction));
     }
 
-    public List<InetAddress> getAddreses() {
-        final List<InetAddress> addresses = new ArrayList<>();
+    public Set<ClientAddress> getAddreses() {
+        final Set<ClientAddress> addresses = new HashSet<>();
         try {
             final Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
             while(ifaces.hasMoreElements()) {
                 final NetworkInterface iface = ifaces.nextElement();
+                if(iface.isLoopback()) {
+                    // ignore loopback iface
+                    continue;
+                }
                 final Enumeration<InetAddress> ifaceAddresses = iface.getInetAddresses();
                 while(ifaceAddresses.hasMoreElements()) {
                     final InetAddress address = ifaceAddresses.nextElement();
@@ -74,15 +80,27 @@ public final class CurrentAddressesService {
         return addresses;
     }
 
-    protected void addAddress(List<InetAddress> addresses, InetAddress address) {
-        addresses.add(address);
+    protected void addAddress(Collection<ClientAddress> addresses, InetAddress address) {
+        addresses.add(new ClientAddress(getAddressType(address), false, address.getHostAddress()));
         try {
-            final InetAddress externalAddress = cache.get(address, null);
-            if(externalAddress != null) {
-                addresses.add(externalAddress);
+            final InetAddress externalAddress = cache.get(address);
+            if(externalAddress != null && !address.equals(externalAddress)) {
+                addresses.add(new ClientAddress(getAddressType(externalAddress), true, externalAddress.getHostAddress()));
             }
-        } catch(ExecutionException e) {
+        } catch(Exception e) {
             LOG.log(Level.SEVERE, "can not retrieve external ip for " + address, e);
         }
+    }
+
+    private static AddressType getAddressType(InetAddress address) {
+        AddressType type;
+        if(address instanceof Inet6Address) {
+            type = BasicAddressType.IPV6;
+        } else if(address instanceof Inet4Address) {
+            type = BasicAddressType.IPV4;
+        } else {
+            throw new RuntimeException("unsupported address type");
+        }
+        return type;
     }
 }

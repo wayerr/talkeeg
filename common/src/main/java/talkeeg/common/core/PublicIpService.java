@@ -21,6 +21,7 @@ package talkeeg.common.core;
 
 import com.google.common.base.Function;
 import com.google.common.io.CharStreams;
+import com.google.common.util.concurrent.SettableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import talkeeg.common.conf.Config;
 import talkeeg.common.util.StringUtils;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -97,14 +99,13 @@ final class PublicIpService implements Function<InetAddress, InetAddress>, Close
      */
     private final List<String> knowedServices;
     private final ExecutorService executor;
-    private final List<Service> services = new ArrayList<>();
-    private final Runnable resolveFastestService = new Runnable() {
+    private final Callable<String> resolveFastestService = new Callable<String>() {
+
         @Override
-        public void run() {
-            final List<Service> sorted = Collections.synchronizedList(new ArrayList<>());
+        public String call() {
             final List<Future<?>> tasks = new ArrayList<>();
-            final Lock lock = new ReentrantLock();
-            final Condition condition = lock.newCondition();
+            final SettableFuture<String> settableFuture =  SettableFuture.create();
+            String ip = null;
             try {
                 for(final String serviceUrlString : knowedServices) {
                     try {
@@ -114,11 +115,12 @@ final class PublicIpService implements Function<InetAddress, InetAddress>, Close
                             public void run() {
                                 try {
                                     service.run();
-                                    sorted.add(service);
+                                    String ip = service.ip;
+                                    if(ip != null) {
+                                        settableFuture.set(ip);
+                                    }
                                 } catch(Exception e) {
                                     //errors in this is a usual thing
-                                } finally {
-                                    condition.signalAll();
                                 }
                             }
                         }));
@@ -129,59 +131,56 @@ final class PublicIpService implements Function<InetAddress, InetAddress>, Close
                     Thread.sleep(100);
                 }
                 //wait first executed thread
-                condition.await(1, TimeUnit.MINUTES);
+                ip = settableFuture.get(1, TimeUnit.MINUTES);
                 //stop all other tasks
                 for(Future<?> future: tasks) {
                     future.cancel(true);
                 }
             } catch(InterruptedException e) {
-                //what we do there&
+                //nothing
+            } catch(ExecutionException | TimeoutException e) {
+                LOG.log(Level.SEVERE, "", e);
             }
-            synchronized(services) {
-                services.clear();
-                services.addAll(sorted);
-            }
+            return ip;
         }
     };
+    private volatile Future<String> externalIpTask;
 
     PublicIpService(Config config) {
+        final String servicesString = config.getRoot().<String>getNode("net").getValue("publicIpServices", null);
+        if(servicesString == null) {
+            throw new NullPointerException(" 'net.publicIpServices' is null, but we need space delimited list of urls");
+        }
         this.knowedServices = Collections.unmodifiableList(StringUtils.splitTo(new ArrayList<>(),
-                config.getRoot().<String>getNode("net").getValue("publicIpServices", null), ' '));
+                servicesString, ' '));
         final ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
         builder.setDaemon(true);
         builder.setNameFormat(getClass().getSimpleName() + "-pool-%d");
         this.executor = Executors.newCachedThreadPool(builder.build());
 
-        reloadServices();
+        reload();
     }
 
-    private void reloadServices() {
-        this.executor.execute(resolveFastestService);
+    private Future<String> reload() {
+        return this.externalIpTask = this.executor.submit(resolveFastestService);
     }
 
     @Override
     public InetAddress apply(InetAddress input) {
-        Service service;
-        synchronized(services) {
-            if(services.size() > 0) {
-                service = services.get(0);
-            } else {
-                service = null;
-            }
-        }
-        if(service == null) {
+        Future<String> externalIpTask = this.externalIpTask;
+        if(externalIpTask == null) {
             //maybe we need to wait before services was reloaded?
-            reloadServices();
-        } else {
-
-            String externalIpString = service.ip;
-            try {
-                return InetAddress.getByName(externalIpString);
-            } catch(UnknownHostException e) {
-                LOG.log(Level.SEVERE, "for external ip: " + externalIpString, e);
-            }
+            externalIpTask = reload();
         }
-        return null;
+
+        String externalIpString = null;
+        try {
+            externalIpString = externalIpTask.get(2, TimeUnit.MINUTES);
+            return InetAddress.getByName(externalIpString);
+        } catch(Exception e) {
+            LOG.log(Level.SEVERE, "for external ip: " + externalIpString, e);
+        }
+        return input;
     }
 
     @Override
