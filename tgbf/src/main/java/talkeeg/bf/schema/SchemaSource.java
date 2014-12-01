@@ -28,6 +28,7 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 import org.xml.sax.ext.EntityResolver2;
 import talkeeg.bf.EntryType;
+import talkeeg.bf.MetaTypes;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -75,12 +76,13 @@ public final class SchemaSource {
     public static final String NAME_MESSAGE = "message";
     public static final String NAME_STRUCT = "struct";
     public static final String NAME_PRIMITIVE = "primitive";
-    public static final String NAME_INTEGER = "integer";
-    public static final String NAME_FLOAT = "float";
-    public static final String NAME_DATETIME = "datetime";
-    public static final String NAME_BLOB = "blob";
-    public static final String NAME_STRING = "string";
     public static final String NAME_LIST = "list";
+    public static final String NAME_INTEGER = MetaTypes.INTEGER;
+    public static final String NAME_FLOAT = MetaTypes.FLOAT;
+    public static final String NAME_DATETIME = MetaTypes.DATETIME;
+    public static final String NAME_BLOB = MetaTypes.BLOB;
+    public static final String NAME_STRING = MetaTypes.STRING;
+    public static final String NAME_ID = MetaTypes.ID;
     public static final Map<String, EntryType> ENTRY_TYPE_MAP = ImmutableMap.<String, EntryType>builder()
             .put("NULL", EntryType.NULL)
             .put("HALF", EntryType.HALF)
@@ -129,8 +131,8 @@ public final class SchemaSource {
                 continue;
             }
             final String name = node.getLocalName();
-            if(!"message".equals(name)) {
-                throw new RuntimeException("expected 'message' node, but found " + name);
+            if(!NAME_MESSAGE.equals(name) && !NAME_STRUCT.equals(name)) {
+                throw new RuntimeException("expected 'message' or 'struct' node, but found " + name);
             }
             final Struct struct = loadStruct(node);
             builder.putMessage(struct);
@@ -220,6 +222,9 @@ public final class SchemaSource {
                 break;
             case NAME_PRIMITIVE:
                 entry = loadPrimitive(node, Object.class);
+                break;
+            case NAME_ID:
+                entry = loadPrimitive(node, byte[].class, EntryType.BYTE_16);
                 break;
             case NAME_BLOB:
                 entry = loadPrimitive(node, byte[].class, EntryType.BYTES);

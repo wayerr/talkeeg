@@ -20,6 +20,7 @@
 
 package talkeeg.bf;
 
+import com.google.common.base.Preconditions;
 import talkeeg.bf.schema.Schema;
 import talkeeg.bf.schema.SchemaEntry;
 import talkeeg.bf.schema.Struct;
@@ -38,16 +39,72 @@ import java.util.TreeMap;
  * Created by rad on 17.11.14.
  */
 public final class Bf {
+
+    public static class Builder {
+        private final Map<Integer, Class<?>> types = new TreeMap<>();
+        private Schema schema;
+        private MetaTypeResolver resolver = MetaTypeResolver.DEFAULT;
+
+        public Map<Integer, Class<?>> getTypes() {
+            return types;
+        }
+
+        public Builder putTypes(Class<?> ... types) {
+            for(Class<?> type : types) {
+                final int id = getStructId(type);
+                final Class<?> oldType = this.types.put(id, type);
+                if(oldType != null && oldType != type) {
+                    throw new RuntimeException("Conflict, two types with equal id: " + oldType + ", " + type);
+                }
+            }
+            return this;
+        }
+
+        public Schema getSchema() {
+            return schema;
+        }
+
+        public Builder schema(Schema schema) {
+            setSchema(schema);
+            return this;
+        }
+
+        public void setSchema(Schema schema) {
+            this.schema = schema;
+        }
+
+        public MetaTypeResolver getResolver() {
+            return resolver;
+        }
+
+        public Builder resolver(MetaTypeResolver resolver) {
+            setResolver(resolver);
+            return this;
+        }
+
+        public void setResolver(MetaTypeResolver resolver) {
+            this.resolver = resolver;
+        }
+
+        public Bf build() {
+            return new Bf(this);
+        }
+    }
+
     private final Schema schema;
     private final Map<Integer, Class<?>> types = new TreeMap<>();
-    private final MetaTypeResolver resolver = new MetaTypeResolver();
+    private final MetaTypeResolver resolver;
 
-    public Bf(Schema schema, Class<?> ... mappedTypes) {
-        this.schema = schema;
-        for(Class<?> type : mappedTypes) {
-            final int id = getStructId(type);
-            types.put(id, type);
-        }
+    private Bf(Builder b) {
+        this.resolver = b.resolver;
+        this.schema = b.schema;
+        Preconditions.checkNotNull(this.resolver, "resolver is null");
+        Preconditions.checkNotNull(this.schema, "schema is null");
+        types.putAll(b.types);
+    }
+
+    public static Builder build() {
+        return new Builder();
     }
 
     /**

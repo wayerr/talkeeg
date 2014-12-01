@@ -42,11 +42,21 @@ final class DefaultStructTranslator implements Translator {
         final List<SchemaEntry> fields = this.struct.getChilds();
         for(int i = 0; i < fields.size(); ++i) {
             SchemaEntry field = fields.get(i);
-            Translator translator = context.getTranslator(field);
             Object fieldValue = PropertyUtils.getProperty(message, field.getFieldName());
+            Translator translator = getWriteTranslator(context, field, fieldValue);
             size += translator.getSize(context, fieldValue);
         }
         return size;
+    }
+
+    protected Translator getWriteTranslator(TranslationContext context, SchemaEntry field, Object fieldValue) {
+        Translator translator;
+        if(fieldValue == null) {
+            translator = NullTranslator.INSTANCE;
+        } else {
+            translator = context.getTranslator(field);
+        }
+        return translator;
     }
 
     @Override
@@ -63,8 +73,8 @@ final class DefaultStructTranslator implements Translator {
         final StructureReader reader = context.getReader(struct);
         for(int i = 0; i < fields.size(); ++i) {
             final SchemaEntry field = fields.get(i);
-            final Translator translator = context.getTranslator(field);
             final Object fieldValue = reader.get(message, field.getFieldName());
+            final Translator translator = getWriteTranslator(context, field, fieldValue);
             translator.to(context, fieldValue, buffer);
         }
     }

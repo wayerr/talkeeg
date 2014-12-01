@@ -20,8 +20,8 @@
 package talkeeg.common.model;
 
 import talkeeg.bf.StructInfo;
-import talkeeg.common.util.BinaryData;
-import talkeeg.common.util.Int128;
+import talkeeg.bf.BinaryData;
+import talkeeg.bf.Int128;
 
 import java.util.*;
 

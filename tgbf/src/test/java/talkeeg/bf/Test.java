@@ -36,7 +36,7 @@ public class Test {
         sampleMessage.setBytesValue(new byte[]{1, 2, 3, 4, 5, 6, (byte)0xff});
         sampleMessage.setStringValue("simple уникодная строка а-я");
 
-        Bf bf =  new Bf(SchemaSource.fromResource("protocol.xml"), SampleMessage.class);
+        Bf bf =  Bf.build().schema(SchemaSource.fromResource("protocol.xml")).putTypes(SampleMessage.class).build();
 
         ByteBuffer buffer = bf.write(sampleMessage);
         System.out.println(BaseEncoding.base16().encode(buffer.array()));

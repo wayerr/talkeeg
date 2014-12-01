@@ -1,0 +1,63 @@
+/*
+ * Copyright (c) 2014, wayerr (radiofun@ya.ru).
+ *
+ *      This file is part of talkeeg-parent.
+ *
+ *      talkeeg-parent is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      talkeeg-parent is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package talkeeg.common.model;
+
+import talkeeg.bf.StructInfo;
+import talkeeg.common.core.ClientAddress;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * list of client addresses
+ *
+ * Created by wayerr on 01.12.14.
+ */
+@StructInfo(id = 12)
+public final class ClientAddresses {
+
+    public static final class Builder {
+        private final List<ClientAddress> addresses = new ArrayList<>();
+
+        public List<ClientAddress> getAddresses() {
+            return addresses;
+        }
+
+        public void setAddresses(List<ClientAddress> addresses) {
+            this.addresses.clear();
+            this.addresses.addAll(addresses);
+        }
+
+        public ClientAddresses build() {
+            return new ClientAddresses(this);
+        }
+    }
+
+    private final List<ClientAddress> addresses;
+
+    private ClientAddresses(Builder builder) {
+        this.addresses = Collections.unmodifiableList(new ArrayList<>(builder.addresses));
+    }
+
+    public List<ClientAddress> getAddresses() {
+        return addresses;
+    }
+}

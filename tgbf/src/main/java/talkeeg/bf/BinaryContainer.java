@@ -17,7 +17,7 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.util;
+package talkeeg.bf;
 
 /**
  * generic interface for different classes contains binary data
@@ -30,4 +30,10 @@ public interface BinaryContainer {
      * @return
      */
     public byte[] getData();
+
+    /**
+     * length of contained data
+     * @return
+     */
+    public int getLength();
 }

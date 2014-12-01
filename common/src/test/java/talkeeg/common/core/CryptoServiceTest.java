@@ -24,7 +24,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import talkeeg.common.Env;
-import talkeeg.common.util.Arrays;
+import talkeeg.bf.Arrays;
 
 import java.security.Signature;
 

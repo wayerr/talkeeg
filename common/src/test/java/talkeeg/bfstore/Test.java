@@ -19,15 +19,13 @@
 
 package talkeeg.bfstore;
 
-import talkeeg.bf.Bf;
+import talkeeg.bf.*;
 import talkeeg.bf.schema.SchemaSource;
 import talkeeg.common.model.MessageCipherType;
-import talkeeg.common.model.Sign;
 import talkeeg.common.model.SingleMessage;
-import talkeeg.common.util.BinaryData;
-import talkeeg.common.util.Int128;
 
 import java.nio.ByteBuffer;
+import static org.junit.Assert.*;
 
 /**
  * Created by wayerr on 21.11.14.
@@ -41,7 +39,7 @@ public class Test {
         smbuilder.setId((short)0);
         smbuilder.setSrc(Int128.fromString("84B4A939C2624A8F8C821D3C34B79BEA"));
         smbuilder.setDst(Int128.fromString("BE0C19B5E78D44D49DDC55FBE2E0FE88"));
-        smbuilder.setCipher(MessageCipherType.NONE);
+        smbuilder.setCipherType(MessageCipherType.NONE);
         smbuilder.setData(BinaryData.fromString("379FE49E55B4EA683A0A3AE81BE60A3CB91FF9DDD9DE6EAB1387F9C7EA56" +
                 "31FA68A921430796776541EC2CCEB484A4E604AB4FC697F39DADAEB0DF28" +
                 "52DD2976518095E8311879A6808EAA67E9E20561ACF7204055EAFC1F435D" +
@@ -54,10 +52,18 @@ public class Test {
                 "D3FD2404ED9E9F42ABC56AEFFFF887F2FD499E3F6430613E829E9226F9BA" +
                 "28312C30206B42292C20302C30303031373830303220632C20352C38204D" +
                 "422F630A"));
-        smbuilder.setClientSign(Sign.fromString(""));
+        smbuilder.setClientSign(BinaryData.fromString(""));
         SingleMessage sm = smbuilder.build();
 
-        Bf writer =  new Bf(SchemaSource.fromResource("protocol.xml"));
-        ByteBuffer buffer = writer.write(sm);
+        Bf bf =  Bf.build()
+                .schema(SchemaSource.fromResource("protocol.xml"))
+                .resolver(MetaTypeResolver.builder()
+                        .putFactory(MetaTypes.BLOB, (e) -> new BlobTranslator(e, BlobTranslator.ADAPTER_BINARY_DATA))
+                        .build())
+                .build();
+        ByteBuffer buffer = bf.write(sm);
+        buffer.flip();
+        final SingleMessage restored = (SingleMessage)bf.read(buffer);
+        assertEquals(sm, restored);
     }
 }

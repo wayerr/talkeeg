@@ -17,32 +17,18 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.model;
-
-import talkeeg.common.util.Arrays;
-import talkeeg.common.util.BinaryData;
+package talkeeg.bf;
 
 /**
- * digital signature
- * @see java.security.Signature
- * Created by wayerr on 21.11.14.
+ * list of known metatypes
+ * @see talkeeg.bf.MetaTypeResolver
+ * Created by wayerr on 01.12.14.
  */
-public final class Sign extends BinaryData {
-
-    /**
-     * create sing instance with copy of byte array data.
-     * @param data
-     */
-    public Sign(byte[] data) {
-        super(data);
-    }
-
-    /**
-     * create Sign from hex string
-     * @param string
-     * @return
-     */
-    public static Sign fromString(String string) {
-        return new Sign(Arrays.fromHexString(string));
-    }
+public final class MetaTypes {
+    public static final String INTEGER = "integer";
+    public static final String FLOAT = "float";
+    public static final String DATETIME = "datetime";
+    public static final String BLOB = "blob";
+    public static final String STRING = "string";
+    public static final String ID = "id";
 }

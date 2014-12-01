@@ -30,4 +30,8 @@
             <integer storeAs="16_BYTE" />
         </list>
     </struct>
+    <struct name="ClientAddresses" structId="12">
+        <list fieldName="addresses" >
+        </list>
+    </struct>
 </schema>

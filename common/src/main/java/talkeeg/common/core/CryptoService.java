@@ -20,7 +20,7 @@
 package talkeeg.common.core;
 
 import talkeeg.common.conf.Config;
-import talkeeg.common.util.Int128;
+import talkeeg.bf.Int128;
 
 import java.security.*;
 import java.util.logging.Logger;

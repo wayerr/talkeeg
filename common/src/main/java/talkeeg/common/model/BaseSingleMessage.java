@@ -19,7 +19,7 @@
 
 package talkeeg.common.model;
 
-import talkeeg.common.util.Int128;
+import talkeeg.bf.Int128;
 
 /**
  * Created by wayerr on 21.11.14.

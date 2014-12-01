@@ -19,7 +19,7 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.common.util.Int128;
+import talkeeg.bf.Int128;
 
 /**
  * an representation of message with destination address

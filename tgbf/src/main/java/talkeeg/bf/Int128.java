@@ -17,7 +17,7 @@
  *     along with talkeeg.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.util;
+package talkeeg.bf;
 
 /**
  * Unsigned 128bit integer data.
@@ -51,7 +51,7 @@ public final class Int128 extends BinaryData {
 
     @Override
     public String toString() {
-        return "Int128{" + talkeeg.common.util.Arrays.toHexString(getData()) + '}';
+        return "Int128{" + Arrays.toHexString(getData()) + '}';
     }
 
     /**
@@ -66,7 +66,7 @@ public final class Int128 extends BinaryData {
         if(s.length() != HEX_STRING_LENGTH) {
             throw new NullPointerException("string.length is not " + HEX_STRING_LENGTH);
         }
-        byte[] data = talkeeg.common.util.Arrays.fromHexString(s);
+        byte[] data = Arrays.fromHexString(s);
         return new Int128(data);
     }
 }

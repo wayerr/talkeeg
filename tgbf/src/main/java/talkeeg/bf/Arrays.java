@@ -17,7 +17,7 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.util;
+package talkeeg.bf;
 
 import com.google.common.io.BaseEncoding;
 

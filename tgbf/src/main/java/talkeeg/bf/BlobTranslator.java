@@ -65,6 +65,26 @@ public class BlobTranslator implements Translator {
             return buff;
         }
     };
+
+    public static final BlobAdapter ADAPTER_BINARY_DATA = new BlobAdapter() {
+
+        @Override
+        public int size(Object data) {
+            return ((BinaryData)data).getLength();
+        }
+
+        @Override
+        public void to(Object data, ByteBuffer to) {
+            to.put(((BinaryData)data).getData());
+        }
+
+        @Override
+        public Object from(ByteBuffer from, int length) {
+            final byte buff[] = new byte[length];
+            from.get(buff);
+            return new BinaryData(buff);
+        }
+    };
     /**
      * adapter for converting string to bytes in utf-8.
      * note that {@link talkeeg.bf.BlobTranslator.BlobAdapter#size(Object)} method will convert

@@ -19,7 +19,7 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.common.util.Arrays;
+import talkeeg.bf.Arrays;
 
 import java.net.SocketAddress;
 import java.net.StandardSocketOptions;

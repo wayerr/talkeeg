@@ -21,7 +21,7 @@ package talkeeg.common.core;
 
 import talkeeg.common.conf.Config;
 import talkeeg.common.model.UserIdentityCard;
-import talkeeg.common.util.BinaryData;
+import talkeeg.bf.BinaryData;
 
 import java.io.File;
 

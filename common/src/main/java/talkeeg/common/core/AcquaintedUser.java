@@ -19,9 +19,9 @@
 
 package talkeeg.common.core;
 
-import talkeeg.common.model.Sign;
+import talkeeg.bf.BinaryData;
 import talkeeg.common.model.UserIdentityCard;
-import talkeeg.common.util.Int128;
+import talkeeg.bf.Int128;
 
 import java.security.PublicKey;
 import java.util.Objects;
@@ -41,7 +41,7 @@ public final class AcquaintedUser {
     private final PublicKey publicKey;
     private final ConcurrentMap<Int128, AcquaintedClient> clients = new ConcurrentHashMap<>();
     private final Object lock = new Object();
-    private Sign sign;
+    private BinaryData sign;
     private UserIdentityCard identityCard;
 
     AcquaintedUser(CryptoService cryptoService, PublicKey publicKey) {
@@ -53,11 +53,11 @@ public final class AcquaintedUser {
         return id;
     }
 
-    public Sign getSign() {
+    public BinaryData getSign() {
         return sign;
     }
 
-    public void setSign(Sign sign) {
+    public void setSign(BinaryData sign) {
         if(Objects.equals(this.sign, sign)) {
             return;
         }

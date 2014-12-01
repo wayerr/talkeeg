@@ -19,7 +19,7 @@
 
 package talkeeg.common.core;
 
-import talkeeg.common.util.Int128;
+import talkeeg.bf.Int128;
 
 import java.security.PublicKey;
 import java.util.concurrent.ConcurrentHashMap;

@@ -20,7 +20,7 @@
 package talkeeg.common.model;
 
 import talkeeg.bf.StructInfo;
-import talkeeg.common.util.BinaryData;
+import talkeeg.bf.BinaryData;
 
 /**
  * simple single message with signed and optionally ciphered data
@@ -30,10 +30,10 @@ import talkeeg.common.util.BinaryData;
 @StructInfo(id = 1)
 public class SingleMessage extends BaseSingleMessage {
     public static class Builder extends BaseSingleMessage.Builder {
-        private Sign clientSign;
-        private Sign userSign;
+        private BinaryData clientSign;
+        private BinaryData userSign;
         private BinaryData data;
-        private MessageCipherType cipher;
+        private MessageCipherType cipherType;
 
         public BinaryData getData() {
             return data;
@@ -47,7 +47,7 @@ public class SingleMessage extends BaseSingleMessage {
          * signature of data field of this message by client key
          * @return
          */
-        public Sign getClientSign() {
+        public BinaryData getClientSign() {
             return clientSign;
         }
 
@@ -55,7 +55,7 @@ public class SingleMessage extends BaseSingleMessage {
          * signature of data field of this message by client key
          * @param clientSign
          */
-        public void setClientSign(Sign clientSign) {
+        public void setClientSign(BinaryData clientSign) {
             this.clientSign = clientSign;
         }
 
@@ -63,7 +63,7 @@ public class SingleMessage extends BaseSingleMessage {
          * signature of data field of this message by user key
          * @return
          */
-        public Sign getUserSign() {
+        public BinaryData getUserSign() {
             return userSign;
         }
 
@@ -71,16 +71,16 @@ public class SingleMessage extends BaseSingleMessage {
          * signature of data field of this message by user key
          * @param userSign
          */
-        public void setUserSign(Sign userSign) {
+        public void setUserSign(BinaryData userSign) {
             this.userSign = userSign;
         }
 
-        public MessageCipherType getCipher() {
-            return cipher;
+        public MessageCipherType getCipherType() {
+            return cipherType;
         }
 
-        public void setCipher(MessageCipherType cipher) {
-            this.cipher = cipher;
+        public void setCipherType(MessageCipherType cipherType) {
+            this.cipherType = cipherType;
         }
 
         public SingleMessage build() {
@@ -88,9 +88,9 @@ public class SingleMessage extends BaseSingleMessage {
         }
     }
 
-    private final Sign clientSign;
-    private final Sign userSign;
-    private final MessageCipherType cipher;
+    private final BinaryData clientSign;
+    private final BinaryData userSign;
+    private final MessageCipherType cipherType;
     private final BinaryData data;
 
     private SingleMessage(Builder b) {
@@ -98,7 +98,7 @@ public class SingleMessage extends BaseSingleMessage {
         this.clientSign = b.clientSign;
         this.userSign = b.userSign;
         this.data = b.data;
-        this.cipher = b.cipher;
+        this.cipherType = b.cipherType;
     }
 
     public static Builder builder() {
@@ -109,7 +109,7 @@ public class SingleMessage extends BaseSingleMessage {
      * signature of data field of this message by client key
      * @return
      */
-    public Sign getClientSign() {
+    public BinaryData getClientSign() {
         return clientSign;
     }
 
@@ -117,7 +117,7 @@ public class SingleMessage extends BaseSingleMessage {
      * signature of data field of this message by user key
      * @return
      */
-    public Sign getUserSign() {
+    public BinaryData getUserSign() {
         return userSign;
     }
 
@@ -130,10 +130,10 @@ public class SingleMessage extends BaseSingleMessage {
     }
 
     /**
-     * type of data field cipher
+     * type of data field cipherType
      * @return
      */
-    public MessageCipherType getCipher() {
-        return cipher;
+    public MessageCipherType getCipherType() {
+        return cipherType;
     }
 }

@@ -17,7 +17,7 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.util;
+package talkeeg.bf;
 
 import java.util.Arrays;
 
@@ -55,8 +55,13 @@ public class BinaryData implements Comparable<BinaryData>, BinaryContainer {
     }
 
     @Override
+    public int getLength() {
+        return data.length;
+    }
+
+    @Override
     public int compareTo(BinaryData o) {
-        return talkeeg.common.util.Arrays.compare(this.data, o.data);
+        return talkeeg.bf.Arrays.compare(this.data, o.data);
     }
 
     @Override
@@ -92,7 +97,7 @@ public class BinaryData implements Comparable<BinaryData>, BinaryContainer {
         if(string == null) {
             throw new RuntimeException("string is null");
         }
-        byte[] data = talkeeg.common.util.Arrays.fromHexString(string);
+        byte[] data = talkeeg.bf.Arrays.fromHexString(string);
         return new BinaryData(data);
     }
 }
