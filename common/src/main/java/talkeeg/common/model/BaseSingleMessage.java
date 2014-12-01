@@ -102,4 +102,36 @@ public class BaseSingleMessage {
     public Int128 getSrc() {
         return src;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) {
+            return true;
+        }
+        if(!(o instanceof BaseSingleMessage)) {
+            return false;
+        }
+
+        final BaseSingleMessage that = (BaseSingleMessage)o;
+
+        if(id != that.id) {
+            return false;
+        }
+        if(dst != null ? !dst.equals(that.dst) : that.dst != null) {
+            return false;
+        }
+        if(src != null ? !src.equals(that.src) : that.src != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int)id;
+        result = 31 * result + (src != null ? src.hashCode() : 0);
+        result = 31 * result + (dst != null ? dst.hashCode() : 0);
+        return result;
+    }
 }

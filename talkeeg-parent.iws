@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5d5b56c3-592d-4056-a6a4-bdddd92dcc4d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TypeData.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/BaseSingleMessage.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/BaseSingleMessage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/EnumTranslator.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/EnumTranslator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/IntegerTranslator.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/IntegerTranslator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/MetaTypeResolver.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/MetaTypeResolver.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java" afterPath="$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.iws" afterPath="$PROJECT_DIR$/talkeeg-parent.iws" />
     </list>
     <ignored path="talkeeg-parent.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -46,18 +46,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="TranslatorStaticContext.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslatorStaticContext.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="380" max-vertical-offset="1152">
-              <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Bf.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -68,23 +56,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TypeData.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TypeData.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="668" max-vertical-offset="1332">
-              <caret line="69" column="8" selection-start-line="69" selection-start-column="8" selection-end-line="69" selection-end-column="8" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Test.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="402" max-vertical-offset="1224">
-              <caret line="69" column="85" selection-start-line="69" selection-start-column="85" selection-end-line="69" selection-end-column="85" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="646" max-vertical-offset="1224">
+              <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -102,20 +78,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ResponseMessage.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ResponseMessage.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="828">
-              <caret line="29" column="62" selection-start-line="29" selection-start-column="62" selection-end-line="29" selection-end-column="62" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ImmutableStructureBuilder.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ImmutableStructureBuilder.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ImmutableStructureBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.78614455" vertical-offset="0" max-vertical-offset="664">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="630">
               <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -124,12 +90,68 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BuilderInterface.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/BuilderInterface.java">
+      <file leaf-file-name="DefaultStructTranslator.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="324">
-              <caret line="23" column="54" selection-start-line="23" selection-start-column="54" selection-end-line="23" selection-end-column="54" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1435" max-vertical-offset="2322">
+              <caret line="108" column="42" selection-start-line="108" selection-start-column="42" selection-end-line="108" selection-end-column="42" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BaseSingleMessage.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/BaseSingleMessage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1568" max-vertical-offset="2268">
+              <caret line="106" column="37" selection-start-line="106" selection-start-column="37" selection-end-line="106" selection-end-column="37" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SingleMessage.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.21987952" vertical-offset="2360" max-vertical-offset="3024">
+              <caret line="141" column="37" selection-start-line="141" selection-start-column="37" selection-end-line="141" selection-end-column="37" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IntegerTranslator.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/IntegerTranslator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="222" max-vertical-offset="1152">
+              <caret line="72" column="24" selection-start-line="72" selection-start-column="24" selection-end-line="72" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EnumTranslator.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/EnumTranslator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="42" max-vertical-offset="972">
+              <caret line="37" column="68" selection-start-line="37" selection-start-column="68" selection-end-line="37" selection-end-column="68" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MetaTypeResolver.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/MetaTypeResolver.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2189" max-vertical-offset="3006">
+              <caret line="150" column="56" selection-start-line="150" selection-start-column="56" selection-end-line="150" selection-end-column="56" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -142,7 +164,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ConfigModule.java" />
         <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/MainModule.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CoreModule.java" />
         <option value="$PROJECT_DIR$/common/pom.xml" />
@@ -176,10 +197,7 @@
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslationContext.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslatorFactoryContext.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/PropertyAccessor.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/EnumTranslator.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TranslatorStaticContext.java" />
-        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/MetaTypeResolver.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructureReader.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/StructureReader.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/ImmutableStructureBuilder.java" />
@@ -189,10 +207,14 @@
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ImmutableStructureBuilder.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TypeDataSource.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TypeData.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/BaseSingleMessage.java" />
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" />
         <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java" />
+        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/MetaTypeResolver.java" />
+        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/IntegerTranslator.java" />
+        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/EnumTranslator.java" />
+        <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/BaseSingleMessage.java" />
+        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" />
       </list>
     </option>
   </component>
@@ -1348,7 +1370,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1073" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1446,22 +1468,16 @@
           <option name="timeStamp" value="72" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java</url>
-          <line>75</line>
+          <url>file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/IntegerTranslator.java</url>
+          <line>66</line>
           <properties />
-          <option name="timeStamp" value="75" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java</url>
-          <line>73</line>
-          <properties />
-          <option name="timeStamp" value="76" />
+          <option name="timeStamp" value="77" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="77" />
+      <option name="time" value="78" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JUnit">
@@ -1621,14 +1637,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/IntegerTranslator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="38" max-vertical-offset="1080">
-          <caret line="34" column="15" selection-start-line="34" selection-start-column="15" selection-end-line="34" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/schema/PrimitiveEntry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-2.2090762" vertical-offset="2155" max-vertical-offset="2772">
@@ -1749,36 +1757,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/EnumTranslator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="31" max-vertical-offset="972">
-          <caret line="27" column="80" selection-start-line="27" selection-start-column="80" selection-end-line="27" selection-end-column="80" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/MetaTypeResolver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2245" max-vertical-offset="3006">
-          <caret line="147" column="30" selection-start-line="147" selection-start-column="30" selection-end-line="147" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="607" max-vertical-offset="2106">
-          <caret line="50" column="73" selection-start-line="50" selection-start-column="73" selection-end-line="50" selection-end-column="73" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/com/google/guava/guava/18.0/guava-18.0-sources.jar!/com/google/common/primitives/Primitives.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.31777108" vertical-offset="445" max-vertical-offset="2178">
@@ -1865,32 +1843,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/BaseSingleMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.12765957" vertical-offset="0" max-vertical-offset="1692">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3319149" vertical-offset="990" max-vertical-offset="2304">
-          <caret line="86" column="25" selection-start-line="86" selection-start-column="25" selection-end-line="86" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="402" max-vertical-offset="1224">
-          <caret line="69" column="85" selection-start-line="69" selection-start-column="85" selection-end-line="69" selection-end-column="85" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2501" max-vertical-offset="4194">
@@ -1901,11 +1853,75 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ImmutableStructureBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.78614455" vertical-offset="0" max-vertical-offset="664">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="630">
           <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/bfstore/Test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="646" max-vertical-offset="1224">
+          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/MetaTypeResolver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2189" max-vertical-offset="3006">
+          <caret line="150" column="56" selection-start-line="150" selection-start-column="56" selection-end-line="150" selection-end-column="56" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/IntegerTranslator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="222" max-vertical-offset="1152">
+          <caret line="72" column="24" selection-start-line="72" selection-start-column="24" selection-end-line="72" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/EnumTranslator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="42" max-vertical-offset="972">
+          <caret line="37" column="68" selection-start-line="37" selection-start-column="68" selection-end-line="37" selection-end-column="68" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/DefaultStructTranslator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1435" max-vertical-offset="2322">
+          <caret line="108" column="42" selection-start-line="108" selection-start-column="42" selection-end-line="108" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/BaseSingleMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1568" max-vertical-offset="2268">
+          <caret line="106" column="37" selection-start-line="106" selection-start-column="37" selection-end-line="106" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.21987952" vertical-offset="2360" max-vertical-offset="3024">
+          <caret line="141" column="37" selection-start-line="141" selection-start-column="37" selection-end-line="141" selection-end-column="37" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -35,7 +35,7 @@ public class EnumTranslator implements Translator {
     private Enum<?>[] enumConstants;
 
     public EnumTranslator(PrimitiveEntry entry, Class<Enum<?>> type) {
-        this.translator = new IntegerTranslator(entry);
+        this.translator = new IntegerTranslator(entry, Integer.class);
         this.type = type;
         this.enumConstants = this.type.getEnumConstants();
         Preconditions.checkNotNull(this.enumConstants, "type.enumConstants is null");

@@ -106,11 +106,23 @@ final class DefaultStructTranslator implements Translator {
         final List<SchemaEntry> fields = this.struct.getChilds();
         for(int i = 0; i < fields.size(); ++i) {
             final SchemaEntry field = fields.get(i);
-            final Translator translator = this.fieldTranslators.get(i);
+            final Translator translator = getReadTranslator(buffer, i);
             final Object value = translator.from(context, buffer);
             builder.set(field.getFieldName(), value);
         }
         return builder.create();
+    }
+
+    protected Translator getReadTranslator(ByteBuffer buffer, int i) {
+        final byte fieldType = buffer.get();
+        buffer.position(buffer.position() - 1);//rollback position for one byte
+        final Translator translator;
+        if(fieldType == EntryType.NULL.getValue()) {
+            translator = NullTranslator.INSTANCE;
+        } else {
+            translator = this.fieldTranslators.get(i);
+        }
+        return translator;
     }
 
     /**

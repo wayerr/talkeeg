@@ -148,7 +148,7 @@ public final class MetaTypeResolver {
                         final Class<?> type = context.getType();
                         final PrimitiveEntry entry = (PrimitiveEntry)context.getEntry();
                         if(Number.class.isAssignableFrom(type)) {
-                            return new IntegerTranslator(entry);
+                            return new IntegerTranslator(entry, type);
                         } else if(Enum.class.isAssignableFrom(type)) {
                             return new EnumTranslator(entry, (Class<Enum<?>>)type);
                         }

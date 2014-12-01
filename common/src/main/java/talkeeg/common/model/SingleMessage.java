@@ -137,4 +137,44 @@ public class SingleMessage extends BaseSingleMessage {
     public MessageCipherType getCipherType() {
         return cipherType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) {
+            return true;
+        }
+        if(!(o instanceof SingleMessage)) {
+            return false;
+        }
+        if(!super.equals(o)) {
+            return false;
+        }
+
+        final SingleMessage that = (SingleMessage)o;
+
+        if(cipherType != that.cipherType) {
+            return false;
+        }
+        if(clientSign != null ? !clientSign.equals(that.clientSign) : that.clientSign != null) {
+            return false;
+        }
+        if(data != null ? !data.equals(that.data) : that.data != null) {
+            return false;
+        }
+        if(userSign != null ? !userSign.equals(that.userSign) : that.userSign != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (clientSign != null ? clientSign.hashCode() : 0);
+        result = 31 * result + (userSign != null ? userSign.hashCode() : 0);
+        result = 31 * result + (cipherType != null ? cipherType.hashCode() : 0);
+        result = 31 * result + (data != null ? data.hashCode() : 0);
+        return result;
+    }
 }

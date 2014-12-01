@@ -31,12 +31,13 @@ import java.nio.ByteBuffer;
 final class IntegerTranslator implements Translator {
 
     private final PrimitiveEntry primitive;
+    private final Class<?> type;
 
-    IntegerTranslator(PrimitiveEntry primitive) {
+    IntegerTranslator(PrimitiveEntry primitive, Class<?> type) {
         this.primitive = primitive;
-        final Class<?> javaType = this.primitive.getJavaType();
-        if(!TgbfUtils.isIntegerNumber(javaType)) {
-            throw new RuntimeException("it`s is not a integer number: " + javaType);
+        this.type = type;
+        if(!TgbfUtils.isIntegerNumber(type)) {
+            throw new RuntimeException("it`s is not a integer number: " + type);
         }
     }
 
@@ -61,12 +62,15 @@ final class IntegerTranslator implements Translator {
 
     @Override
     public Object from(TranslationContext context, ByteBuffer buffer) throws Exception {
-        Class<?> javaType = primitive.getJavaType();
         final long value = TgbfUtils.readSignedInteger(buffer);
-        if(Long.class.equals(javaType)) {
+        if(Long.class.equals(type)) {
             return value;
-        } else if(Integer.class.equals(javaType)) {
+        } else if(Integer.class.equals(type)) {
             return (int)value;
+        } else if(Short.class.equals(type)) {
+            return (short)value;
+        } else if(Byte.class.equals(type)) {
+            return (byte)value;
         }
         return value;
     }
