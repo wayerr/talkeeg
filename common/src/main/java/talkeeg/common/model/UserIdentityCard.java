@@ -22,8 +22,10 @@ package talkeeg.common.model;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
+import talkeeg.bf.StructureBuilder;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Created by wayerr on 28.11.14.
@@ -40,13 +42,25 @@ public final class UserIdentityCard {
      */
     public static final String ATTR_VCARD = "vcard";
 
-    public static class Builder {
+    public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
+        @Override
+        public StructureBuilder get() {
+            return new ImmutableStructureBuilder(UserIdentityCard.builder());
+        }
+    };
+
+    public static class Builder implements BuilderInterface {
         private BinaryData key;
         private final Map<String, Object> attrs = new HashMap<>();
         private final Set<Int128> clients = new HashSet<>();
 
         public BinaryData getKey() {
             return key;
+        }
+
+        public Builder key(BinaryData key) {
+            setKey(key);
+            return this;
         }
 
         public void setKey(BinaryData key) {
@@ -57,6 +71,11 @@ public final class UserIdentityCard {
             return attrs;
         }
 
+        public Builder putAttr(String name, Object value) {
+            this.attrs.put(name, value);
+            return this;
+        }
+
         public void setAttrs(Map<String, Object> attrs) {
             this.attrs.clear();
             this.attrs.putAll(attrs);
@@ -64,6 +83,11 @@ public final class UserIdentityCard {
 
         public Set<Int128> getClients() {
             return clients;
+        }
+
+        public Builder addClient(Int128 client) {
+            this.clients.add(client);
+            return this;
         }
 
         public void setClients(Set<Int128> clients) {

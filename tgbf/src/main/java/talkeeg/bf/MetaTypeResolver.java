@@ -144,6 +144,7 @@ public final class MetaTypeResolver {
                 .parent(null)
                 .putFactory(MetaTypes.INTEGER, new Function<TranslatorStaticContext, Translator>() {
                     @Override
+                    @SuppressWarnings("unchecked")
                     public Translator apply(TranslatorStaticContext context) {
                         final Class<?> type = context.getType();
                         final PrimitiveEntry entry = (PrimitiveEntry)context.getEntry();
@@ -153,6 +154,12 @@ public final class MetaTypeResolver {
                             return new EnumTranslator(entry, (Class<Enum<?>>)type);
                         }
                         throw new RuntimeException("can not create translator between " + entry.getType() + " and " + type);
+                    }
+                })
+                .putFactory(MetaTypes.BOOLEAN, new Function<TranslatorStaticContext, Translator>() {
+                    @Override
+                    public Translator apply(TranslatorStaticContext context) {
+                        return new BooleanTranslator((PrimitiveEntry)context.getEntry());
                     }
                 })
                 .putFactory(MetaTypes.BLOB, new Function<TranslatorStaticContext, Translator>() {

@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <schema xmlns="http://talkeeg/ns/tgbf" byteOrder="BIG_ENDIAN">
+    <struct name="UserIdentityCard" structId="11">
+        <blob fieldName="key"/>
+        <!-- map of custom user attrs, like nickname and vCard -->
+        <map fieldName="attrs">
+            <string />
+            <string />
+        </map>
+        <list fieldName="clients" >
+            <id />
+        </list>
+    </struct>
+    <struct name="ClientAddress" structId="13">
+        <integer fieldName="type" storeAs="01_BYTE"/>
+        <string fieldName="value" />
+        <boolean fieldName="external" />
+    </struct>
+    <struct name="ClientAddresses" structId="12">
+        <list fieldName="addresses" >
+            <struct structId="13"/>
+        </list>
+    </struct>
+
     <message name="SingleMessage" structId="1">
         <!-- cyclic id of message for prevent duplicating-->
         <integer fieldName="id" storeAs="02_BYTE"/>
@@ -11,7 +33,10 @@
         <blob fieldName="clientSign" />
         <blob fieldName="userSign" />
         <integer fieldName="cipherType" storeAs="HALF"/>
-        <blob fieldName="data" />
+        <union fieldName="data">
+            <struct structId="11"/>
+            <struct structId="12"/>
+        </union>
     </message>
     <message name="ResponseMessage" structId="2">
         <!-- cyclic id of message for prevent duplicating-->
@@ -21,17 +46,4 @@
         <!-- fingerprint of destination public key -->
         <id fieldName="dst" />
     </message>
-
-    <struct name="UserIdentityCard" structId="11">
-        <blob fieldName="key"/>
-        <!-- list of custom user attrs, like nickname and vCard -->
-        <list fieldName="attrs" />
-        <list fieldName="clients" >
-            <integer storeAs="16_BYTE" />
-        </list>
-    </struct>
-    <struct name="ClientAddresses" structId="12">
-        <list fieldName="addresses" >
-        </list>
-    </struct>
 </schema>

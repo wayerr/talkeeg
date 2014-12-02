@@ -126,11 +126,10 @@ public final class TgbfUtils {
      * @param buffer
      * @return
      */
-    public static int getEntryLength(ByteBuffer buffer) {
+    public static int getEntryLength(ByteBuffer buffer, EntryType type) {
         final int position = buffer.position();
         try {
-            final byte b = buffer.get();
-            final EntryType type = EntryType.getEntryType(b);
+            readAndCheckType(buffer, type);
             int size;
             if(type == EntryType.BYTES) {
                 final long val = readUnsignedInteger(buffer);

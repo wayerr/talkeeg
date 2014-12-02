@@ -20,6 +20,7 @@
 package talkeeg.bf;
 
 import com.google.common.base.Preconditions;
+import talkeeg.bf.schema.PrimitiveEntry;
 import talkeeg.bf.schema.SchemaEntry;
 import talkeeg.bf.schema.Struct;
 
@@ -40,7 +41,7 @@ public final class TranslatorStaticContext {
         this.type = type;
         Preconditions.checkNotNull(this.bf, "bf is null");
         Preconditions.checkNotNull(this.entry, "entry is null");
-        Preconditions.checkNotNull(this.type, "type is null");
+        Preconditions.checkNotNull(this.type, "type for entry " + entry + " is null");
     }
 
     public Bf getBf() {
@@ -60,9 +61,16 @@ public final class TranslatorStaticContext {
      * @param fieldEntry
      * @return
      */
-    public Translator getTranslator(SchemaEntry fieldEntry, Class<?> type) {
+    public Translator createTranslator(SchemaEntry fieldEntry, Class<?> type) {
+        if((type == null || type == Object.class)) {
+            if(fieldEntry instanceof Struct) {
+                type = this.bf.getType((Struct)fieldEntry);
+            } else if(fieldEntry instanceof PrimitiveEntry) {
+                type = ((PrimitiveEntry)fieldEntry).getJavaType();
+            }
+        }
         final TranslatorStaticContext context = new TranslatorStaticContext(bf, this, fieldEntry, type);
-        return bf.getTranslator(context);
+        return bf.createTranslator(context);
     }
 
     public Class<?> getType() {

@@ -29,7 +29,7 @@ import java.util.Set;
  */
 public abstract class Base implements SchemaEntry {
 
-    public static abstract class Builder {
+    public static abstract class Builder implements SchemaEntryBuilder {
         private EntryType type;
         private String fieldName;
 

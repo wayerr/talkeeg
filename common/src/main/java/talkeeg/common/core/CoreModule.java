@@ -19,11 +19,18 @@
 
 package talkeeg.common.core;
 
+import com.google.common.base.Function;
 import dagger.Module;
 import dagger.Provides;
+import talkeeg.bf.*;
+import talkeeg.bf.schema.PrimitiveEntry;
+import talkeeg.bf.schema.Schema;
+import talkeeg.bf.schema.SchemaSource;
 import talkeeg.common.conf.Config;
+import talkeeg.common.model.*;
 
 import javax.inject.Singleton;
+import java.util.function.Supplier;
 
 /**
  * module for configure instances of services
@@ -56,5 +63,31 @@ public final class CoreModule {
     CurrentAddressesService provideCurrentAddressesService(Config config) {
         final PublicIpService externalIpFunction = new PublicIpService(config);
         return new CurrentAddressesService(externalIpFunction);
+    }
+
+    @Provides
+    @Singleton
+    Bf provideBf() {
+        final Schema schema;
+        try {
+            schema = SchemaSource.fromResource("protocol.xml");
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
+        return Bf.build()
+            .schema(schema)
+            .resolver(MetaTypeResolver.builder()
+                    .putFactory(MetaTypes.BLOB, new Function<TranslatorStaticContext, Translator>() {
+                        @Override
+                        public Translator apply(TranslatorStaticContext context) {
+                            return new BlobTranslator((PrimitiveEntry)context.getEntry(), BlobTranslator.ADAPTER_BINARY_DATA);
+                        }
+                    })
+                    .build())
+            .putType(SingleMessage.class, SingleMessage.STRUCT_BUILDER_FACTORY)
+            .putType(UserIdentityCard.class, UserIdentityCard.STRUCT_BUILDER_FACTORY)
+            .putType(ClientAddresses.class, ClientAddresses.STRUCT_BUILDER_FACTORY)
+            .putType(ClientAddress.class, ClientAddress.STRUCT_BUILDER_FACTORY)
+            .build();
     }
 }

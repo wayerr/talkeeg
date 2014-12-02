@@ -23,6 +23,7 @@ import com.google.common.base.Function;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import talkeeg.common.model.ClientAddress;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -92,8 +93,8 @@ public final class CurrentAddressesService {
         }
     }
 
-    private static AddressType getAddressType(InetAddress address) {
-        AddressType type;
+    private static BasicAddressType getAddressType(InetAddress address) {
+        BasicAddressType type;
         if(address instanceof Inet6Address) {
             type = BasicAddressType.IPV6;
         } else if(address instanceof Inet4Address) {

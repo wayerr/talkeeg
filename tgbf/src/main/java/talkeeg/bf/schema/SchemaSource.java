@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteOrder;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,6 +63,28 @@ public final class SchemaSource {
             throw exception;
         }
     };
+    public static final String ATTR_FIELD_NAME = "fieldName";
+    public static final String ATTR_STORE_AS = "storeAs";
+
+    private static final class LoadContext {
+        private final Map<Integer, Struct.Builder> structMap = new TreeMap<>();
+
+        private Struct.Builder getStruct(int structId) {
+            final Struct.Builder struct = structMap.get(structId);
+            if(struct == null) {
+                throw new RuntimeException("can not find previously defined struct with id: " + structId);
+            }
+            return struct;
+        }
+
+        private void addStruct(Struct.Builder struct) {
+            final int structId = struct.getId();
+            final Struct.Builder oldStruct = structMap.put(structId, struct);
+            if(oldStruct != null) {
+                throw new RuntimeException("find two struct with equal id: " + structId);
+            }
+        }
+    }
 
     private static final String NS = "http://talkeeg/ns/tgbf";
 
@@ -69,7 +92,10 @@ public final class SchemaSource {
     public static final String NAME_STRUCT = "struct";
     public static final String NAME_PRIMITIVE = "primitive";
     public static final String NAME_LIST = "list";
+    public static final String NAME_MAP = "map";
+    public static final String NAME_UNION = "union";
     public static final String NAME_INTEGER = MetaTypes.INTEGER;
+    public static final String NAME_BOOLEAN = MetaTypes.BOOLEAN;
     public static final String NAME_FLOAT = MetaTypes.FLOAT;
     public static final String NAME_DATETIME = MetaTypes.DATETIME;
     public static final String NAME_BLOB = MetaTypes.BLOB;
@@ -115,6 +141,7 @@ public final class SchemaSource {
 
         loadByteOrder(builder, rootElement);
 
+        final LoadContext context = new LoadContext();
         final NodeList messages = rootElement.getChildNodes();
         final int length = messages.getLength();
         for(int i = 0; i < length; ++i) {
@@ -126,7 +153,8 @@ public final class SchemaSource {
             if(!NAME_MESSAGE.equals(name) && !NAME_STRUCT.equals(name)) {
                 throw new RuntimeException("expected 'message' or 'struct' node, but found " + name);
             }
-            final Struct struct = loadStruct(node);
+            final Struct.Builder structBuilder = loadStruct(context, node);
+            final Struct struct = structBuilder.build();
             builder.putMessage(struct);
         }
 
@@ -134,12 +162,12 @@ public final class SchemaSource {
     }
 
     private static void loadByteOrder(Schema.Builder builder, Element rootElement) {
-        final String byteOrderName = getAttributeValue(rootElement.getAttributes(), "byteOrder");
+        final String byteOrderName = getAttributeValue(rootElement.getAttributes(), "byteOrder", true);
         builder.setByteOrder("BIG_ENDIAN".equals(byteOrderName)? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
     }
 
     private static EntryType getEntryType(NamedNodeMap attributes, String attrName) {
-        final String stringValue = getAttributeValue(attributes, attrName);
+        final String stringValue = getAttributeValue(attributes, attrName, false);
         if(stringValue == null) {
             return null;
         }
@@ -150,35 +178,38 @@ public final class SchemaSource {
         return entryType;
     }
 
-    private static Struct loadStruct(Node node) {
+    private static Struct.Builder loadStruct(LoadContext context, Node node) {
         final NamedNodeMap attrs = node.getAttributes();
-        Struct.Builder b = Struct.builder();
-        b.setId(Integer.parseInt(getAttributeValue(attrs, "structId")));
+        final int structId = Integer.parseInt(getAttributeValue(attrs, "structId", true));
         final NodeList fields = node.getChildNodes();
         final int length = fields.getLength();
+        if(length == 0) {
+            //empty struct interpreted as reference to a previously defined struct
+            return context.getStruct(structId);
+        }
+        Struct.Builder b = Struct.builder();
+        b.setId(structId);
         for(int i = 0; i < length; ++i) {
             final Node field = fields.item(i);
-            if(field.getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-            final SchemaEntry entry = loadEntry(field);
+            final SchemaEntry entry = loadEntry(context, field);
             if(entry != null) {
                 b.addField(entry);
             }
         }
-        return b.build();
+        context.addStruct(b);
+        return b;
     }
 
-    private static SchemaEntry loadPrimitive(Node node, Class<?> clazz) {
+    private static SchemaEntryBuilder loadPrimitive(Node node, Class<?> clazz) {
         return loadPrimitive(node, clazz, null);
     }
 
-    private static SchemaEntry loadPrimitive(Node node, Class<?> clazz, final EntryType type) {
+    private static SchemaEntryBuilder loadPrimitive(Node node, Class<?> clazz, final EntryType type) {
         final PrimitiveEntry.Builder builder = PrimitiveEntry.builder();
         final NamedNodeMap attributes = node.getAttributes();
         EntryType entryType = type;
         if(entryType == null) {
-            entryType = getEntryType(attributes, "storeAs");
+            entryType = getEntryType(attributes, ATTR_STORE_AS);
             if(entryType == null) {
                 throw new RuntimeException("Need specify 'storeAs' attribute in " + node);
             }
@@ -186,22 +217,57 @@ public final class SchemaSource {
         builder.setType(entryType);
         builder.setJavaType(clazz);
         builder.setMetaType(node.getLocalName());
-        builder.setFieldName(getAttributeValue(attributes, "fieldName"));
-        return builder.build();
+        return builder;
     }
 
-    private static SchemaEntry loadList(Node node) {
-
-        return null;
+    private static ListEntry.Builder loadList(LoadContext context, Node node) {
+        final ListEntry.Builder b = new ListEntry.Builder();
+        final NodeList childNodes = node.getChildNodes();
+        final int length = childNodes.getLength();
+        SchemaEntry itemEntry = null;
+        for(int i = 0; i < length; ++i) {
+            Node item = childNodes.item(i);
+            itemEntry = loadEntry(context, item);
+            if(itemEntry != null) {
+                break;
+            }
+        }
+        b.setItemEntry(itemEntry);
+        return b;
     }
 
-    private static SchemaEntry loadEntry(Node node) {
+    private static MapEntry.Builder loadMap(LoadContext context, Node node) {
+        final MapEntry.Builder b = new MapEntry.Builder();
+        final NodeList childNodes = node.getChildNodes();
+        final int length = childNodes.getLength();
+        int attrIndex = 0;
+        for(int i = 0; i < length; ++i) {
+            Node item = childNodes.item(i);
+            SchemaEntry itemEntry = loadEntry(context, item);
+            if(itemEntry != null) {
+                if(attrIndex == 0) {
+                    b.setKeyEntry(itemEntry);
+                } else if(attrIndex == 1) {
+                    b.setValueEntry(itemEntry);
+                } else {
+                    throw new RuntimeException("to many entries in map node: " + attrIndex);
+                }
+                attrIndex++;
+            }
+        }
+        return b;
+    }
+
+    private static SchemaEntry loadEntry(LoadContext context, Node node) {
+        if(node.getNodeType() != Node.ELEMENT_NODE) {
+            return null;
+        }
         final String name = node.getLocalName();
-        final SchemaEntry entry;
+        final SchemaEntryBuilder entry;
         switch (name) {
             case NAME_MESSAGE:
             case NAME_STRUCT:
-                entry = loadStruct(node);
+                entry = loadStruct(context, node);
                 break;
             case NAME_DATETIME:
                 entry = loadPrimitive(node, Long.class, EntryType.BYTE_8);
@@ -211,6 +277,9 @@ public final class SchemaSource {
                 break;
             case NAME_INTEGER:
                 entry = loadPrimitive(node, Long.class);
+                break;
+            case NAME_BOOLEAN:
+                entry = loadPrimitive(node, Boolean.class, EntryType.HALF);
                 break;
             case NAME_PRIMITIVE:
                 entry = loadPrimitive(node, Object.class);
@@ -225,19 +294,54 @@ public final class SchemaSource {
                 entry = loadPrimitive(node, String.class, EntryType.BYTES);
                 break;
             case NAME_LIST:
-                entry = loadList(node);
+                entry = loadList(context, node);
+                break;
+            case NAME_MAP:
+                entry = loadMap(context, node);
+                break;
+            case NAME_UNION:
+                entry = loadUnion(context, node);
                 break;
             default:
                 throw new RuntimeException("unsupported node type: " + name);
         }
-        return entry;
+
+        boolean fieldNameRequired = false;
+        final Node parentNode = node.getParentNode();
+        if(parentNode != null) {
+            final String localName = parentNode.getLocalName();
+            fieldNameRequired = localName.equals(NAME_MESSAGE) || localName.equals(NAME_STRUCT);
+        }
+        entry.setFieldName(getAttributeValue(node.getAttributes(), ATTR_FIELD_NAME, fieldNameRequired));
+        return entry.build();
     }
 
-    private static String getAttributeValue(NamedNodeMap attrs, String name) {
+    private static UnionEntry.Builder loadUnion(LoadContext context, Node node) {
+        UnionEntry.Builder b = UnionEntry.builder();
+        final NodeList fields = node.getChildNodes();
+        final int length = fields.getLength();
+        for(int i = 0; i < length; ++i) {
+            final Node field = fields.item(i);
+            if(field.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            final SchemaEntry entry = loadEntry(context, field);
+            if(entry != null) {
+                b.addEntry(entry);
+            }
+        }
+        return b;
+    }
+
+    private static String getAttributeValue(NamedNodeMap attrs, String name, boolean required) {
         final Node node = attrs.getNamedItemNS(null, name);
         if(node == null) {
-            //this situation is possible when the validation is disabled or error in the description of the scheme
-            throw new RuntimeException("need attribute: " + name);
+            if(required) {
+                //this situation is possible when the validation is disabled or error in the description of the scheme
+                throw new RuntimeException("need attribute: " + name);
+            } else {
+                return null;
+            }
         }
         return node.getNodeValue();
     }

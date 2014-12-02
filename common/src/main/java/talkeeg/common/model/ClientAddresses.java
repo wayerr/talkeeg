@@ -20,11 +20,12 @@
 package talkeeg.common.model;
 
 import talkeeg.bf.StructInfo;
-import talkeeg.common.core.ClientAddress;
+import talkeeg.bf.StructureBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * list of client addresses
@@ -34,7 +35,14 @@ import java.util.List;
 @StructInfo(id = 12)
 public final class ClientAddresses {
 
-    public static final class Builder {
+    public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
+        @Override
+        public StructureBuilder get() {
+            return new ImmutableStructureBuilder(new Builder());
+        }
+    };
+
+    public static final class Builder implements BuilderInterface {
         private final List<ClientAddress> addresses = new ArrayList<>();
 
         public List<ClientAddress> getAddresses() {

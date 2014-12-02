@@ -24,38 +24,58 @@ import talkeeg.bf.EntryType;
 import java.util.EnumSet;
 
 /**
- * entry which represent sequence of items
- * Created by wayerr on 24.11.14.
+ * entry which represent map of items
+ * Created by wayerr on 02.12.14.
  */
-public final class ListEntry extends Base {
+public final class MapEntry extends Base {
     public static final class Builder extends Base.Builder {
-        private SchemaEntry itemEntry;
+        private SchemaEntry keyEntry;
+        private SchemaEntry valueEntry;
 
-        public SchemaEntry getItemEntry() {
-            return itemEntry;
+        public SchemaEntry getKeyEntry() {
+            return keyEntry;
         }
 
-        public void setItemEntry(SchemaEntry itemEntry) {
-            this.itemEntry = itemEntry;
+        public void setKeyEntry(SchemaEntry keyEntry) {
+            this.keyEntry = keyEntry;
         }
 
-        public ListEntry build() {
-            return new ListEntry(this);
+        public SchemaEntry getValueEntry() {
+            return valueEntry;
+        }
+
+        public void setValueEntry(SchemaEntry valueEntry) {
+            this.valueEntry = valueEntry;
+        }
+
+        public MapEntry build() {
+            return new MapEntry(this);
         }
     }
 
-    private final SchemaEntry itemEntry;
+    private final SchemaEntry keyEntry;
+    private final SchemaEntry valueEntry;
 
-    private ListEntry(Builder b) {
+    private MapEntry(Builder b) {
         super(EnumSet.of(EntryType.LIST), b);
-        this.itemEntry = b.itemEntry;
+        this.keyEntry = b.keyEntry;
+        this.valueEntry = b.valueEntry;
     }
 
     /**
-     * schema entry of list item, maybe null
+     * schema entry of keys, maybe null
+     *
      * @return
      */
-    public SchemaEntry getItemEntry() {
-        return itemEntry;
+    public SchemaEntry getKeyEntry() {
+        return keyEntry;
+    }
+
+    /**
+     * schema entry of values, maybe null
+     * @return
+     */
+    public SchemaEntry getValueEntry() {
+        return valueEntry;
     }
 }

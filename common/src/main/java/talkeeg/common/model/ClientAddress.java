@@ -17,15 +17,66 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.core;
+package talkeeg.common.model;
+
+import talkeeg.bf.StructInfo;
+import talkeeg.bf.StructureBuilder;
+import talkeeg.common.core.AddressType;
+import talkeeg.common.core.BasicAddressType;
+
+import java.util.function.Supplier;
 
 /**
  * a representation for client network address
  *
  * Created by wayerr on 01.12.14.
  */
+@StructInfo(id = 13)
 public final class ClientAddress {
-    private final AddressType type;
+
+    public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
+        @Override
+        public StructureBuilder get() {
+            return new ImmutableStructureBuilder(new Builder());
+        }
+    };
+
+    public static final class Builder implements BuilderInterface {
+        private BasicAddressType type;
+        private boolean external;
+        private String value;
+
+        public BasicAddressType getType() {
+            return type;
+        }
+
+        public void setType(BasicAddressType type) {
+            this.type = type;
+        }
+
+        public boolean isExternal() {
+            return external;
+        }
+
+        public void setExternal(boolean external) {
+            this.external = external;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public ClientAddress build() {
+            return new ClientAddress(type, external, value);
+        }
+    }
+
+    private final BasicAddressType type;
     private final boolean external;
     private final String value;
 
@@ -35,13 +86,13 @@ public final class ClientAddress {
      * @param external flag for addresses which not directly owned by client
      * @param value string representation of address
      */
-    public ClientAddress(AddressType type, boolean external, String value) {
+    public ClientAddress(BasicAddressType type, boolean external, String value) {
         this.type = type;
         this.external = external;
         this.value = value;
     }
 
-    public AddressType getType() {
+    public BasicAddressType getType() {
         return type;
     }
 

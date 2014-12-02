@@ -21,6 +21,9 @@ package talkeeg.common.model;
 
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.BinaryData;
+import talkeeg.bf.StructureBuilder;
+
+import java.util.function.Supplier;
 
 /**
  * simple single message with signed and optionally ciphered data
@@ -29,17 +32,24 @@ import talkeeg.bf.BinaryData;
  */
 @StructInfo(id = 1)
 public class SingleMessage extends BaseSingleMessage {
+    public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
+        @Override
+        public StructureBuilder get() {
+            return new ImmutableStructureBuilder(SingleMessage.builder());
+        }
+    };
+
     public static class Builder extends BaseSingleMessage.Builder {
         private BinaryData clientSign;
         private BinaryData userSign;
-        private BinaryData data;
+        private Object data;
         private MessageCipherType cipherType;
 
-        public BinaryData getData() {
+        public Object getData() {
             return data;
         }
 
-        public void setData(BinaryData data) {
+        public void setData(Object data) {
             this.data = data;
         }
 
@@ -92,7 +102,7 @@ public class SingleMessage extends BaseSingleMessage {
     private final BinaryData clientSign;
     private final BinaryData userSign;
     private final MessageCipherType cipherType;
-    private final BinaryData data;
+    private final Object data;
 
     private SingleMessage(Builder b) {
         super(b);
@@ -126,7 +136,7 @@ public class SingleMessage extends BaseSingleMessage {
      * message data
      * @return
      */
-    public BinaryData getData() {
+    public Object getData() {
         return data;
     }
 

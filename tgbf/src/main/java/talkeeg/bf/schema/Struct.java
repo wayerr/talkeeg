@@ -19,6 +19,7 @@
 
 package talkeeg.bf.schema;
 
+import com.google.common.base.MoreObjects;
 import talkeeg.bf.EntryType;
 
 import java.util.ArrayList;
@@ -32,6 +33,11 @@ import java.util.List;
  * Created by wayerr on 21.11.14.
  */
 public class Struct extends Base implements CompositeSchemaEntry {
+    /**
+     * value of id used for unknown structures
+     */
+    public static final int UNKNOWN_ID = -1;
+
     public static class Builder extends Base.Builder {
         private final List<SchemaEntry> fields = new ArrayList<>();
         private int id;
@@ -84,5 +90,11 @@ public class Struct extends Base implements CompositeSchemaEntry {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    protected void toString(MoreObjects.ToStringHelper sb) {
+        super.toString(sb);
+        sb.add("id", id);
     }
 }

@@ -22,6 +22,8 @@ package talkeeg.bf;
 import talkeeg.bf.schema.PrimitiveEntry;
 
 import java.nio.ByteBuffer;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * translator for primitives
@@ -29,7 +31,13 @@ import java.nio.ByteBuffer;
  * Created by wayerr on 25.11.14.
  */
 final class IntegerTranslator implements Translator {
-
+    private static final Set<EntryType> ALLOWED_TYPES = EnumSet.of(
+            EntryType.HALF,
+            EntryType.BYTE_1,
+            EntryType.BYTE_2,
+            EntryType.BYTE_4,
+            EntryType.BYTE_8
+    );
     private final PrimitiveEntry primitive;
     private final Class<?> type;
 
@@ -38,6 +46,10 @@ final class IntegerTranslator implements Translator {
         this.type = type;
         if(!TgbfUtils.isIntegerNumber(type)) {
             throw new RuntimeException("it`s is not a integer number: " + type);
+        }
+        final EntryType entryType = this.primitive.getType();
+        if(!ALLOWED_TYPES.contains(entryType)) {
+            throw new RuntimeException("type of primitive is " + entryType + ", but this translator support only: " + ALLOWED_TYPES);
         }
     }
 
@@ -49,7 +61,7 @@ final class IntegerTranslator implements Translator {
 
     @Override
     public int needSize(TranslationContext context, ByteBuffer buffer) throws Exception {
-        return TgbfUtils.getEntryLength(buffer);
+        return TgbfUtils.getEntryLength(buffer, primitive.getType());
     }
 
     @Override

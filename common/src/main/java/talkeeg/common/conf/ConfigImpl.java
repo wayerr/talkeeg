@@ -158,6 +158,7 @@ public final class ConfigImpl implements Config {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getValue(String name, T defaultValue) {
         Object value = map.get(name);
         //we check that value is not configured, but not configured as null

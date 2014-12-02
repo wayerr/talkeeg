@@ -21,10 +21,7 @@
 package talkeeg.bf;
 
 import com.google.common.base.Preconditions;
-import talkeeg.bf.schema.PrimitiveEntry;
-import talkeeg.bf.schema.Schema;
-import talkeeg.bf.schema.SchemaEntry;
-import talkeeg.bf.schema.Struct;
+import talkeeg.bf.schema.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -58,7 +55,7 @@ public final class Bf {
          * @return this
          */
         public Builder putType(Class<?> type, Supplier<StructureBuilder> structureBuilder) {
-            final int id = getStructId(type);
+            final int id = getStructIdByAnnotaion(type);
             TypeData.Builder source = this.types.get(id);
             if(source == null) {
                 source = new TypeData.Builder(id, type);
@@ -137,7 +134,7 @@ public final class Bf {
             throw new RuntimeException("Can not find message for structId=" + messageId);
         }
         final TranslationContextImpl context = new TranslationContextImpl(this, message);
-        final Translator translator = getTranslator(message);
+        final Translator translator = createTranslator(message);
         final int size = translator.getSize(context, obj);
         ByteBuffer buffer = ByteBuffer.allocate(size);
         translator.to(context, obj, buffer);
@@ -149,15 +146,30 @@ public final class Bf {
         final Class<?> clazz = obj.getClass();
 
         // if class is struct
-        return getStructId(clazz);
+        return getStructIdByAnnotaion(clazz);
     }
 
-    private static int getStructId(Class<?> clazz) {
+    /**
+     * structid defined by {@link talkeeg.bf.StructInfo }
+     * @param clazz
+     * @return {@link Struct#UNKNOWN_ID } if no annotation
+     */
+    private static int getStructIdByAnnotaion(Class<?> clazz) {
         final StructInfo si = clazz.getAnnotation(StructInfo.class);
         if(si == null) {
-            throw new RuntimeException("can not get translator for " + clazz + " it class need " + StructInfo.class.getName() + " annotation.");
+            return Struct.UNKNOWN_ID;
         }
         return si.id();
+    }
+
+    /**
+     * structure id which mapped to specified class
+     * @param type
+     * @return -1 if no mapped struct id
+     */
+    public int getStructId(Class<?> type) {
+        //method can use internal registry for resolving id of structure, therefore it must be non static
+        return getStructIdByAnnotaion(type);
     }
 
     public Object read(ByteBuffer buffer) throws Exception {
@@ -165,7 +177,7 @@ public final class Bf {
         final int structId = DefaultStructTranslator.readStructId(buffer.asReadOnlyBuffer());
         final Struct message = schema.getMessage(structId);
         final TranslationContextImpl context = new TranslationContextImpl(this, message);
-        final Translator translator = getTranslator(message);
+        final Translator translator = createTranslator(message);
         return translator.from(context, buffer);
     }
 
@@ -213,17 +225,17 @@ public final class Bf {
      * @param schemaEntry
      * @return translator
      */
-    public Translator getTranslator(final SchemaEntry schemaEntry) {
+    public Translator createTranslator(final SchemaEntry schemaEntry) {
         if(schemaEntry == null) {
             throw  new NullPointerException("schemaEntry is null");
         }
         final Class<?> type = getType((Struct)schemaEntry);
         final TranslatorStaticContext factoryContext = new TranslatorStaticContext(this, null, schemaEntry, type);
-        final Translator translator = getTranslator(factoryContext);
+        final Translator translator = createTranslator(factoryContext);
         return translator;
     }
 
-    Translator getTranslator(TranslatorStaticContext factoryContext) {
+    Translator createTranslator(TranslatorStaticContext factoryContext) {
         Translator translator = null;
         SchemaEntry schemaEntry = factoryContext.getEntry();
         if(schemaEntry instanceof PrimitiveEntry) {
@@ -236,6 +248,12 @@ public final class Bf {
                 translator = new DefaultStructTranslator(factoryContext);
                 structs.put(struct.getId(), translator);
             }
+        } else if(schemaEntry instanceof UnionEntry) {
+            translator = new UnionTranslator(factoryContext);
+        } else if(schemaEntry instanceof ListEntry) {
+            translator = new ListTranslator(factoryContext);
+        } else if(schemaEntry instanceof MapEntry) {
+            translator = new MapTranslator(factoryContext);
         }
         if(translator == null) {
             throw new RuntimeException("Can not find translator for schemaEntry=" + schemaEntry);

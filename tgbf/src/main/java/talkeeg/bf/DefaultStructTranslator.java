@@ -49,9 +49,12 @@ final class DefaultStructTranslator implements Translator {
         for(SchemaEntry fieldEntry: this.struct.getChilds()) {
             final String fieldName = fieldEntry.getFieldName();
             final Class<?> propertyType = this.reader.getType(fieldName);
-            builder.add(context.getTranslator(fieldEntry, propertyType));
+            builder.add(context.createTranslator(fieldEntry, propertyType));
         }
         this.fieldTranslators = builder.build();
+        if(this.fieldTranslators.isEmpty()) {
+            throw new RuntimeException("no fields in " + this.struct + " of " + this.type);
+        }
     }
 
     @Override
@@ -79,8 +82,7 @@ final class DefaultStructTranslator implements Translator {
 
     @Override
     public int needSize(TranslationContext context, ByteBuffer buffer) {
-        readStructId(buffer);
-        return 0;
+        return TgbfUtils.getEntryLength(buffer, EntryType.STRUCT);
     }
 
     @Override

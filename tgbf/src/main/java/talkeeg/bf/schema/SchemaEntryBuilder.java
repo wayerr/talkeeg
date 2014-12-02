@@ -17,19 +17,15 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.bf;
+package talkeeg.bf.schema;
 
 /**
- * list of known metatypes
- * @see talkeeg.bf.MetaTypeResolver
- * Created by wayerr on 01.12.14.
+ * common iface for any schema entry builders
+ *
+ * Created by wayerr on 02.12.14.
  */
-public final class MetaTypes {
-    public static final String INTEGER = "integer";
-    public static final String FLOAT = "float";
-    public static final String DATETIME = "datetime";
-    public static final String BLOB = "blob";
-    public static final String STRING = "string";
-    public static final String ID = "id";
-    public static final String BOOLEAN = "boolean";
+public interface SchemaEntryBuilder {
+    public void setFieldName(String fieldName);
+    public String getFieldName();
+    public SchemaEntry build();
 }
