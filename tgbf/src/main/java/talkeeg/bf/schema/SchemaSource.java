@@ -19,25 +19,17 @@
 
 package talkeeg.bf.schema;
 
-import com.google.common.base.Enums;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteSource;
 import com.google.common.io.Resources;
-import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 import org.w3c.dom.*;
 import org.xml.sax.*;
-import org.xml.sax.ext.EntityResolver2;
 import talkeeg.bf.EntryType;
 import talkeeg.bf.MetaTypes;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteOrder;

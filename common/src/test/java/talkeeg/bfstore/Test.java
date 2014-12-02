@@ -19,6 +19,7 @@
 
 package talkeeg.bfstore;
 
+import com.google.common.base.Function;
 import talkeeg.bf.*;
 import talkeeg.bf.schema.PrimitiveEntry;
 import talkeeg.bf.schema.SchemaSource;
@@ -62,7 +63,12 @@ public class Test {
         Bf bf =  Bf.build()
                 .schema(SchemaSource.fromResource("protocol.xml"))
                 .resolver(MetaTypeResolver.builder()
-                        .putFactory(MetaTypes.BLOB, (e) -> new BlobTranslator((PrimitiveEntry)e.getEntry(), BlobTranslator.ADAPTER_BINARY_DATA))
+                        .putFactory(MetaTypes.BLOB, new Function<TranslatorStaticContext, Translator>() {
+                            @Override
+                            public Translator apply(TranslatorStaticContext context) {
+                                return new BlobTranslator((PrimitiveEntry)context.getEntry(), BlobTranslator.ADAPTER_BINARY_DATA);
+                            }
+                        })
                         .build())
                 .putType(SingleMessage.class, new Supplier<StructureBuilder>() {
                     @Override

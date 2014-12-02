@@ -151,7 +151,7 @@ final class PublicIpService implements Function<InetAddress, InetAddress>, Close
         if(servicesString == null) {
             throw new NullPointerException(" 'net.publicIpServices' is null, but we need space delimited list of urls");
         }
-        this.knowedServices = Collections.unmodifiableList(StringUtils.splitTo(new ArrayList<>(),
+        this.knowedServices = Collections.unmodifiableList(StringUtils.splitTo(new ArrayList<String>(),
                 servicesString, ' '));
         final ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
         builder.setDaemon(true);

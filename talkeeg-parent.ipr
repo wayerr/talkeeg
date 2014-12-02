@@ -67,6 +67,11 @@
         <module name="tgbf" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="common" target="1.7" />
+      <module name="desktop-client" target="1.8" />
+      <module name="tgbf" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
   <component name="CopyrightManager" default="gplv3">
     <copyright>
