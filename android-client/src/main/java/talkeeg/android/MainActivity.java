@@ -1,11 +1,16 @@
 package talkeeg.android;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 
-public class HelloAndroidActivity extends Activity {
+/**
+ * main app activity, potentially contains list of most used activities
+ */
+public class MainActivity extends Activity {
 
     /**
      * Called when the activity is first created.
@@ -17,14 +22,24 @@ public class HelloAndroidActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(talkeeg.android.R.layout.activity_main);
+        setContentView(R.layout.main_activity);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(talkeeg.android.R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    /**
+     * barcode button handler
+     * @param view
+     */
+    public void openBarcode(View view) {
+        Intent intent = new Intent(this, BarcodeActivity.class);
+        startActivity(intent);
     }
 
 }

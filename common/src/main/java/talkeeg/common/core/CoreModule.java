@@ -42,7 +42,9 @@ import java.util.function.Supplier;
     library = true, complete = false,
     injects = {
         CryptoService.class,
-        OwnedIdentityCardsService.class
+        OwnedIdentityCardsService.class,
+        BarcodeService.class,
+        HelloService.class
     }
 )
 public final class CoreModule {
