@@ -71,6 +71,9 @@ final class MapTranslator implements  Translator {
 
     @Override
     public void to(TranslationContext context, Object message, ByteBuffer buffer) throws Exception {
+        buffer.put(EntryType.LIST.getValue());
+        buffer.put(EntryType.NULL.getValue());
+        TgbfUtils.writeSignedInteger(buffer, getSize(context, message));
         for(Map.Entry<?, ?> item : ((Map<?, ?>)message).entrySet()) {
             Object key = item.getKey();
             Object value = item.getValue();
