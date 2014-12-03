@@ -26,6 +26,7 @@ import talkeeg.bf.*;
 import talkeeg.bf.schema.PrimitiveEntry;
 import talkeeg.bf.schema.Schema;
 import talkeeg.bf.schema.SchemaSource;
+import talkeeg.common.barcode.BarcodeService;
 import talkeeg.common.conf.Config;
 import talkeeg.common.model.*;
 
@@ -67,6 +68,12 @@ public final class CoreModule {
 
     @Provides
     @Singleton
+    HelloService provideHelloService(Bf bf, CurrentAddressesService addressesService, OwnedIdentityCardsService identityCardsService) {
+        return new HelloService(bf, addressesService, identityCardsService);
+    }
+
+    @Provides
+    @Singleton
     Bf provideBf() {
         final Schema schema;
         try {
@@ -88,6 +95,14 @@ public final class CoreModule {
             .putType(UserIdentityCard.class, UserIdentityCard.STRUCT_BUILDER_FACTORY)
             .putType(ClientAddresses.class, ClientAddresses.STRUCT_BUILDER_FACTORY)
             .putType(ClientAddress.class, ClientAddress.STRUCT_BUILDER_FACTORY)
+            .putType(Hello.class, Hello.STRUCT_BUILDER_FACTORY)
             .build();
     }
+
+    @Provides
+    @Singleton
+    BarcodeService provideBarcodeService(Config config) {
+        return new BarcodeService();
+    }
+
 }

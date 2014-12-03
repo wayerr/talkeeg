@@ -41,7 +41,7 @@ public final class Main {
         this.graph = ObjectGraph.create(new MainModule());
         this.serviceManager = this.graph.get(IpcServiceManager.class);
         this.cryptoService = this.graph.get(CryptoService.class);
-        this.guiManager = new GuiManager();
+        this.guiManager = new GuiManager(this.graph);
     }
 
     public static void main(String args[]) throws Exception {

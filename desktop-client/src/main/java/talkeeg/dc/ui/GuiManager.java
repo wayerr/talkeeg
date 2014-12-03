@@ -20,6 +20,7 @@
 package talkeeg.dc.ui;
 
 import com.google.common.io.Resources;
+import dagger.ObjectGraph;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -38,23 +39,41 @@ import java.util.logging.Logger;
  */
 public final class GuiManager implements Runnable {
     private static final Logger LOG = Logger.getLogger(GuiManager.class.getName());
+    private final ObjectGraph objectGraph;
     private TrayIcon trayIcon;
     private JPopupMenu popupMenu;
     private JFrame frame;
+    private ViewsManager viewsManager;
+
+    public GuiManager(ObjectGraph objectGraph) {
+        this.objectGraph = objectGraph;
+    }
 
     @Override
     public void run() {
 
         createTrayIcon();
 
-        this.frame = new JFrame("title");
+        this.frame = new JFrame("Talkeeg desktop client");
         if(trayIcon == null) {
             //if tray icon not created then we must show main window
-            this.frame.setVisible(true);
+            showMainWindow();
             this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
 
+        final JMenuBar mainMenu = new JMenuBar();
+        final JRootPane rootPane = this.frame.getRootPane();
+        rootPane.setJMenuBar(mainMenu);
+        
+        this.viewsManager = new ViewsManager(objectGraph);
+        mainMenu.add(this.viewsManager.getMenu());
 
+        rootPane.setContentPane(this.viewsManager.getComponent());
+    }
+
+    protected void showMainWindow() {
+        UiUtils.setWindowBounds(this.frame);
+        this.frame.setVisible(true);
     }
 
     /**
@@ -84,7 +103,7 @@ public final class GuiManager implements Runnable {
     }
 
     private void loadPopupMenuActions() {
-        this.popupMenu.add(new SimpleAction("showMainWindow", (t, e) -> this.frame.setVisible(true)).name("Show"));
+        this.popupMenu.add(new SimpleAction("showMainWindow", (t, e) -> this.showMainWindow()).name("Show"));
         this.popupMenu.add(new SimpleAction("exit", (t, e) -> System.exit(0)).name("Exit"));
     }
 

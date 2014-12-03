@@ -74,6 +74,19 @@ public final class Arrays {
     }
 
     /**
+     * array with buffer data from position to limit
+     * @param buffer
+     * @return
+     */
+    public static byte[] toArray(ByteBuffer buffer) {
+        final int position = buffer.position();
+        final int limit = buffer.limit();
+        byte data[] = new byte[limit - position];
+        buffer.duplicate().get(data);
+        return data;
+    }
+
+    /**
      * convert hex string to byte array
      * @param s
      * @return

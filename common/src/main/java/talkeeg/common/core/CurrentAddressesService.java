@@ -24,6 +24,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import talkeeg.common.model.ClientAddress;
+import talkeeg.common.model.ClientAddresses;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -59,7 +60,13 @@ public final class CurrentAddressesService {
                 .build(CacheLoader.from(this.externalIpFunction));
     }
 
-    public Set<ClientAddress> getAddreses() {
+    public ClientAddresses getClientAddreses() {
+        return ClientAddresses.builder()
+            .addresses(getAddreses())
+            .build();
+    }
+
+    Set<ClientAddress> getAddreses() {
         final Set<ClientAddress> addresses = new HashSet<>();
         try {
             final Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();

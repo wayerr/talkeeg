@@ -22,20 +22,14 @@ package talkeeg.common.model;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * list of client addresses
- *
- * Created by wayerr on 01.12.14.
+ * hello struct, used for exposing {@link talkeeg.common.model.UserIdentityCard UIC} and {@link talkeeg.common.model.ClientAddresses CAs}
+ * Created by wayerr on 03.12.14.
  */
-@StructInfo(id = 12)
-public final class ClientAddresses {
-
+@StructInfo(id = 14)
+public final class Hello {
     public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
         @Override
         public StructureBuilder get() {
@@ -44,43 +38,45 @@ public final class ClientAddresses {
     };
 
     public static final class Builder implements BuilderInterface {
-        private final List<ClientAddress> addresses = new ArrayList<>();
 
-        public List<ClientAddress> getAddresses() {
+        private ClientAddresses addresses;
+        private UserIdentityCard identityCard;
+
+        public ClientAddresses getAddresses() {
             return addresses;
         }
 
-        public Builder addAddress(ClientAddress address) {
-            this.addresses.add(address);
-            return this;
+        public void setAddresses(ClientAddresses addresses) {
+            this.addresses = addresses;
         }
 
-        public Builder addresses(Collection<ClientAddress> addresses) {
-            setAddresses(addresses);
-            return this;
+        public UserIdentityCard getIdentityCard() {
+            return identityCard;
         }
 
-        public void setAddresses(Collection<ClientAddress> addresses) {
-            this.addresses.clear();
-            this.addresses.addAll(addresses);
+        public void setIdentityCard(UserIdentityCard identityCard) {
+            this.identityCard = identityCard;
         }
 
-        public ClientAddresses build() {
-            return new ClientAddresses(this);
+        @Override
+        public Hello build() {
+            return new Hello(this);
         }
     }
 
-    private final List<ClientAddress> addresses;
+    private final UserIdentityCard identityCard;
+    private final ClientAddresses addresses;
 
-    private ClientAddresses(Builder builder) {
-        this.addresses = Collections.unmodifiableList(new ArrayList<>(builder.addresses));
+    public Hello(Builder b) {
+        this.identityCard = b.identityCard;
+        this.addresses = b.addresses;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public UserIdentityCard getIdentityCard() {
+        return identityCard;
     }
 
-    public List<ClientAddress> getAddresses() {
+    public ClientAddresses getAddresses() {
         return addresses;
     }
 
@@ -89,13 +85,16 @@ public final class ClientAddresses {
         if(this == o) {
             return true;
         }
-        if(!(o instanceof ClientAddresses)) {
+        if(!(o instanceof Hello)) {
             return false;
         }
 
-        final ClientAddresses addresses1 = (ClientAddresses)o;
+        final Hello hello = (Hello)o;
 
-        if(addresses != null ? !addresses.equals(addresses1.addresses) : addresses1.addresses != null) {
+        if(addresses != null ? !addresses.equals(hello.addresses) : hello.addresses != null) {
+            return false;
+        }
+        if(identityCard != null ? !identityCard.equals(hello.identityCard) : hello.identityCard != null) {
             return false;
         }
 
@@ -104,6 +103,8 @@ public final class ClientAddresses {
 
     @Override
     public int hashCode() {
-        return addresses != null ? addresses.hashCode() : 0;
+        int result = identityCard != null ? identityCard.hashCode() : 0;
+        result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
+        return result;
     }
 }

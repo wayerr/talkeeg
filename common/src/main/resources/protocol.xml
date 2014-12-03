@@ -21,6 +21,10 @@
             <struct structId="13"/>
         </list>
     </struct>
+    <struct name="Hello" structId="14">
+        <struct fieldName="identityCard" structId="11" />
+        <struct fieldName="addresses" structId="12" />
+    </struct>
 
     <message name="SingleMessage" structId="1">
         <!-- cyclic id of message for prevent duplicating-->

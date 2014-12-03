@@ -25,6 +25,7 @@ import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
 import talkeeg.common.core.CoreModule;
 import talkeeg.common.ipc.IpcServiceManager;
+import talkeeg.dc.ui.UiModule;
 
 import javax.inject.Singleton;
 
@@ -39,7 +40,8 @@ import javax.inject.Singleton;
         IpcServiceManager.class
     },
     includes = {
-        CoreModule.class
+        CoreModule.class,
+        UiModule.class
     }
 )
 final class MainModule {
