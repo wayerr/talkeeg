@@ -49,6 +49,11 @@ public final class ClientAddresses {
             return addresses;
         }
 
+        public Builder addAddress(ClientAddress address) {
+            this.addresses.add(address);
+            return this;
+        }
+
         public void setAddresses(List<ClientAddress> addresses) {
             this.addresses.clear();
             this.addresses.addAll(addresses);
@@ -65,7 +70,34 @@ public final class ClientAddresses {
         this.addresses = Collections.unmodifiableList(new ArrayList<>(builder.addresses));
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public List<ClientAddress> getAddresses() {
         return addresses;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) {
+            return true;
+        }
+        if(!(o instanceof ClientAddresses)) {
+            return false;
+        }
+
+        final ClientAddresses addresses1 = (ClientAddresses)o;
+
+        if(addresses != null ? !addresses.equals(addresses1.addresses) : addresses1.addresses != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return addresses != null ? addresses.hashCode() : 0;
     }
 }

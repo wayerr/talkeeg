@@ -50,6 +50,11 @@ public final class ClientAddress {
             return type;
         }
 
+        public Builder type(BasicAddressType type) {
+            setType(type);
+            return this;
+        }
+
         public void setType(BasicAddressType type) {
             this.type = type;
         }
@@ -58,12 +63,22 @@ public final class ClientAddress {
             return external;
         }
 
+        public Builder external(boolean external) {
+            setExternal(external);
+            return this;
+        }
+
         public void setExternal(boolean external) {
             this.external = external;
         }
 
         public String getValue() {
             return value;
+        }
+
+        public Builder value(String value) {
+            setValue(value);
+            return this;
         }
 
         public void setValue(String value) {
@@ -90,6 +105,10 @@ public final class ClientAddress {
         this.type = type;
         this.external = external;
         this.value = value;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public BasicAddressType getType() {

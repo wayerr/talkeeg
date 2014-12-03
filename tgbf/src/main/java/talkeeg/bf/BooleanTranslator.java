@@ -39,7 +39,7 @@ class BooleanTranslator implements Translator {
 
     @Override
     public int getSize(TranslationContext context, Object message) throws Exception {
-        return translator.getSize(context, message);
+        return translator.getSize(context, toInt(message));
     }
 
     @Override
@@ -49,11 +49,18 @@ class BooleanTranslator implements Translator {
 
     @Override
     public void to(TranslationContext context, Object message, ByteBuffer buffer) throws Exception {
-        translator.to(context, message, buffer);
+        int intValue = toInt(message);
+        translator.to(context, intValue, buffer);
+    }
+
+    protected int toInt(Object message) {
+        final Boolean boolValue = (Boolean)message;
+        return boolValue ? 1 : 0;
     }
 
     @Override
     public Object from(TranslationContext context, ByteBuffer buffer) throws Exception {
-        return translator.from(context, buffer);
+        Number intValue = (Number)translator.from(context, buffer);
+        return intValue.intValue() != 0;
     }
 }

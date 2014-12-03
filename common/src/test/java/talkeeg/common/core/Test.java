@@ -24,10 +24,7 @@ import talkeeg.bf.*;
 import talkeeg.bf.schema.PrimitiveEntry;
 import talkeeg.bf.schema.SchemaSource;
 import talkeeg.common.core.CoreModule;
-import talkeeg.common.model.ImmutableStructureBuilder;
-import talkeeg.common.model.MessageCipherType;
-import talkeeg.common.model.SingleMessage;
-import talkeeg.common.model.UserIdentityCard;
+import talkeeg.common.model.*;
 
 import java.nio.ByteBuffer;
 import java.util.function.Supplier;
@@ -59,6 +56,14 @@ public class Test {
                 .addClient(client2Id)
                 .build();
         smbuilder.addData(uic);
+        ClientAddresses addresses = ClientAddresses.builder()
+                .addAddress(ClientAddress.builder()
+                        .type(BasicAddressType.IPV6)
+                        .external(true)
+                        .value("fc71:0:0:0:131:1ace:a61:4aa0%eth0")
+                        .build())
+                .build();
+        smbuilder.addData(addresses);
         smbuilder.setClientSign(BinaryData.fromString(""));
         SingleMessage sm = smbuilder.build();
 
