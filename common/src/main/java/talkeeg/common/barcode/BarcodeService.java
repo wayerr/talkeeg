@@ -22,6 +22,8 @@ package talkeeg.common.barcode;
 import com.google.common.collect.ImmutableMap;
 import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.multi.qrcode.QRCodeMultiReader;
+import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import talkeeg.bf.BinaryData;
 import java.nio.charset.StandardCharsets;
@@ -46,16 +48,16 @@ public final class BarcodeService {
     }
 
     BinaryData decode(BinaryBitmap image) {
-        MultiFormatReader reader = new MultiFormatReader();
+        QRCodeReader reader = new QRCodeMultiReader();
         try {
-            Result result = reader.decode(image);
+            Result result = reader.decode(image, ImmutableMap.of(DecodeHintType.CHARACTER_SET, DEFAULT_BYTE_MODE_ENCODING));
             Map<ResultMetadataType, Object> resultMetadata = result.getResultMetadata();
             List<?> segments = (List<?>)resultMetadata.get(ResultMetadataType.BYTE_SEGMENTS);
             if(segments == null || segments.isEmpty()) {
                 throw new RuntimeException("no binary data");
             }
             return new BinaryData((byte[])segments.get(0));
-        } catch(NotFoundException e) {
+        } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -39,16 +39,21 @@ public final class UiUtils {
      * @param window
      */
     public static void setWindowBounds(Container window) {
-        final Dimension minimumSize = window.getMinimumSize();
-        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = minimumSize.width;
-        int height = minimumSize.height;
-        final float factor = .3f;
-        if(width < MIN_SZIE) {
-            width = (int)(screenSize.width * factor);
+        Dimension winSize = window.getPreferredSize();
+        if(winSize == null) {
+            winSize = window.getMinimumSize();
         }
-        if(height < MIN_SZIE) {
-            height = (int)(screenSize.height * factor);
+        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = winSize.width;
+        int height = winSize.height;
+        final float factor = .3f;
+        final int widthFromScreen = (int)(screenSize.width * factor);
+        if(width < widthFromScreen) {
+            width = widthFromScreen;
+        }
+        final int heightfromScreen = (int)(screenSize.height * factor);
+        if(height < heightfromScreen) {
+            height = heightfromScreen;
         }
         final int x = (screenSize.width - width)/2;
         final int y = (screenSize.height - height)/2;

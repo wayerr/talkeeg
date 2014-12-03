@@ -19,15 +19,10 @@
 
 package talkeeg.dc.ui.barcode;
 
-import com.google.zxing.client.j2se.MatrixToImageConfig;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
-import talkeeg.common.core.CurrentAddressesService;
 import talkeeg.common.core.HelloService;
-import talkeeg.common.core.OwnedIdentityCardsService;
-import talkeeg.dc.ui.ComponentOwner;
 import talkeeg.dc.ui.ImageViewer;
 import talkeeg.dc.ui.View;
 
@@ -43,7 +38,7 @@ import java.util.Arrays;
  * Created by wayerr on 03.12.14.
  */
 public final class BarcodeView implements View {
-
+    private static final int PIXEL_FACTOR = 4;
     private final ImageViewer viewer;
     private final BarcodeService service;
     private final HelloService helloService;
@@ -68,16 +63,16 @@ public final class BarcodeView implements View {
     private Image toBufferedImage(BitMatrix matrix) {
         final int width = matrix.getWidth();
         final int height = matrix.getHeight();
-        final int factor = 8;
-        final BufferedImage image = new BufferedImage(width * factor, height * factor, BufferedImage.TYPE_BYTE_BINARY);
-        final int whiteArr[] = new int[factor * factor];
-        final int blackArr[] = new int[factor * factor];
+
+        final BufferedImage image = new BufferedImage(width * PIXEL_FACTOR, height * PIXEL_FACTOR, BufferedImage.TYPE_BYTE_BINARY);
+        final int whiteArr[] = new int[PIXEL_FACTOR * PIXEL_FACTOR];
+        final int blackArr[] = new int[PIXEL_FACTOR * PIXEL_FACTOR];
         Arrays.fill(blackArr, 1);
         WritableRaster raster = image.getRaster();
         for(int x = 0; x < width; ++x) {
             for(int y = 0; y < height; ++y) {
                 final int arr[] = matrix.get(x, y)? whiteArr : blackArr;
-                raster.setPixels(x * factor, y * factor, factor, factor, arr);
+                raster.setPixels(x * PIXEL_FACTOR, y * PIXEL_FACTOR, PIXEL_FACTOR, PIXEL_FACTOR, arr);
             }
         }
 
