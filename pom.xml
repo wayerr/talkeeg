@@ -18,6 +18,7 @@
     <module>tgbf</module>
     <module>common</module>
     <module>desktop-client</module>
+    <module>android-client</module>
   </modules>
 
   <dependencies>
