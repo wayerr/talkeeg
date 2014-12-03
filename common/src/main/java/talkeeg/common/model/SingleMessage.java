@@ -19,10 +19,13 @@
 
 package talkeeg.common.model;
 
+import com.google.common.collect.ImmutableList;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.StructureBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -42,15 +45,21 @@ public class SingleMessage extends BaseSingleMessage {
     public static class Builder extends BaseSingleMessage.Builder {
         private BinaryData clientSign;
         private BinaryData userSign;
-        private Object data;
+        private final List<Object> data = new ArrayList<>();
         private MessageCipherType cipherType;
 
-        public Object getData() {
+        public List<Object> getData() {
             return data;
         }
 
-        public void setData(Object data) {
-            this.data = data;
+        public Builder addData(Object item) {
+            this.data.add(item);
+            return this;
+        }
+
+        public void setData(List<Object> data) {
+            this.data.clear();
+            this.data.addAll(data);
         }
 
         /**
@@ -102,13 +111,13 @@ public class SingleMessage extends BaseSingleMessage {
     private final BinaryData clientSign;
     private final BinaryData userSign;
     private final MessageCipherType cipherType;
-    private final Object data;
+    private final List<Object> data;
 
     private SingleMessage(Builder b) {
         super(b);
         this.clientSign = b.clientSign;
         this.userSign = b.userSign;
-        this.data = b.data;
+        this.data = ImmutableList.copyOf(b.data);
         this.cipherType = b.cipherType;
     }
 
@@ -136,7 +145,7 @@ public class SingleMessage extends BaseSingleMessage {
      * message data
      * @return
      */
-    public Object getData() {
+    public List<Object> getData() {
         return data;
     }
 

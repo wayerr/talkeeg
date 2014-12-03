@@ -43,6 +43,7 @@ public final class ListTranslator implements Translator {
         SchemaEntry schemaEntry = staticContext.getEntry();
         this.entry = (ListEntry)schemaEntry;
         this.type = staticContext.getType();
+        checkType(this.type);
         this.bf = staticContext.getBf();
         this.itemEntry = this.entry.getItemEntry();
         Preconditions.checkNotNull(this.itemEntry, "itemEntry is null in " + this.entry);
@@ -59,14 +60,21 @@ public final class ListTranslator implements Translator {
 
     protected int getDataSize(TranslationContext context, Object message) throws Exception {
         int size = 0;
-        if(message instanceof Collection) {
-            for(Object item : (Collection)message) {
-                size += translator.getSize(context, item);
-            }
-        } else {
-            throw new RuntimeException("message for ListTranslator is " + message.getClass() + " but must instance of Collection or Map");
+        final Class<?> messageType = message.getClass();
+        checkType(messageType);
+        for(Object item : (Collection)message) {
+            size += translator.getSize(context, item);
         }
         return size;
+    }
+
+    private void checkType(Class<?> messageType) {
+        if(messageType == null) {
+            throw new NullPointerException("messageType is null");
+        }
+        if(!(Collection.class.isAssignableFrom(messageType))) {
+            throw new RuntimeException("message for ListTranslator is " + messageType + " but must be instance of Collection");
+        }
     }
 
     @Override
@@ -79,12 +87,9 @@ public final class ListTranslator implements Translator {
         buffer.put(EntryType.LIST.getValue());
         buffer.put(EntryType.NULL.getValue());
         TgbfUtils.writeSignedInteger(buffer, getDataSize(context, message));
-        if(message instanceof Collection) {
-            for(Object item : (Collection)message) {
-                translator.to(context, item, buffer);
-            }
-        } else {
-            throw new RuntimeException("message for ListTranslator must instance of Collection");
+        checkType(message.getClass());
+        for(Object item : (Collection)message) {
+            translator.to(context, item, buffer);
         }
     }
 

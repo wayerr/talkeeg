@@ -41,7 +41,6 @@ public final class TranslatorStaticContext {
         this.type = type;
         Preconditions.checkNotNull(this.bf, "bf is null");
         Preconditions.checkNotNull(this.entry, "entry is null");
-        Preconditions.checkNotNull(this.type, "type for entry " + entry + " is null");
     }
 
     public Bf getBf() {
@@ -63,10 +62,9 @@ public final class TranslatorStaticContext {
      */
     public Translator createTranslator(SchemaEntry fieldEntry, Class<?> type) {
         if((type == null || type == Object.class)) {
-            if(fieldEntry instanceof Struct) {
-                type = this.bf.getType((Struct)fieldEntry);
-            } else if(fieldEntry instanceof PrimitiveEntry) {
-                type = ((PrimitiveEntry)fieldEntry).getJavaType();
+            final Class<?> resolvedType = this.bf.getType(fieldEntry);
+            if(resolvedType != null) {// type maybe is an Object.class
+                type = resolvedType;
             }
         }
         final TranslatorStaticContext context = new TranslatorStaticContext(bf, this, fieldEntry, type);

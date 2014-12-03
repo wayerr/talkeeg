@@ -197,12 +197,19 @@ public final class Bf {
 
     /**
      * structure representation type
-     * @param struct
+     * @param schemaEntry
      * @return a class or throw exception if no mapping
      */
-    public Class<?> getType(Struct struct) {
-        final TypeData typeData = getTypeData(struct);
-        final Class<?> type = typeData.getType();
+    public Class<?> getType(SchemaEntry schemaEntry) {
+        final Class<?> type;
+        if(schemaEntry instanceof Struct) {
+            final TypeData typeData = getTypeData((Struct)schemaEntry);
+            type = typeData.getType();
+        } else if(schemaEntry instanceof PrimitiveEntry) {
+            type = ((PrimitiveEntry)schemaEntry).getJavaType();
+        } else {
+            type = null;
+        }
         return type;
     }
 

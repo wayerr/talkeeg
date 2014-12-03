@@ -33,10 +33,12 @@
         <blob fieldName="clientSign" />
         <blob fieldName="userSign" />
         <integer fieldName="cipherType" storeAs="HALF"/>
-        <union fieldName="data">
-            <struct structId="11"/>
-            <struct structId="12"/>
-        </union>
+        <list fieldName="data">
+            <union>
+                <struct structId="11"/>
+                <struct structId="12"/>
+            </union>
+        </list>
     </message>
     <message name="ResponseMessage" structId="2">
         <!-- cyclic id of message for prevent duplicating-->

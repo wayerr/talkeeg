@@ -58,7 +58,7 @@ public class Test {
                 .putAttr(UserIdentityCard.ATTR_NICK, "client2")
                 .addClient(client2Id)
                 .build();
-        smbuilder.setData(uic);
+        smbuilder.addData(uic);
         smbuilder.setClientSign(BinaryData.fromString(""));
         SingleMessage sm = smbuilder.build();
 
