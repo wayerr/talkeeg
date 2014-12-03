@@ -46,7 +46,7 @@ public final class ClientAddresses {
     public static final class Builder implements BuilderInterface {
         private final List<ClientAddress> addresses = new ArrayList<>();
 
-        public List<ClientAddress> getAddresses() {
+        public Collection<ClientAddress> getAddresses() {
             return addresses;
         }
 
