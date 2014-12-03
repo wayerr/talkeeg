@@ -35,24 +35,24 @@
             <xs:element name="list" type="ListType" />
             <xs:element name="map" type="ListType" />
             <xs:element name="struct" type="StructType" />
-            <xs:element name="union">
-                <xs:complexType>
-                    <xs:choice minOccurs="2" maxOccurs="unbounded">
-                        <xs:element name="primitive" type="PrimitiveType" />
-                        <xs:element name="integer" type="IntType" />
-                        <xs:element name="boolean" type="BooleanType" />
-                        <xs:element name="id" type="IdType" />
-                        <xs:element name="float" type="FloatType" />
-                        <xs:element name="datetime" type="DatetimeType" />
-                        <xs:element name="blob" type="BlobType" />
-                        <xs:element name="string" type="BlobType" />
-                        <xs:element name="list" type="ListType" />
-                        <xs:element name="map" type="ListType" />
-                        <xs:element name="struct" type="StructType" />
-                    </xs:choice>
-                    <xs:attribute name="fieldName" type="xs:string"/>
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="union" type="UnionType" />
+        </xs:choice>
+        <xs:attribute type="xs:string" name="fieldName"/>
+        <xs:anyAttribute/>
+    </xs:complexType>
+    <xs:complexType name="UnionType">
+        <xs:choice minOccurs="2" maxOccurs="unbounded">
+            <xs:element name="primitive" type="PrimitiveType" />
+            <xs:element name="integer" type="IntType" />
+            <xs:element name="boolean" type="BooleanType" />
+            <xs:element name="id" type="IdType" />
+            <xs:element name="float" type="FloatType" />
+            <xs:element name="datetime" type="DatetimeType" />
+            <xs:element name="blob" type="BlobType" />
+            <xs:element name="string" type="BlobType" />
+            <xs:element name="list" type="ListType" />
+            <xs:element name="map" type="ListType" />
+            <xs:element name="struct" type="StructType" />
         </xs:choice>
         <xs:attribute type="xs:string" name="fieldName"/>
         <xs:anyAttribute/>
@@ -159,6 +159,7 @@
                     <xs:element name="list" type="ListType" />
                     <xs:element name="map" type="ListType" />
                     <xs:element name="struct" type="StructType" />
+                    <xs:element name="union" type="UnionType" />
                 </xs:choice>
             </xs:restriction>
         </xs:complexContent>
