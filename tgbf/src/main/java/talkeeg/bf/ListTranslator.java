@@ -51,7 +51,14 @@ public final class ListTranslator implements Translator {
 
     @Override
     public int getSize(TranslationContext context, Object message) throws Exception {
-        int size = 1 /* byte for type */;
+        int size = getDataSize(context, message);
+        size += TgbfUtils.getMinimalSize(size);
+        size += 1 /* byte for type */ + 1 /*TARG*/ + 1 /*for size value type*/;
+        return size;
+    }
+
+    protected int getDataSize(TranslationContext context, Object message) throws Exception {
+        int size = 0;
         if(message instanceof Collection) {
             for(Object item : (Collection)message) {
                 size += translator.getSize(context, item);
@@ -71,7 +78,7 @@ public final class ListTranslator implements Translator {
     public void to(TranslationContext context, Object message, ByteBuffer buffer) throws Exception {
         buffer.put(EntryType.LIST.getValue());
         buffer.put(EntryType.NULL.getValue());
-        TgbfUtils.writeSignedInteger(buffer, getSize(context, message));
+        TgbfUtils.writeSignedInteger(buffer, getDataSize(context, message));
         if(message instanceof Collection) {
             for(Object item : (Collection)message) {
                 translator.to(context, item, buffer);

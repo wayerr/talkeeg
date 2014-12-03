@@ -112,6 +112,7 @@ public class BlobTranslator implements Translator {
             final CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
             final ByteBuffer dup = from.duplicate();
             dup.limit(dup.position() + length);
+            from.position(from.position() + length);//we must shift position to end of bytes chunk
             final CharBuffer res = decoder.decode(dup);
             return res.toString();
         }

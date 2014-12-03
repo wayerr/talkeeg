@@ -44,11 +44,11 @@ public class Test {
         System.out.println("save");
         SingleMessage.Builder smbuilder = SingleMessage.builder();
         smbuilder.setId((short)0);
-        final Int128 client2Id = Int128.fromString("84B4A939C2624A8F8C821D3C34B79BEA");
+        final Int128 client2Id = Int128.fromString("D2EEEBC41AFE35E0824CF506BB98A549");
         smbuilder.setSrc(client2Id);
         smbuilder.setDst(Int128.fromString("BE0C19B5E78D44D49DDC55FBE2E0FE88"));
         smbuilder.setCipherType(MessageCipherType.NONE);
-        smbuilder.setData(UserIdentityCard.builder()
+        UserIdentityCard uic = UserIdentityCard.builder()
                 .key(BinaryData.fromString("30819F300D06092A864886F70D010101050003818D0030818902818100E8" +
                         "50277FA39F7D63F713ED2E2E6EC23043A9DF29DE44ECEAA64C726ADE1F8B" +
                         "B69ECA13B5D6CA2BFDF4A0A98235B762E9B7EFA0B9864465D7589B65BE52" +
@@ -57,14 +57,22 @@ public class Test {
                         "5E0A949DDBD6FD0203010001"))
                 .putAttr(UserIdentityCard.ATTR_NICK, "client2")
                 .addClient(client2Id)
-                .build());
+                .build();
+        smbuilder.setData(uic);
         smbuilder.setClientSign(BinaryData.fromString(""));
         SingleMessage sm = smbuilder.build();
 
         Bf bf = new CoreModule().provideBf();
-        ByteBuffer buffer = bf.write(sm);
-        Arrays.toHexString(buffer);
-        final SingleMessage restored = (SingleMessage)bf.read(buffer);
-        assertEquals(sm, restored);
+
+        writeAndRead(uic, bf);
+
+        writeAndRead(sm, bf);
+    }
+
+    protected void writeAndRead(Object uic, Bf bf) throws Exception {
+        ByteBuffer buffer = bf.write(uic);
+        System.out.println(uic + " (" + buffer.remaining() + " bytes) :" + Arrays.toHexString(buffer));
+        final Object r = bf.read(buffer);
+        assertEquals(uic, r);
     }
 }

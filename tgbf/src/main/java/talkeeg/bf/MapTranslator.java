@@ -19,6 +19,7 @@
 
 package talkeeg.bf;
 
+import com.google.common.base.Preconditions;
 import talkeeg.bf.schema.MapEntry;
 import talkeeg.bf.schema.SchemaEntry;
 
@@ -54,12 +55,26 @@ final class MapTranslator implements  Translator {
 
     @Override
     public int getSize(TranslationContext context, Object message) throws Exception {
-        int size = 1 /* byte for type */;
-        for(Map.Entry<?, ?> item : ((Map<?, ?>)message).entrySet()) {
+        int size = getDataSize(context, (Map<?, ?>)message);
+        size += TgbfUtils.getMinimalSize(size);
+        size += 1 /* byte for type */ + 1 /*TARG*/ + 1 /*for size value type*/;
+        return size;
+    }
+
+    protected int getDataSize(TranslationContext context, Map<?, ?> message) throws Exception {
+        int size = 0;
+        for(Map.Entry<?, ?> item : message.entrySet()) {
             Object key = item.getKey();
             Object value = item.getValue();
-            size += keyTranslator.getSize(context, key);
-            size += valueTranslator.getSize(context, value);
+            size += checkSize(keyTranslator.getSize(context, key), "key");
+            size += checkSize(valueTranslator.getSize(context, value), "value");
+        }
+        return size;
+    }
+
+    private int checkSize(int size, String type) {
+        if(size < 1) {
+            throw new RuntimeException("size of " + type + " less than 1");
         }
         return size;
     }
@@ -72,9 +87,10 @@ final class MapTranslator implements  Translator {
     @Override
     public void to(TranslationContext context, Object message, ByteBuffer buffer) throws Exception {
         buffer.put(EntryType.LIST.getValue());
-        buffer.put(EntryType.NULL.getValue());
-        TgbfUtils.writeSignedInteger(buffer, getSize(context, message));
-        for(Map.Entry<?, ?> item : ((Map<?, ?>)message).entrySet()) {
+        buffer.put(EntryType.NULL.getValue());//write TARG
+        Map<?, ?> map = (Map<?, ?>)message;
+        TgbfUtils.writeSignedInteger(buffer, getDataSize(context, map));
+        for(Map.Entry<?, ?> item : map.entrySet()) {
             Object key = item.getKey();
             Object value = item.getValue();
             keyTranslator.to(context, key, buffer);
