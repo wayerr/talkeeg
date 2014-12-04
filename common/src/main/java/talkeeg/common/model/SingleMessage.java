@@ -19,14 +19,13 @@
 
 package talkeeg.common.model;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.StructureBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * simple single message with signed and optionally ciphered data

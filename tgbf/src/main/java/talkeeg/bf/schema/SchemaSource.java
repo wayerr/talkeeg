@@ -125,11 +125,16 @@ public final class SchemaSource {
     protected static Schema fromInputStream(InputStream is) throws Exception {
 
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        final javax.xml.validation.Schema xmlschema = schemaFactory.newSchema(Resources.getResource("tgbf.xsd"));
         factory.setValidating(false);
         factory.setNamespaceAware(true);
-        factory.setSchema(xmlschema);
+        try {
+            final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            final javax.xml.validation.Schema xmlschema = schemaFactory.newSchema(Resources.getResource("tgbf.xsd"));
+            factory.setSchema(xmlschema);
+        } catch(java.lang.IllegalArgumentException e) {
+            // android does not contains SchemaFactory
+            // see https://code.google.com/p/android/issues/detail?id=7395
+        }
 
         final DocumentBuilder documentBuilder = factory.newDocumentBuilder();
         documentBuilder.setErrorHandler(ERROR_HANDLER);

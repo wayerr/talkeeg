@@ -21,10 +21,9 @@ package talkeeg.common.model;
 
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
-import talkeeg.common.core.AddressType;
 import talkeeg.common.core.BasicAddressType;
 
-import java.util.function.Supplier;
+import com.google.common.base.Supplier;
 
 /**
  * a representation for client network address

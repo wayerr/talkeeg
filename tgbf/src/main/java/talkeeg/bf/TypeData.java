@@ -20,8 +20,7 @@
 package talkeeg.bf;
 
 import com.google.common.base.Preconditions;
-
-import java.util.function.Supplier;
+import com.google.common.base.Supplier;
 
 /**
  * source for type specific data

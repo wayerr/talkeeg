@@ -20,22 +20,27 @@
 package talkeeg.android;
 
 import android.app.Application;
-import dagger.ObjectGraph;
+import android.content.Context;
+import com.google.common.base.Function;
+
+import java.io.File;
 
 /**
- * an application
- * Created by wayerr on 03.12.14.
+ * function to get config dir in andriod OS
+ *
+ * Created by wayerr on 04.12.14.
  */
-public class App extends Application {
-    private ObjectGraph objectGraph;
+final class AndroidConfigDirFunction implements Function<String, File> {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        objectGraph = ObjectGraph.create(new MainModule(this));
+    private final Application application;
+
+    AndroidConfigDirFunction(Application application) {
+        this.application = application;
     }
 
-    public ObjectGraph getObjectGraph() {
-        return objectGraph;
+    @Override
+    public File apply(String input) {
+        final Context context = application.getApplicationContext();
+        return context.getFilesDir();
     }
 }

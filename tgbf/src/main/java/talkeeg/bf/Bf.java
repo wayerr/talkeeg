@@ -21,13 +21,12 @@
 package talkeeg.bf;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
 import talkeeg.bf.schema.*;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.function.Supplier;
 
 /**
  * Message writer. <p/>

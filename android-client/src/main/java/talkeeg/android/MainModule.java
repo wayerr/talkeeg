@@ -19,6 +19,7 @@
 
 package talkeeg.android;
 
+import android.app.Application;
 import dagger.Module;
 import dagger.Provides;
 import talkeeg.common.conf.Config;
@@ -42,15 +43,28 @@ import javax.inject.Singleton;
 )
 final class MainModule {
 
+    private App app;
+
+    MainModule(App app) {
+        this.app = app;
+    }
+
     @Provides
     @Singleton
     Config provideConfg() {
         return ConfigImpl.builder()
                 .applicationName("talkeeg-android")
+                .configDirFunction(new AndroidConfigDirFunction(this.app))
                 .putMap("net.port", 11661)
                 .putMap("net.publicIpServices", "http://checkip.amazonaws.com http://curlmyip.com http://www.trackip.net/ip http://whatismyip.akamai.com http://ifconfig.me/ip http://ipv4.icanhazip.com http://shtuff.it/myip/text http://cydev.ru/ip")
                 .build();
     }
+
+    /*@Provides
+    @Singleton
+    App provideApp() {
+        return this.app;
+    }*/
 
     @Provides
     @Singleton

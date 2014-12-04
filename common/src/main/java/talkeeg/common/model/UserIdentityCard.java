@@ -19,13 +19,13 @@
 
 package talkeeg.common.model;
 
+import com.google.common.base.Supplier;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.bf.StructureBuilder;
-
 import java.util.*;
-import java.util.function.Supplier;
+
 
 /**
  * Created by wayerr on 28.11.14.

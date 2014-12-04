@@ -21,8 +21,7 @@ package talkeeg.common.model;
 
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
-
-import java.util.function.Supplier;
+import com.google.common.base.Supplier;
 
 /**
  * hello struct, used for exposing {@link talkeeg.common.model.UserIdentityCard UIC} and {@link talkeeg.common.model.ClientAddresses CAs}
