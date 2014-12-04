@@ -282,6 +282,17 @@
         <root url="jar://$MAVEN_REPOSITORY$/com/google/guava/guava/18.0/guava-18.0-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: com.google.zxing:android-core:3.1.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/zxing/android-core/3.1.0/android-core-3.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/zxing/android-core/3.1.0/android-core-3.1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/zxing/android-core/3.1.0/android-core-3.1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: com.google.zxing:core:3.1.0">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/com/google/zxing/core/3.1.0/core-3.1.0.jar!/" />

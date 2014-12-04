@@ -20,8 +20,13 @@
 package talkeeg.android;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.ImageView;
+import com.google.zxing.common.BitMatrix;
 import dagger.ObjectGraph;
+import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
 import talkeeg.common.core.HelloService;
 
@@ -38,5 +43,20 @@ public class BarcodeActivity extends Activity {
         final ObjectGraph objectGraph = ((App)getApplication()).getObjectGraph();
         BarcodeService barcodeService = objectGraph.get(BarcodeService.class);
         HelloService helloService = objectGraph.get(HelloService.class);
+        final ImageView image = (ImageView)findViewById(R.id.imageView);
+        BinaryData data = helloService.helloAsBinaryData();
+        final BitMatrix matrix = barcodeService.encode(data);
+
+        final int factor = 2;
+        final int w = matrix.getWidth() * factor;
+        final int h = matrix.getHeight() * factor;
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                int color = matrix.get(x, y) ? Color.BLACK : Color.WHITE;
+                bitmap.setPixel(x, y, color);
+            }
+        }
+        image.setImageBitmap(bitmap);
     }
 }

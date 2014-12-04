@@ -18,18 +18,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5d5b56c3-592d-4056-a6a4-bdddd92dcc4d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/AndroidConfigDirFunction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/App.java" afterPath="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/App.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/Bf.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ClientAddress.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ClientAddress.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ClientAddresses.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ClientAddresses.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/Hello.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/Hello.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainModule.java" afterPath="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/schema/SchemaSource.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/schema/SchemaSource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TypeData.java" afterPath="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/TypeData.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/UserIdentityCard.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/UserIdentityCard.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/BarcodeActivity.java" afterPath="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/BarcodeActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android-client/android-client.iml" afterPath="$PROJECT_DIR$/android-client/android-client.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android-client/pom.xml" afterPath="$PROJECT_DIR$/android-client/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.ipr" afterPath="$PROJECT_DIR$/talkeeg-parent.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.iws" afterPath="$PROJECT_DIR$/talkeeg-parent.iws" />
     </list>
@@ -71,14 +62,44 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="BarcodeActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="BarcodeActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/BarcodeActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5714286" vertical-offset="0" max-vertical-offset="693">
-              <caret line="39" column="72" selection-start-line="39" selection-start-column="72" selection-end-line="39" selection-end-column="72" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="918">
+              <caret line="59" column="8" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HelloService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/HelloService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="299" max-vertical-offset="954">
+              <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OwnedKeysManager.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.30229008" vertical-offset="1296" max-vertical-offset="1962">
+              <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="99" max-vertical-offset="846">
+              <caret line="41" column="30" selection-start-line="41" selection-start-column="30" selection-end-line="41" selection-end-column="30" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -135,45 +156,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Hello.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/Hello.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="1764">
-              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/android-client/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="1422">
-              <caret line="46" column="21" selection-start-line="46" selection-start-column="21" selection-end-line="46" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SingleMessage.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/SingleMessage.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="3366">
-              <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="android-client.iml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/android-client/android-client.iml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="202" max-vertical-offset="1134">
-              <caret line="55" column="19" selection-start-line="55" selection-start-column="19" selection-end-line="55" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="1512">
+              <caret line="49" column="36" selection-start-line="49" selection-start-column="36" selection-end-line="49" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -222,7 +209,6 @@
         <option value="$PROJECT_DIR$/android-client/res/layout/main_activity.xml" />
         <option value="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainActivity.java" />
         <option value="$PROJECT_DIR$/android-client/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/BarcodeActivity.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CoreModule.java" />
         <option value="$PROJECT_DIR$/android-client/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/tgbf/src/main/java/talkeeg/bf/schema/SchemaSource.java" />
@@ -233,11 +219,12 @@
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ClientAddresses.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/ClientAddress.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/model/Hello.java" />
-        <option value="$PROJECT_DIR$/android-client/pom.xml" />
         <option value="$PROJECT_DIR$/android-client/android-client.iml" />
         <option value="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/AndroidConfigDirFunction.java" />
         <option value="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/App.java" />
         <option value="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainModule.java" />
+        <option value="$PROJECT_DIR$/android-client/pom.xml" />
+        <option value="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/BarcodeActivity.java" />
       </list>
     </option>
   </component>
@@ -1360,7 +1347,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.41084462" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28884256" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28884256" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21604279" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Memory Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
@@ -1368,7 +1355,7 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24921794" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24921794" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -1493,13 +1480,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/common/src/main/resources/protocol.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1080">
-          <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/com/google/zxing/javase/3.1.0/javase-3.1.0.jar!/com/google/zxing/client/j2se/MatrixToImageWriter.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.9295499" vertical-offset="47" max-vertical-offset="1296">
@@ -1532,13 +1512,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.49253732" vertical-offset="9294" max-vertical-offset="12834">
           <caret line="565" column="47" selection-start-line="565" selection-start-column="47" selection-end-line="565" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/HelloService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.22761194" vertical-offset="508" max-vertical-offset="1044">
-          <caret line="52" column="23" selection-start-line="52" selection-start-column="23" selection-end-line="52" selection-end-column="23" />
         </state>
       </provider>
     </entry>
@@ -1679,14 +1652,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="274" max-vertical-offset="936">
-          <caret line="41" column="30" selection-start-line="41" selection-start-column="30" selection-end-line="41" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/lib/adt-bundle-linux-x86_64-20140702/sdk/sources/android-20/javax/xml/XMLConstants.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4371002" vertical-offset="1703" max-vertical-offset="3024">
@@ -1824,18 +1789,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/android-client/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="1422">
-          <caret line="46" column="21" selection-start-line="46" selection-start-column="21" selection-end-line="46" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/android-client/android-client.iml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="202" max-vertical-offset="1134">
-          <caret line="55" column="19" selection-start-line="55" selection-start-column="19" selection-end-line="55" selection-end-column="19" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="238" max-vertical-offset="1152">
+          <caret line="57" column="14" selection-start-line="57" selection-start-column="14" selection-end-line="57" selection-end-column="14" />
           <folding />
         </state>
       </provider>
@@ -1892,13 +1849,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="274" max-vertical-offset="936">
+          <caret line="41" column="30" selection-start-line="41" selection-start-column="30" selection-end-line="41" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/android-client/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="1512">
+          <caret line="49" column="36" selection-start-line="49" selection-start-column="36" selection-end-line="49" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/BarcodeActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5714286" vertical-offset="0" max-vertical-offset="693">
-          <caret line="39" column="72" selection-start-line="39" selection-start-column="72" selection-end-line="39" selection-end-column="72" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="918">
+          <caret line="59" column="8" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/HelloService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="299" max-vertical-offset="954">
+          <caret line="65" column="0" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/OwnedKeysManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.30229008" vertical-offset="1296" max-vertical-offset="1962">
+          <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
