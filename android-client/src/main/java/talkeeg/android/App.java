@@ -21,6 +21,9 @@ package talkeeg.android;
 
 import android.app.Application;
 import dagger.ObjectGraph;
+import talkeeg.common.core.CryptoService;
+
+import javax.inject.Inject;
 
 /**
  * an application
@@ -28,11 +31,15 @@ import dagger.ObjectGraph;
  */
 public class App extends Application {
     private ObjectGraph objectGraph;
+    @Inject
+    CryptoService cryptoService;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        objectGraph = ObjectGraph.create(new MainModule(this));
+        this.objectGraph = ObjectGraph.create(new MainModule(this));
+        this.objectGraph.inject(this);
+        this.cryptoService.init();
     }
 
     public ObjectGraph getObjectGraph() {

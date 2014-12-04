@@ -35,7 +35,8 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 Config.class,
-                IpcServiceManager.class
+                IpcServiceManager.class,
+                App.class
         },
         includes = {
                 CoreModule.class
