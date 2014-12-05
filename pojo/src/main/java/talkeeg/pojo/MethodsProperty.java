@@ -81,7 +81,7 @@ final class MethodsProperty implements Property {
 
     @Override
     public Class<?> getType() {
-        return this.getter.getClass();
+        return this.getter.getReturnType();
     }
 
     @Override

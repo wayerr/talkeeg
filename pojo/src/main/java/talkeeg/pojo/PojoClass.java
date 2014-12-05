@@ -45,11 +45,25 @@ public final class PojoClass {
     }
 
     /**
-     * type property
+     * type property <p/>
+     * if property not exist then runtime exception will be thrown
      * @param name
      * @return
      */
     public Property getProperty(String name) {
+        final Property property = properties.get(name);
+        if(property == null) {
+            throw new RuntimeException("can not find property '" + name + "' in " + this.type);
+        }
+        return property;
+    }
+
+    /**
+     * retru property or null if it not exist
+     * @param name
+     * @return
+     */
+    public Property getPropertyOrNull(String name) {
         return properties.get(name);
     }
 

@@ -19,8 +19,9 @@
 
 package talkeeg.common.model;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import talkeeg.bf.StructureBuilder;
+import talkeeg.pojo.PojoClass;
+import talkeeg.pojo.PojoManager;
 
 /**
  * builder utility for immutable structures
@@ -29,14 +30,16 @@ import talkeeg.bf.StructureBuilder;
  */
 public final class ImmutableStructureBuilder implements StructureBuilder {
     private final BuilderInterface builder;
+    private final PojoClass pojoClass;
 
     public ImmutableStructureBuilder(BuilderInterface builder) {
         this.builder = builder;
+        this.pojoClass = PojoManager.getInstance().getPojoClass(this.builder.getClass());
     }
 
     @Override
     public void set(String name, Object value) throws Exception {
-        PropertyUtils.setProperty(this.builder, name, value);
+        this.pojoClass.getProperty(name).set(this.builder, value);
     }
 
     @Override

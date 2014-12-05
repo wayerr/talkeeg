@@ -20,11 +20,8 @@
 package talkeeg.bf;
 
 import com.google.common.primitives.Primitives;
-import org.apache.commons.beanutils.PropertyUtils;
-
-import java.beans.PropertyDescriptor;
-import java.util.HashMap;
-import java.util.Map;
+import talkeeg.pojo.PojoClass;
+import talkeeg.pojo.PojoManager;
 
 /**
  * default implementation based on reflection access to mapped object properties <p/>
@@ -34,29 +31,23 @@ import java.util.Map;
 public class DefaultStructureReader implements StructureReader {
 
     private final Class<?> type;
-    private final Map<String, Class<?>> map = new HashMap<>();
+    private final PojoClass pojoClass;
 
     public DefaultStructureReader(Class<?> type) {
         this.type = type;
-        for(PropertyDescriptor descriptor: PropertyUtils.getPropertyDescriptors(this.type)) {
-            Class<?> propertyType = descriptor.getPropertyType();
-            if(propertyType.isPrimitive()) {
-                propertyType = Primitives.wrap(propertyType);
-            }
-            this.map.put(descriptor.getName(), propertyType);
-        }
+        this.pojoClass = PojoManager.getInstance().getPojoClass(this.type);
     }
 
     @Override
     public Object get(Object obj, String name) throws Exception {
-        return PropertyUtils.getProperty(obj, name);
+        return this.pojoClass.getProperty(name).get(obj);
     }
 
     @Override
     public Class<?> getType(String name) {
-        final Class<?> type = map.get(name);
-        if(type == null) {
-            throw new RuntimeException("can not find property: " + name);
+        Class<?> type = this.pojoClass.getProperty(name).getType();
+        if(type.isPrimitive()) {
+            type = Primitives.wrap(type);
         }
         return type;
     }

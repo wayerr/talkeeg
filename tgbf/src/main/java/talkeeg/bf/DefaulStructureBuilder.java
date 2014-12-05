@@ -19,8 +19,9 @@
 
 package talkeeg.bf;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import talkeeg.bf.schema.Struct;
+import talkeeg.pojo.PojoClass;
+import talkeeg.pojo.PojoManager;
 
 /**
  * Created by wayerr on 25.11.14.
@@ -29,6 +30,7 @@ public class DefaulStructureBuilder implements StructureBuilder {
     private final Struct struct;
     private final Class<?> type;
     private final Object intance;
+    private final PojoClass pojoClass;
 
     public DefaulStructureBuilder(Struct struct, Class<?> type) {
         this.struct = struct;
@@ -38,11 +40,12 @@ public class DefaulStructureBuilder implements StructureBuilder {
         } catch(ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
+        this.pojoClass = PojoManager.getInstance().getPojoClass(this.type);
     }
 
     @Override
     public void set(String name, Object value) throws Exception {
-        PropertyUtils.setProperty(this.intance, name, value);
+        this.pojoClass.getProperty(name).set(this.intance, value);
     }
 
     @Override
