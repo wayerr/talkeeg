@@ -36,7 +36,8 @@ import javax.inject.Singleton;
         injects = {
                 Config.class,
                 IpcServiceManager.class,
-                App.class
+                App.class,
+                CacheDirManager.class
         },
         includes = {
                 CoreModule.class
@@ -61,11 +62,17 @@ final class MainModule {
                 .build();
     }
 
-    /*@Provides
+    @Provides
     @Singleton
     App provideApp() {
         return this.app;
-    }*/
+    }
+
+    @Provides
+    @Singleton
+    CacheDirManager provideCacheDirManager(App app) {
+        return new CacheDirManager(app.getApplicationContext());
+    }
 
     @Provides
     @Singleton

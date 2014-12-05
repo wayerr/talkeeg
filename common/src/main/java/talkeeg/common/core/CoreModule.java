@@ -41,6 +41,7 @@ import java.util.function.Supplier;
 @Module(
     library = true, complete = false,
     injects = {
+        Bf.class,
         CryptoService.class,
         OwnedIdentityCardsService.class,
         BarcodeService.class,

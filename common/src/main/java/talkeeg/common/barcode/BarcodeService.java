@@ -47,7 +47,7 @@ public final class BarcodeService {
         }
     }
 
-    BinaryData decode(BinaryBitmap image) {
+    public BinaryData decode(BinaryBitmap image) {
         QRCodeReader reader = new QRCodeMultiReader();
         try {
             Result result = reader.decode(image, ImmutableMap.of(DecodeHintType.CHARACTER_SET, DEFAULT_BYTE_MODE_ENCODING));

@@ -45,4 +45,14 @@ public class App extends Application {
     public ObjectGraph getObjectGraph() {
         return objectGraph;
     }
+
+    /**
+     * invoke {@link dagger.ObjectGraph#get(Class)}
+     * @param type
+     * @param <T>
+     * @return
+     */
+    <T> T get(Class<T> type) {
+        return objectGraph.get(type);
+    }
 }
