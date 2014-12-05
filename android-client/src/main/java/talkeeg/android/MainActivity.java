@@ -37,8 +37,17 @@ public class MainActivity extends Activity {
      * barcode button handler
      * @param view
      */
-    public void openBarcode(View view) {
+    public void showBarcodeActivity(View view) {
         Intent intent = new Intent(this, BarcodeActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * show wiew with options fo decoding alien barcode
+     * @param view
+     */
+    public void showReadBarcodeActivity(View view) {
+        Intent intent = new Intent(this, ReadBarcodeActivity.class);
         startActivity(intent);
     }
 
