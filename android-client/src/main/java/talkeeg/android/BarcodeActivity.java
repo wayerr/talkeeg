@@ -29,6 +29,7 @@ import dagger.ObjectGraph;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
 import talkeeg.common.core.HelloService;
+import java.util.Arrays;
 
 /**
  * activity for displaying barcodes
@@ -40,6 +41,8 @@ public class BarcodeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.barcode_activity);
+
         final ObjectGraph objectGraph = ((App)getApplication()).getObjectGraph();
         BarcodeService barcodeService = objectGraph.get(BarcodeService.class);
         HelloService helloService = objectGraph.get(HelloService.class);
@@ -48,13 +51,18 @@ public class BarcodeActivity extends Activity {
         final BitMatrix matrix = barcodeService.encode(data);
 
         final int factor = 2;
-        final int w = matrix.getWidth() * factor;
-        final int h = matrix.getHeight() * factor;
-        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+        final int w = matrix.getWidth();
+        final int h = matrix.getHeight();
+        final Bitmap bitmap = Bitmap.createBitmap(w * factor, h * factor, Bitmap.Config.RGB_565);
+        final int blackPixels[] = new int[factor * factor];
+        Arrays.fill(blackPixels, Color.BLACK);
+        final int whitePixels[] = new int[factor * factor];
+        Arrays.fill(whitePixels, Color.WHITE);
         for (int x = 0; x < w; x++) {
+            final int bitmapx = x * factor;
             for (int y = 0; y < h; y++) {
-                int color = matrix.get(x, y) ? Color.BLACK : Color.WHITE;
-                bitmap.setPixel(x, y, color);
+                int pixels[] = matrix.get(x, y) ? blackPixels : whitePixels;
+                bitmap.setPixels(pixels, 0, factor, bitmapx, y * factor, factor, factor);
             }
         }
         image.setImageBitmap(bitmap);
