@@ -15,6 +15,7 @@
   </properties>
 
   <modules>
+    <module>pojo</module>
     <module>tgbf</module>
     <module>common</module>
     <module>desktop-client</module>

@@ -63,6 +63,7 @@
         <module name="android-client" />
         <module name="common" />
         <module name="desktop-client" />
+        <module name="pojo" />
         <module name="talkeeg-parent (1)" />
         <module name="talkeeg-parent (2)" />
         <module name="tgbf" />
@@ -72,6 +73,7 @@
       <module name="android-client" target="1.7" />
       <module name="common" target="1.7" />
       <module name="desktop-client" target="1.8" />
+      <module name="pojo" target="1.7" />
       <module name="tgbf" target="1.7" />
     </bytecodeTargetLevel>
   </component>
@@ -95,6 +97,7 @@
     <file url="file://$PROJECT_DIR$/android-client" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/desktop-client" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pojo" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tgbf" charset="UTF-8" />
   </component>
   <component name="EntryPointsManager">
@@ -249,6 +252,7 @@
       <module fileurl="file://$PROJECT_DIR$/android-client/android-client.iml" filepath="$PROJECT_DIR$/android-client/android-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/desktop-client/desktop-client.iml" filepath="$PROJECT_DIR$/desktop-client/desktop-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pojo/pojo.iml" filepath="$PROJECT_DIR$/pojo/pojo.iml" />
       <module fileurl="file://$PROJECT_DIR$/talkeeg-parent.iml" filepath="$PROJECT_DIR$/talkeeg-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/tgbf/tgbf.iml" filepath="$PROJECT_DIR$/tgbf/tgbf.iml" />
     </modules>
