@@ -22,13 +22,16 @@ package talkeeg.common.model;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
 import com.google.common.base.Supplier;
+import talkeeg.common.util.Printable;
+
+import java.util.Map;
 
 /**
  * hello struct, used for exposing {@link talkeeg.common.model.UserIdentityCard UIC} and {@link talkeeg.common.model.ClientAddresses CAs}
  * Created by wayerr on 03.12.14.
  */
 @StructInfo(id = 14)
-public final class Hello {
+public final class Hello implements Printable {
     public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
         @Override
         public StructureBuilder get() {
@@ -105,5 +108,16 @@ public final class Hello {
         int result = identityCard != null ? identityCard.hashCode() : 0;
         result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public void print(StringBuilder sb) {
+        sb.append("hello:\n");
+        if(this.addresses != null) {
+            this.addresses.print(sb);
+        }
+        if(this.identityCard != null) {
+            this.identityCard.print(sb);
+        }
     }
 }

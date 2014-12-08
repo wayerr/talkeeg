@@ -31,20 +31,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.google.zxing.BinaryBitmap;
-import talkeeg.android.App;
-import talkeeg.android.CacheDirManager;
-import talkeeg.android.ImageUtils;
-import talkeeg.android.R;
+import talkeeg.android.*;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
-
 import java.io.File;
 import java.nio.ByteBuffer;
 
 /**
  * activity reading barcode for clients acquaintance
  * TODO make decoding work in another thread
+ * TODO use Fragment for persist state between activity changes
  * Created by wayerr on 05.12.14.
  */
 public final class ReadBarcodeActivity extends Activity {
@@ -93,9 +90,9 @@ public final class ReadBarcodeActivity extends Activity {
             }
         }
 
+        Object message = null;
         if(this.messageData != null) {
             final Bf bf = app.get(Bf.class);
-            final Object message;
             try {
                 message = bf.read(ByteBuffer.wrap(messageData.getData()));
             } catch(Exception e) {
@@ -103,8 +100,9 @@ public final class ReadBarcodeActivity extends Activity {
                 Toast.makeText(app, "can not decode barcode data", Toast.LENGTH_LONG).show();
                 return;
             }
-            Toast.makeText(app, "Message: " + message, Toast.LENGTH_LONG).show();
         }
+        final StructureViewerFragment textView = (StructureViewerFragment)getFragmentManager().findFragmentById(R.id.structureViewerFragment);
+        textView.setObject(this, message);
     }
 
     @Override

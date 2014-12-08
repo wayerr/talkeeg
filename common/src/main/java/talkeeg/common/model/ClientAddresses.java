@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import com.google.common.base.Supplier;
+import talkeeg.common.util.Printable;
 
 /**
  * list of client addresses
@@ -34,7 +35,7 @@ import com.google.common.base.Supplier;
  * Created by wayerr on 01.12.14.
  */
 @StructInfo(id = 12)
-public final class ClientAddresses {
+public final class ClientAddresses implements Printable {
 
     public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
         @Override
@@ -105,5 +106,15 @@ public final class ClientAddresses {
     @Override
     public int hashCode() {
         return addresses != null ? addresses.hashCode() : 0;
+    }
+
+    @Override
+    public void print(StringBuilder sb) {
+        sb.append("addresses:\n");
+        for(ClientAddress clientAddress: this.addresses) {
+            sb.append(clientAddress.getType()).append(' ')
+                    .append(clientAddress.getValue()).append(' ')
+                    .append(clientAddress.isExternal() ? "external" : "internal").append('\n');
+        }
     }
 }

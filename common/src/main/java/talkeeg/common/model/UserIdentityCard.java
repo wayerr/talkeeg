@@ -24,6 +24,8 @@ import talkeeg.bf.StructInfo;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.bf.StructureBuilder;
+import talkeeg.common.util.Printable;
+
 import java.util.*;
 
 
@@ -31,7 +33,7 @@ import java.util.*;
  * Created by wayerr on 28.11.14.
  */
 @StructInfo(id = 11)
-public final class UserIdentityCard {
+public final class UserIdentityCard implements Printable {
 
     /**
      * nickname of user
@@ -106,6 +108,9 @@ public final class UserIdentityCard {
 
     private UserIdentityCard(Builder b) {
         this.key = b.key;
+        if(this.key == null) {
+            throw new IllegalArgumentException("key is null");
+        }
         this.attrs = Collections.unmodifiableMap(new HashMap<>(b.attrs));
         this.clients = Collections.unmodifiableSet(new HashSet<>(b.clients));
     }
@@ -166,5 +171,18 @@ public final class UserIdentityCard {
         result = 31 * result + (attrs != null ? attrs.hashCode() : 0);
         result = 31 * result + (clients != null ? clients.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public void print(StringBuilder sb) {
+        sb.append("user identity card:\n");
+        sb.append("key: ").append(talkeeg.bf.Arrays.toHexString(this.key.getData())).append("\n");
+        for(Map.Entry<String, Object> attr: this.attrs.entrySet()) {
+            sb.append(attr.getKey()).append('=')
+                    .append(attr.getValue()).append('\n');
+        }
+        for(Int128 client: this.clients) {
+            sb.append(talkeeg.bf.Arrays.toHexString(client.getData())).append("\n");
+        }
     }
 }

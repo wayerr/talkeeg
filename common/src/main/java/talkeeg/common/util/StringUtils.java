@@ -56,4 +56,21 @@ public final class StringUtils {
         }
         return target;
     }
+
+    /**
+     * if object instance of {@link talkeeg.common.util.Printable } then invoke appropriate print(), else toString()
+     * @param object
+     * @return
+     */
+    public static String print(Object object) {
+        String text;
+        if(object instanceof Printable) {
+            StringBuilder sb = new StringBuilder();
+            ((Printable)object).print(sb);
+            text = sb.toString();
+        } else {
+            text = String.valueOf(object);
+        }
+        return text;
+    }
 }
