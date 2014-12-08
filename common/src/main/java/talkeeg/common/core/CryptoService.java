@@ -19,6 +19,7 @@
 
 package talkeeg.common.core;
 
+import talkeeg.bf.BinaryData;
 import talkeeg.common.conf.Config;
 import talkeeg.bf.Int128;
 
@@ -37,9 +38,9 @@ public final class CryptoService {
     private final Config config;
     private static final String ALG_SIGN = CryptoConstants.ALG_HASH + "with" + CryptoConstants.ALG_ASYMMETRIC;
 
-    public CryptoService(Config config) {
+    public CryptoService(Config config, KeyLoader keyLoader) {
         this.config = config;
-        this.ownedKeysManager = new OwnedKeysManager(config, new KeyPairGen());
+        this.ownedKeysManager = new OwnedKeysManager(config, keyLoader, new KeyPairGen());
     }
 
     public void init() {
@@ -67,7 +68,14 @@ public final class CryptoService {
     }
 
     Int128 getFingerprint(Key key) {
-        final byte[] data = key.getEncoded();
+        return getFingerprint(key.getEncoded());
+    }
+
+    Int128 getFingerprint(BinaryData key) {
+        return getFingerprint(key.getData());
+    }
+
+    private Int128 getFingerprint(final byte[] data) {
         try {
             final MessageDigest md = MessageDigest.getInstance(CryptoConstants.ALG_MESSAGE_DIGEST);
             byte[] digest = md.digest(data);

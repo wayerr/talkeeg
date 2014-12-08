@@ -19,6 +19,8 @@
 
 package talkeeg.common.core;
 
+import com.google.common.base.Preconditions;
+import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 
 import java.security.PublicKey;
@@ -33,9 +35,11 @@ import java.util.concurrent.ConcurrentMap;
 public final class AcquaintedUsersService {
     private final CryptoService cryptoService;
     private final ConcurrentMap<Int128, AcquaintedUser> users = new ConcurrentHashMap<>();
+    private final KeyLoader keyLoader;
 
-    AcquaintedUsersService(CryptoService cryptoService) {
+    AcquaintedUsersService(CryptoService cryptoService, KeyLoader keyLoader) {
         this.cryptoService = cryptoService;
+        this.keyLoader = keyLoader;
     }
 
     /**
@@ -43,8 +47,10 @@ public final class AcquaintedUsersService {
      * @param userPublicKey
      * @return
      */
-    public AcquaintedUser acquaint(PublicKey userPublicKey) {
-        final AcquaintedUser user = new AcquaintedUser(this.cryptoService, userPublicKey);
+    public AcquaintedUser acquaint(BinaryData userPublicKey) {
+        Preconditions.checkNotNull(userPublicKey, "userPublicKey is null");
+        final PublicKey publicKey = this.keyLoader.loadPublic(userPublicKey.getData());
+        final AcquaintedUser user = new AcquaintedUser(this.cryptoService, publicKey);
         final AcquaintedUser oldUser = users.putIfAbsent(user.getId(), user);
         if(oldUser != null) {
             return oldUser;

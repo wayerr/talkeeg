@@ -25,9 +25,6 @@ import talkeeg.common.conf.Config;
 import java.io.File;
 import java.io.IOException;
 import java.security.*;
-import java.security.spec.KeySpec;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,20 +37,16 @@ import java.util.logging.Logger;
 class OwnedKeysManager {
     private static final Logger LOG = Logger.getLogger(OwnedKeysManager.class.getName());
     private final File keysDir;
-    private final KeyFactory keyFactory;
+    private final KeyLoader keyLoader;
     private final KeyPairSource keyPairSource;
     private final Object lock = new Object();
     private KeyPair clientKeys;
     private KeyPair userKeys;
 
-    OwnedKeysManager(Config config, KeyPairSource keyPairSource) {
+    OwnedKeysManager(Config config, KeyLoader keyLoader, KeyPairSource keyPairSource) {
         this.keyPairSource = keyPairSource;
 
-        try {
-            this.keyFactory = KeyFactory.getInstance(CryptoConstants.ALG_ASYMMETRIC);
-        } catch(NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        this.keyLoader = keyLoader;
 
         this.keysDir = new File(config.getConfigDir(), "keys");
         this.keysDir.mkdirs();// make keys dir if need
@@ -67,10 +60,8 @@ class OwnedKeysManager {
         KeyPair keyPair = null;
         if(privateKeyFile.exists()) {
             try {
-                final KeySpec privateKeySpec = new PKCS8EncodedKeySpec(Files.asByteSource(privateKeyFile).read());
-                final PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
-                final KeySpec publicKeySpec = new X509EncodedKeySpec(Files.asByteSource(publicKeyFile).read());
-                final PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+                final PrivateKey privateKey = this.keyLoader.loadPrivate(Files.asByteSource(privateKeyFile).read());
+                final PublicKey publicKey = this.keyLoader.loadPublic(Files.asByteSource(publicKeyFile).read());
                 keyPair = new KeyPair(publicKey, privateKey);
             } catch(Exception e) {
                 LOG.log(Level.INFO, "can not load key from " + privateKeyFile + " and " + publicKeyFile , e);

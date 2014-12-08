@@ -52,8 +52,14 @@ public final class CoreModule {
 
     @Provides
     @Singleton
-    CryptoService provideCryptoService(Config config) {
-        return new CryptoService(config);
+    CryptoService provideCryptoService(Config config, KeyLoader keyLoader) {
+        return new CryptoService(config, keyLoader);
+    }
+
+    @Provides
+    @Singleton
+    KeyLoader provideCryptoService() {
+        return new KeyLoader();
     }
 
     @Provides

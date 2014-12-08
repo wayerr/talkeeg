@@ -54,24 +54,32 @@ public final class AcquaintedUser {
     }
 
     public BinaryData getSign() {
-        return sign;
+        synchronized(lock) {
+            return sign;
+        }
     }
 
     public void setSign(BinaryData sign) {
-        if(Objects.equals(this.sign, sign)) {
-            return;
+        synchronized(lock) {
+            if(Objects.equals(this.sign, sign)) {
+                return;
+            }
+            this.sign = sign;
         }
-        this.sign = sign;
     }
 
     public UserIdentityCard getIdentityCard() {
-        return identityCard;
+        synchronized(lock) {
+            return identityCard;
+        }
     }
 
     public void setIdentityCard(UserIdentityCard identityCard) {
-        if(Objects.equals(this.identityCard, identityCard)) {
-            return;
+        synchronized(lock) {
+            if(Objects.equals(this.identityCard, identityCard)) {
+                return;
+            }
+            this.identityCard = identityCard;
         }
-        this.identityCard = identityCard;
     }
 }

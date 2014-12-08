@@ -35,6 +35,9 @@ import talkeeg.android.*;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
+import talkeeg.common.core.AcquaintedUsersService;
+import talkeeg.common.model.Hello;
+
 import java.io.File;
 import java.nio.ByteBuffer;
 
@@ -103,6 +106,12 @@ public final class ReadBarcodeActivity extends Activity {
         }
         final StructureViewerFragment textView = (StructureViewerFragment)getFragmentManager().findFragmentById(R.id.structureViewerFragment);
         textView.setObject(this, message);
+
+        if(message instanceof Hello) {
+            final AcquaintedUsersService usersService = app.get(AcquaintedUsersService.class);
+            final Hello hello = (Hello)message;
+            usersService.acquaint(hello.getIdentityCard().getKey());
+        }
     }
 
     @Override

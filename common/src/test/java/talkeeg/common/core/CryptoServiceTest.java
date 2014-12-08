@@ -39,7 +39,7 @@ public class CryptoServiceTest {
 
     @BeforeClass
     public static void setup() {
-        service = new CryptoService(Env.getInstance().getConfig());
+        service = new CryptoService(Env.getInstance().getConfig(), new KeyLoader());
         service.init();
     }
 
