@@ -44,13 +44,18 @@ import java.nio.ByteBuffer;
 
 /**
  * activity reading barcode for clients acquaintance
- *
+ * TODO make decoding work in another thread
  * Created by wayerr on 05.12.14.
  */
 public final class ReadBarcodeActivity extends Activity {
-
+    private static final String TAG = ReadBarcodeActivity.class.getSimpleName();
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int IMAGE_SIZE = 640;
+    private static final String SAVE_BITMAP = "bitmap";
+    private static final String SAVE_MESSAGE_DATA = "messageData";
     private File takenImageFile;
+    private BinaryData messageData;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,29 +67,37 @@ public final class ReadBarcodeActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && this.takenImageFile != null) {
-            final App app = (App)getApplication();
-            final BarcodeService barcodeService = app.get(BarcodeService.class);
-
-            Bitmap bitmap = ImageUtils.loadImage(this.takenImageFile, 640);
+            this.bitmap = ImageUtils.loadImage(this.takenImageFile, IMAGE_SIZE);
 
             this.takenImageFile.delete();
             this.takenImageFile = null;
 
-            final ImageView image = (ImageView)findViewById(R.id.imageView);
-            image.setImageBitmap(bitmap);
-            BinaryBitmap binaryBitmap = BarcodeUtils.toBinaryBitmap(bitmap);
-            BinaryData binaryData;
+            loadBarcodeData();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void loadBarcodeData() {
+        final App app = (App)getApplication();
+        final BarcodeService barcodeService = app.get(BarcodeService.class);
+
+        final ImageView image = (ImageView)findViewById(R.id.imageView);
+        image.setImageBitmap(this.bitmap);
+        if(this.bitmap != null && this.messageData == null) {
+            BinaryBitmap binaryBitmap = BarcodeUtils.toBinaryBitmap(this.bitmap);
             try {
-                binaryData = barcodeService.decode(binaryBitmap);
+                this.messageData = barcodeService.decode(binaryBitmap);
             } catch(Exception e) {
                 Toast.makeText(app, "no barcode data " + e.getMessage(), Toast.LENGTH_LONG).show();
                 return;
             }
+        }
 
+        if(this.messageData != null) {
             final Bf bf = app.get(Bf.class);
             final Object message;
             try {
-                message = bf.read(ByteBuffer.wrap(binaryData.getData()));
+                message = bf.read(ByteBuffer.wrap(messageData.getData()));
             } catch(Exception e) {
                 Log.e(getLocalClassName(), "can not decode barcode data: ", e);
                 Toast.makeText(app, "can not decode barcode data", Toast.LENGTH_LONG).show();
@@ -92,9 +105,27 @@ public final class ReadBarcodeActivity extends Activity {
             }
             Toast.makeText(app, "Message: " + message, Toast.LENGTH_LONG).show();
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVE_BITMAP, this.bitmap);
+        if(this.messageData != null) {
+            outState.putByteArray(SAVE_MESSAGE_DATA, this.messageData.getData());
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.bitmap = savedInstanceState.getParcelable(SAVE_BITMAP);
+        byte[] byteArray = savedInstanceState.getByteArray(SAVE_MESSAGE_DATA);
+        if(byteArray != null) {
+            this.messageData = new BinaryData(byteArray);
+        }
+        loadBarcodeData();
+    }
 
     /**
      * show application fot taking image with barcode
