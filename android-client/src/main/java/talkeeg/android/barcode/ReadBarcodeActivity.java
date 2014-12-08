@@ -17,13 +17,12 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.android;
+package talkeeg.android.barcode;
 
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -31,18 +30,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import com.google.common.io.Closeables;
 import com.google.zxing.BinaryBitmap;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.RGBLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
+import talkeeg.android.App;
+import talkeeg.android.CacheDirManager;
+import talkeeg.android.ImageUtils;
+import talkeeg.android.R;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
@@ -75,7 +72,7 @@ public final class ReadBarcodeActivity extends Activity {
 
             final ImageView image = (ImageView)findViewById(R.id.imageView);
             image.setImageBitmap(bitmap);
-            BinaryBitmap binaryBitmap = toBinaryBitmap(bitmap);
+            BinaryBitmap binaryBitmap = BarcodeUtils.toBinaryBitmap(bitmap);
             BinaryData binaryData;
             try {
                 binaryData = barcodeService.decode(binaryBitmap);
@@ -98,14 +95,6 @@ public final class ReadBarcodeActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private static BinaryBitmap toBinaryBitmap(Bitmap bitmap) {
-        final int w = bitmap.getWidth();
-        final int h = bitmap.getHeight();
-        final int pixels[] = new int[w * h];
-        bitmap.getPixels(pixels, 0, w, 0, 0, w, h);
-        LuminanceSource luminanceSource = new RGBLuminanceSource(w, h, pixels);
-        return new BinaryBitmap(new HybridBinarizer(luminanceSource));
-    }
 
     /**
      * show application fot taking image with barcode

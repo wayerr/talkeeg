@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
+import talkeeg.android.barcode.CreateBarcodeActivity;
+import talkeeg.android.barcode.ReadBarcodeActivity;
 
 /**
  * main app activity, potentially contains list of most used activities
@@ -38,7 +39,7 @@ public class MainActivity extends Activity {
      * @param view
      */
     public void showBarcodeActivity(View view) {
-        Intent intent = new Intent(this, BarcodeActivity.class);
+        Intent intent = new Intent(this, CreateBarcodeActivity.class);
         startActivity(intent);
     }
 

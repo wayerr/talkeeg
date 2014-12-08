@@ -24,8 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BarcodeActivity" />
-        <activity android:name=".ReadBarcodeActivity" />
+        <activity android:name=".barcode.CreateBarcodeActivity" />
+        <activity android:name=".barcode.ReadBarcodeActivity" />
     </application>
 
 </manifest>

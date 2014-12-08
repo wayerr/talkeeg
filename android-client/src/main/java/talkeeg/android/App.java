@@ -52,7 +52,7 @@ public class App extends Application {
      * @param <T>
      * @return
      */
-    <T> T get(Class<T> type) {
+    public <T> T get(Class<T> type) {
         return objectGraph.get(type);
     }
 }

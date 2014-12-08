@@ -17,7 +17,7 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.android;
+package talkeeg.android.barcode;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import com.google.zxing.common.BitMatrix;
 import dagger.ObjectGraph;
+import talkeeg.android.App;
+import talkeeg.android.R;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
 import talkeeg.common.core.HelloService;
@@ -36,12 +38,12 @@ import java.util.Arrays;
  *
  * Created by wayerr on 03.12.14.
  */
-public class BarcodeActivity extends Activity {
+public final class CreateBarcodeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.barcode_activity);
+        setContentView(R.layout.create_barcode_activity);
 
         final ObjectGraph objectGraph = ((App)getApplication()).getObjectGraph();
         BarcodeService barcodeService = objectGraph.get(BarcodeService.class);
@@ -50,21 +52,7 @@ public class BarcodeActivity extends Activity {
         BinaryData data = helloService.helloAsBinaryData();
         final BitMatrix matrix = barcodeService.encode(data);
 
-        final int factor = 2;
-        final int w = matrix.getWidth();
-        final int h = matrix.getHeight();
-        final Bitmap bitmap = Bitmap.createBitmap(w * factor, h * factor, Bitmap.Config.RGB_565);
-        final int blackPixels[] = new int[factor * factor];
-        Arrays.fill(blackPixels, Color.BLACK);
-        final int whitePixels[] = new int[factor * factor];
-        Arrays.fill(whitePixels, Color.WHITE);
-        for (int x = 0; x < w; x++) {
-            final int bitmapx = x * factor;
-            for (int y = 0; y < h; y++) {
-                int pixels[] = matrix.get(x, y) ? blackPixels : whitePixels;
-                bitmap.setPixels(pixels, 0, factor, bitmapx, y * factor, factor, factor);
-            }
-        }
+        final Bitmap bitmap = BarcodeUtils.toImageBitmap(matrix);
         image.setImageBitmap(bitmap);
     }
 }
