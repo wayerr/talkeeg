@@ -24,18 +24,17 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 import com.google.zxing.BinaryBitmap;
 import talkeeg.android.*;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
-import talkeeg.common.core.AcquaintedUser;
 import talkeeg.common.core.AcquaintedUsersService;
 import talkeeg.common.model.Hello;
 import talkeeg.common.model.UserIdentityCard;
@@ -45,108 +44,165 @@ import java.nio.ByteBuffer;
 
 /**
  * activity reading barcode for clients acquaintance
- * TODO make decoding work in another thread
- * TODO use Fragment for persist state between activity changes
  * Created by wayerr on 05.12.14.
  */
 public final class ReadBarcodeActivity extends Activity {
+
+    /**
+     * in this class we save data between configuration changes of activity (in other cases we don`t need state)
+     * but code looks awful and need rewriting, especially `syncronized` statements
+     */
+    private static class Model {
+        private class LoadBarcodeDataTask extends AsyncTask<Object, Object, Object> {
+
+            @Override
+            protected Object doInBackground(Object ... params) {
+                Bitmap bitmapLocal = null;
+                synchronized(Model.this) {
+                    if(imageFile != null) {
+                        bitmap = ImageUtils.loadImage(imageFile, IMAGE_SIZE);
+
+                        imageFile.delete();
+                        imageFile = null;
+                    }
+                    if(bitmap != null && messageData == null) {
+                        bitmapLocal = bitmap;
+                    }
+                }
+                final BarcodeService barcodeService = app.get(BarcodeService.class);
+                BinaryData messageDataLocal = null;
+                if(bitmapLocal != null ) {
+                    BinaryBitmap binaryBitmap = BarcodeUtils.toBinaryBitmap(bitmapLocal);
+                    try {
+                        //most long-run statement in this code
+                        messageDataLocal = barcodeService.decode(binaryBitmap);
+                    } catch(Exception e) {
+                        Log.e(TAG, "no barcode data: ", e);
+                    }
+                    synchronized(Model.this) {
+                        if(bitmapLocal == bitmap) {
+                            messageData = messageDataLocal;
+                        }
+                    }
+                }
+                synchronized(Model.this) {
+                    if(messageData != null && message == null) {
+                        final Bf bf = app.get(Bf.class);
+                        try {
+                            message = bf.read(ByteBuffer.wrap(messageData.getData()));
+                        } catch(Exception e) {
+                            Log.e(TAG, "can not decode barcode data: ", e);
+                        }
+                    }
+
+                    if(message instanceof Hello) {
+                        final AcquaintedUsersService usersService = app.get(AcquaintedUsersService.class);
+                        final Hello hello = (Hello)message;
+                        UserIdentityCard identityCard = hello.getIdentityCard();
+                        usersService.acquaint(identityCard);
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                ReadBarcodeActivity activity = null;
+                synchronized(Model.this) {
+                    if(currentActivity != null) {
+                        activity = currentActivity;
+                    }
+                }
+                activity.updateFromModel();
+            }
+        }
+
+        private final App app;
+        private ReadBarcodeActivity currentActivity;
+
+        private LoadBarcodeDataTask task;
+
+        private File imageFile;
+        private BinaryData messageData;
+        private Bitmap bitmap;
+        private Object message;
+
+        private Model(App app) {
+            this.app = app;
+        }
+
+
+        private synchronized void loadData(ReadBarcodeActivity activity) {
+            this.messageData = null;
+            this.bitmap = null;
+            this.message = null;
+            setActivity(activity);
+            this.task = new LoadBarcodeDataTask();
+            this.task.execute();
+        }
+
+        private synchronized void setActivity(ReadBarcodeActivity activity) {
+            this.currentActivity = activity;
+            if(activity != null) {
+                final ImageView image = (ImageView)activity.findViewById(R.id.imageView);
+                image.setImageBitmap(bitmap);
+                final StructureViewerFragment textView = (StructureViewerFragment)activity.getFragmentManager().findFragmentById(R.id.structureViewerFragment);
+                textView.setObject(activity, message);
+            }
+        }
+
+        public synchronized void setFile(File file) {
+            this.imageFile = file;
+        }
+    }
+
+
     private static final String TAG = ReadBarcodeActivity.class.getSimpleName();
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int IMAGE_SIZE = 640;
-    private static final String SAVE_BITMAP = "bitmap";
-    private static final String SAVE_MESSAGE_DATA = "messageData";
-    private File takenImageFile;
-    private BinaryData messageData;
-    private Bitmap bitmap;
+    private static Model model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.read_barcode_activity);
+        if(model == null) {
+            model = new Model((App)getApplication());
+        }
+        updateFromModel();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        model.setActivity(null);
+    }
+
+    private void updateFromModel() {
+        model.setActivity(this);
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && this.takenImageFile != null) {
-            this.bitmap = ImageUtils.loadImage(this.takenImageFile, IMAGE_SIZE);
-
-            this.takenImageFile.delete();
-            this.takenImageFile = null;
-
-            loadBarcodeData();
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            model.loadData(this);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void loadBarcodeData() {
-        final App app = (App)getApplication();
-        final BarcodeService barcodeService = app.get(BarcodeService.class);
-
-        final ImageView image = (ImageView)findViewById(R.id.imageView);
-        image.setImageBitmap(this.bitmap);
-        if(this.bitmap != null && this.messageData == null) {
-            BinaryBitmap binaryBitmap = BarcodeUtils.toBinaryBitmap(this.bitmap);
-            try {
-                this.messageData = barcodeService.decode(binaryBitmap);
-            } catch(Exception e) {
-                Toast.makeText(app, "no barcode data " + e.getMessage(), Toast.LENGTH_LONG).show();
-                return;
-            }
-        }
-
-        Object message = null;
-        if(this.messageData != null) {
-            final Bf bf = app.get(Bf.class);
-            try {
-                message = bf.read(ByteBuffer.wrap(messageData.getData()));
-            } catch(Exception e) {
-                Log.e(getLocalClassName(), "can not decode barcode data: ", e);
-                Toast.makeText(app, "can not decode barcode data", Toast.LENGTH_LONG).show();
-                return;
-            }
-        }
-        final StructureViewerFragment textView = (StructureViewerFragment)getFragmentManager().findFragmentById(R.id.structureViewerFragment);
-        textView.setObject(this, message);
-
-        if(message instanceof Hello) {
-            final AcquaintedUsersService usersService = app.get(AcquaintedUsersService.class);
-            final Hello hello = (Hello)message;
-            UserIdentityCard identityCard = hello.getIdentityCard();
-            usersService.acquaint(identityCard);
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(SAVE_BITMAP, this.bitmap);
-        if(this.messageData != null) {
-            outState.putByteArray(SAVE_MESSAGE_DATA, this.messageData.getData());
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        this.bitmap = savedInstanceState.getParcelable(SAVE_BITMAP);
-        byte[] byteArray = savedInstanceState.getByteArray(SAVE_MESSAGE_DATA);
-        if(byteArray != null) {
-            this.messageData = new BinaryData(byteArray);
-        }
-        loadBarcodeData();
-    }
-
     /**
      * show application fot taking image with barcode
+     *
      * @param view
      */
     public void takeBarcodeImage(View view) {
         Intent takeImageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        this.takenImageFile = ((App)getApplication()).get(CacheDirManager.class).createTempFile("barcode");
-        takeImageIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(takenImageFile));
+        final File tempFile = ((App)getApplication()).get(CacheDirManager.class).createTempFile("barcode");
+        takeImageIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
+        model.setFile(tempFile);
         final ComponentName takeImageComponentName = takeImageIntent.resolveActivity(getPackageManager());
-        if (takeImageComponentName == null) {
+        if(takeImageComponentName == null) {
             Log.e(getLocalClassName(), "can not resolve activity for " + takeImageIntent);
             return;
         }
