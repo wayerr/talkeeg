@@ -26,6 +26,7 @@
         </activity>
         <activity android:name=".barcode.CreateBarcodeActivity" />
         <activity android:name=".barcode.ReadBarcodeActivity" />
+        <activity android:name=".AcquaintedUsersActivity"/>
     </application>
 
 </manifest>

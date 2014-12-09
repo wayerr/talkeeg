@@ -3,7 +3,9 @@ package talkeeg.android;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import talkeeg.android.barcode.CreateBarcodeActivity;
 import talkeeg.android.barcode.ReadBarcodeActivity;
@@ -52,5 +54,14 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.actionAcquairedUsers:
+                startActivity(new Intent(this, AcquaintedUsersActivity.class));
+                return true;
+        }
+        return super.onContextItemSelected(item);
+    }
 }
 

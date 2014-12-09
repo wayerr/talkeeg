@@ -20,10 +20,12 @@
 package talkeeg.common.core;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
-
+import talkeeg.common.model.UserIdentityCard;
 import java.security.PublicKey;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -56,5 +58,24 @@ public final class AcquaintedUsersService {
             return oldUser;
         }
         return user;
+    }
+
+    /**
+     * acquaint with user by his {@link talkeeg.common.model.UserIdentityCard }
+     * @param identityCard
+     * @return
+     */
+    public AcquaintedUser acquaint(UserIdentityCard identityCard) {
+        final AcquaintedUser acquaint = acquaint(identityCard.getKey());
+        acquaint.setIdentityCard(identityCard);
+        return acquaint;
+    }
+
+    /**
+     * return immutable copy of acquainted users
+     * @return
+     */
+    public List<AcquaintedUser> getAcquaintedUsers() {
+        return ImmutableList.copyOf(this.users.values());
     }
 }

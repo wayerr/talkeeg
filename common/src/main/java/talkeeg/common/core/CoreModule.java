@@ -45,7 +45,8 @@ import java.util.function.Supplier;
         CryptoService.class,
         OwnedIdentityCardsService.class,
         BarcodeService.class,
-        HelloService.class
+        HelloService.class,
+        AcquaintedUsersService.class
     }
 )
 public final class CoreModule {
@@ -112,6 +113,12 @@ public final class CoreModule {
     @Singleton
     BarcodeService provideBarcodeService(Config config) {
         return new BarcodeService();
+    }
+
+    @Provides
+    @Singleton
+    AcquaintedUsersService provideAcquaintedUsersService(CryptoService cryptoService, KeyLoader keyLoader) {
+        return new AcquaintedUsersService(cryptoService, keyLoader);
     }
 
 }
