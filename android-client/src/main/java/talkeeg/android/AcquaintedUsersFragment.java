@@ -42,22 +42,38 @@ public final class AcquaintedUsersFragment extends Fragment {
         View inflate = inflater.inflate(R.layout.acquainted_users_fragment, container, false);
         ListView listView = (ListView)inflate.findViewById(R.id.acquaintedUsersList);
         AcquaintedUsersService service = ((App)getActivity().getApplication()).get(AcquaintedUsersService.class);
-        listView.setAdapter(new AcquaintedUserListAdapter(getActivity(), R.layout.acquainted_user_view, R.id.acquaintedUserNick, service));
+        listView.setAdapter(new AcquaintedUserListAdapter(getActivity(), R.layout.acquainted_user_view, service));
         return inflate;
     }
 
-    private static final class AcquaintedUserListAdapter extends ArrayAdapter<AcquaintedUser> {
+    private static final class AcquaintedUserListAdapter extends BaseAdapter {
 
         private final AcquaintedUsersService service;
         private final LayoutInflater inflater;
         private final int resource;
         private List<AcquaintedUser> userList;
 
-        private AcquaintedUserListAdapter(Context context, int resource, int textViewResourceId, AcquaintedUsersService service) {
-            super(context, resource, textViewResourceId);
+        private AcquaintedUserListAdapter(Context context, int resource, AcquaintedUsersService service) {
+
             this.service = service;
             this.resource = resource;
             this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            this.userList = this.service.getAcquaintedUsers();
+        }
+
+        @Override
+        public int getCount() {
+            return this.userList.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return this.userList.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
         }
 
         @Override
@@ -72,7 +88,7 @@ public final class AcquaintedUsersFragment extends Fragment {
             TextView fingerprintView  = (TextView)itemView.findViewById(R.id.acquaintedUserFingerprint);
 
             AcquaintedUser user = null;
-            if(this.userList != null && this.userList.size() < position) {
+            if(this.userList != null && this.userList.size() > position) {
                 user = this.userList.get(position);
             }
             if(user == null) {
