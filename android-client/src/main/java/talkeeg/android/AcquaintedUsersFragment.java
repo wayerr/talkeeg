@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import talkeeg.bf.Arrays;
 import talkeeg.common.core.AcquaintedUser;
 import talkeeg.common.core.AcquaintedUsersService;
 import talkeeg.common.model.UserIdentityCard;
@@ -97,7 +98,7 @@ public final class AcquaintedUsersFragment extends Fragment {
             } else {
                 final UserIdentityCard identityCard = user.getIdentityCard();
                 nickView.setText(String.valueOf(identityCard.getAttrs().get(UserIdentityCard.ATTR_NICK)));
-                fingerprintView.setText(String.valueOf(identityCard.getKey()));
+                fingerprintView.setText(Arrays.toHexString(user.getId().getData()));
             }
 
             return itemView;
