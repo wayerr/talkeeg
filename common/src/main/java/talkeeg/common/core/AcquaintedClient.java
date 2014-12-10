@@ -19,7 +19,9 @@
 
 package talkeeg.common.core;
 
+import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
+import talkeeg.common.model.ClientIdentityCard;
 
 import java.security.PublicKey;
 
@@ -31,6 +33,8 @@ import java.security.PublicKey;
 public final class AcquaintedClient {
     private final Int128 id;
     private final PublicKey publicKey;
+    private final Object lock = new Object();
+    private ClientIdentityCard identityCard;
 
     AcquaintedClient(Int128 id, PublicKey publicKey) {
         this.id = id;
@@ -39,5 +43,38 @@ public final class AcquaintedClient {
 
     public Int128 getId() {
         return id;
+    }
+
+    /**
+     * set identity card for current client
+     * @param identityCard
+     */
+    public void setIdentityCard(ClientIdentityCard identityCard) {
+        synchronized(lock) {
+            this.identityCard = identityCard;
+        }
+    }
+
+    /**
+     * get identity card of current client
+     * @return
+     */
+    public ClientIdentityCard getIdentityCard() {
+        ClientIdentityCard ic;
+        synchronized(lock) {
+            ic = this.identityCard;
+        }
+        if(ic == null) {
+            ic = ClientIdentityCard.builder().key(getKeyData()).build();
+        }
+        return ic;
+    }
+
+    /**
+     * public key as binary data
+     * @return
+     */
+    public BinaryData getKeyData() {
+        return new BinaryData(publicKey.getEncoded());
     }
 }

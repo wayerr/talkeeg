@@ -84,6 +84,11 @@ public final class ClientIdentityCard {
         this.userId = b.userId;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+
     /**
      * id of user, in other words fingerprint of user public key
      * @return

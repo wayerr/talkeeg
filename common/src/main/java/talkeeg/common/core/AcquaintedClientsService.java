@@ -28,6 +28,8 @@ import talkeeg.common.util.Callback;
 import talkeeg.common.util.FileData;
 import java.io.File;
 import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -75,9 +77,11 @@ public final class AcquaintedClientsService {
         return client;
     }
 
-
-
     private void save() {
-
+        List<ClientIdentityCard> list = new ArrayList<>();
+        for(AcquaintedClient client: this.map.values()) {
+            list.add(client.getIdentityCard());
+        }
+        this.fileData.write(list);
     }
 }
