@@ -51,16 +51,19 @@ final class AcquaintView implements View {
             GroupLayout gl = new GroupLayout(panel);
             panel.setLayout(gl);
             gl.setVerticalGroup(gl.createSequentialGroup()
-                .addComponent(addressBox)
+                .addContainerGap()
+                .addComponent(addressBox, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGap(UiUtils.GAP)
                 .addComponent(acquaintButton)
+                .addContainerGap()
             );
             gl.setHorizontalGroup(gl.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(gl.createParallelGroup()
-                                    .addComponent(addressBox)
-                                    .addComponent(acquaintButton)
-                    )
-                    .addContainerGap()
+                .addContainerGap()
+                .addGroup(gl.createParallelGroup()
+                    .addComponent(addressBox, 0, GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
+                    .addComponent(acquaintButton, GroupLayout.Alignment.TRAILING)
+                )
+                .addContainerGap()
             );
         }
         return panel;

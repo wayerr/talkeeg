@@ -35,14 +35,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5d5b56c3-592d-4056-a6a4-bdddd92dcc4d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Io.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Io.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcServiceImpl.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcServiceManager.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcServiceManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainModule.java" afterPath="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/MainModule.java" afterPath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/MainModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/TgbfProcessor.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/TgbfProcessor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Whirligig.java" afterPath="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Whirligig.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/AcquaintView.java" afterPath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/AcquaintView.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/UiUtils.java" afterPath="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/UiUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.ipr" afterPath="$PROJECT_DIR$/talkeeg-parent.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/talkeeg-parent.iws" afterPath="$PROJECT_DIR$/talkeeg-parent.iws" />
     </list>
     <ignored path="talkeeg-parent.iws" />
@@ -94,14 +89,36 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IpcUtil.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="IpcUtil.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcUtil.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8918919" vertical-offset="54" max-vertical-offset="828">
+            <state vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="828">
               <caret line="53" column="66" selection-start-line="53" selection-start-column="66" selection-end-line="53" selection-end-column="66" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AcquaintView.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/AcquaintView.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="328" max-vertical-offset="1278">
+              <caret line="55" column="35" selection-start-line="55" selection-start-column="35" selection-end-line="55" selection-end-column="35" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UiUtils.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/UiUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.36036035" vertical-offset="12" max-vertical-offset="936">
+              <caret line="31" column="35" selection-start-line="31" selection-start-column="35" selection-end-line="31" selection-end-column="35" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -124,7 +141,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/util/Closeables.java" />
         <option value="$PROJECT_DIR$/common/src/test/java/talkeeg/common/Env.java" />
         <option value="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/CacheDirManager.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CacheDirsService.java" />
@@ -166,7 +182,6 @@
         <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/App.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/core/CoreModule.java" />
         <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/ViewsManager.java" />
-        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/AcquaintView.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Io.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/Whirligig.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/TgbfProcessor.java" />
@@ -175,6 +190,8 @@
         <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/MainModule.java" />
         <option value="$PROJECT_DIR$/android-client/src/main/java/talkeeg/android/MainModule.java" />
         <option value="$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcUtil.java" />
+        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/AcquaintView.java" />
+        <option value="$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/UiUtils.java" />
       </list>
     </option>
   </component>
@@ -921,7 +938,7 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="FullScreen" value="false" />
     <property name="LayoutCode.rearrangeEntriesJava" value="false" />
-    <property name="options.lastSelected" value="preferences.intentionPowerPack" />
+    <property name="options.lastSelected" value="preferences.sourceCode.Java" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="OverrideImplement.combined" value="true" />
@@ -1427,7 +1444,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1073" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1444,7 +1461,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35557872" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23475936" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23475936" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Memory Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32846716" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973261" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1577,14 +1594,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/Test.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="229" max-vertical-offset="936">
-          <caret line="39" column="48" selection-start-line="39" selection-start-column="48" selection-end-line="39" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/src/test/java/talkeeg/common/core/SampleMessages.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="67" max-vertical-offset="828">
@@ -1958,16 +1967,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/AcquaintView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="663" max-vertical-offset="1224">
-          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/MainModule.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="157" max-vertical-offset="810">
@@ -2010,11 +2009,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/main/java/talkeeg/common/ipc/IpcUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8918919" vertical-offset="54" max-vertical-offset="828">
+        <state vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="828">
           <caret line="53" column="66" selection-start-line="53" selection-start-column="66" selection-end-line="53" selection-end-column="66" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/AcquaintView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="328" max-vertical-offset="1278">
+          <caret line="55" column="35" selection-start-line="55" selection-start-column="35" selection-end-line="55" selection-end-column="35" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/desktop-client/src/main/java/talkeeg/dc/ui/UiUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.36036035" vertical-offset="12" max-vertical-offset="936">
+          <caret line="31" column="35" selection-start-line="31" selection-start-column="35" selection-end-line="31" selection-end-column="35" />
+          <folding />
         </state>
       </provider>
     </entry>

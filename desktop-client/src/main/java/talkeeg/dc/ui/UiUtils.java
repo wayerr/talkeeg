@@ -29,6 +29,7 @@ import java.awt.*;
 public final class UiUtils {
 
     private static final int MIN_SZIE = 100;
+    public static final int GAP = 3;
 
     private UiUtils() {
 
