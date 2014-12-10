@@ -117,8 +117,8 @@ public final class CoreModule {
 
     @Provides
     @Singleton
-    AcquaintedUsersService provideAcquaintedUsersService(CryptoService cryptoService, KeyLoader keyLoader) {
-        return new AcquaintedUsersService(cryptoService, keyLoader);
+    AcquaintedUsersService provideAcquaintedUsersService(Config config, Bf bf,CryptoService cryptoService, KeyLoader keyLoader) {
+        return new AcquaintedUsersService(config, bf, cryptoService, keyLoader);
     }
 
 }

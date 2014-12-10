@@ -21,10 +21,17 @@ package talkeeg.common.core;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
+import talkeeg.common.conf.Config;
 import talkeeg.common.model.UserIdentityCard;
+import talkeeg.common.util.Callback;
+import talkeeg.common.util.FileData;
+
+import java.io.File;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -38,10 +45,37 @@ public final class AcquaintedUsersService {
     private final CryptoService cryptoService;
     private final ConcurrentMap<Int128, AcquaintedUser> users = new ConcurrentHashMap<>();
     private final KeyLoader keyLoader;
+    private final FileData fileData;
 
-    AcquaintedUsersService(CryptoService cryptoService, KeyLoader keyLoader) {
+    AcquaintedUsersService(Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
         this.cryptoService = cryptoService;
         this.keyLoader = keyLoader;
+        final File file = new File(config.getConfigDir(), "acquainted_users.tgbf");
+        this.fileData = new FileData(bf, file);
+        load();
+    }
+
+    private void load() {
+        this.fileData.read(new Callback<Object>() {
+            @Override
+            public void call(Object value) {
+                acquaint((UserIdentityCard)value);
+            }
+        });
+    }
+
+    private void save() {
+        List<UserIdentityCard> userIdentityCards = new ArrayList<>();
+        for(AcquaintedUser user: this.users.values()) {
+            UserIdentityCard identityCard = user.getIdentityCard();
+            if(identityCard == null) {
+                identityCard = UserIdentityCard.builder()
+                        .key(user.getKeyData())
+                        .build();
+            }
+            userIdentityCards.add(identityCard);
+        }
+        this.fileData.write(userIdentityCards);
     }
 
     /**
@@ -56,6 +90,9 @@ public final class AcquaintedUsersService {
         final AcquaintedUser oldUser = users.putIfAbsent(user.getId(), user);
         if(oldUser != null) {
             return oldUser;
+        } else {
+            //acquainted users changed, we need save it
+            save();
         }
         return user;
     }

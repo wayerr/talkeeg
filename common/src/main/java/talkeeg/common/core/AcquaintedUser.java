@@ -53,6 +53,10 @@ public final class AcquaintedUser {
         return id;
     }
 
+    public BinaryData getKeyData() {
+        return new BinaryData(this.publicKey.getEncoded());
+    }
+
     public BinaryData getSign() {
         synchronized(lock) {
             return sign;
