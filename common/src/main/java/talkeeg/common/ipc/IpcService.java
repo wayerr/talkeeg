@@ -19,12 +19,14 @@
 
 package talkeeg.common.ipc;
 
+import talkeeg.common.model.ClientAddress;
+
 /**
  * service for inter process communication over tgbf protocol
  *
  * Created by wayerr on 26.11.14.
  */
 public interface IpcService {
-    void push(Object message);
+    void push(ClientAddress address, Object message);
     void addHandler(String handler, IpcCallback callback);
 }

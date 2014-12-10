@@ -20,6 +20,7 @@
 package talkeeg.common.ipc;
 
 import talkeeg.common.conf.Config;
+import talkeeg.common.model.ClientAddress;
 
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -39,8 +40,8 @@ final class IpcServiceImpl implements IpcService {
     }
 
     @Override
-    public void push(Object message) {
-
+    public void push(ClientAddress address, Object message) {
+        this.parcelQueue.add(new Parcel(address, message));
     }
 
     @Override

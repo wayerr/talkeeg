@@ -49,6 +49,7 @@ public final class HelloService {
      */
     public Hello hello() {
         Hello.Builder builder = new Hello.Builder();
+        builder.setClientId(this.identityCardsService.getClientId());
         builder.setIdentityCard(this.identityCardsService.getUserIdentityCard());
         builder.setAddresses(this.addressesService.getClientAddreses());
         return builder.build();

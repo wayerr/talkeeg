@@ -28,6 +28,8 @@ import talkeeg.bf.schema.Schema;
 import talkeeg.bf.schema.SchemaSource;
 import talkeeg.common.barcode.BarcodeService;
 import talkeeg.common.conf.Config;
+import talkeeg.common.ipc.IpcService;
+import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.*;
 
 import javax.inject.Singleton;
@@ -47,7 +49,8 @@ import java.util.function.Supplier;
         BarcodeService.class,
         HelloService.class,
         AcquaintedUsersService.class,
-        AcquaintedClientsService.class
+        AcquaintedClientsService.class,
+        IpcService.class
     }
 )
 public final class CoreModule {
@@ -129,4 +132,24 @@ public final class CoreModule {
         return new AcquaintedClientsService(config, bf, cryptoService, keyLoader);
     }
 
+    @Provides
+    @Singleton
+    ClientsAddressesService provideClientsAddressesService() {
+        return new ClientsAddressesService();
+    }
+
+    @Provides
+    @Singleton
+    AcquaintService provideAcquaintService(IpcService ipc,
+                                           AcquaintedUsersService acquaintedUsers,
+                                           ClientsAddressesService clientsAddresses,
+                                           AcquaintedClientsService acquaintedClients) {
+        return new AcquaintService(ipc, acquaintedUsers, clientsAddresses);
+    }
+
+    @Provides
+    @Singleton
+    IpcService provideIpcService(IpcServiceManager ipcServiceManager) {
+        return ipcServiceManager.getIpc();
+    }
 }

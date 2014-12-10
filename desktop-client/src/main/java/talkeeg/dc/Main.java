@@ -47,6 +47,13 @@ public final class Main {
     public static void main(String args[]) throws Exception {
         Main main = new Main();
         main.start();
+
+        final Thread atShutdownThread = new Thread(main::stop);
+        Runtime.getRuntime().addShutdownHook(atShutdownThread);
+    }
+
+    private void stop() {
+        serviceManager.stop();
     }
 
     private void start() {

@@ -19,6 +19,8 @@
 
 package talkeeg.common.model;
 
+import com.google.common.base.Preconditions;
+import talkeeg.bf.Int128;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
 import com.google.common.base.Supplier;
@@ -41,8 +43,22 @@ public final class Hello implements Printable {
 
     public static final class Builder implements BuilderInterface {
 
+        private Int128 clientId;
         private ClientAddresses addresses;
         private UserIdentityCard identityCard;
+
+        public Int128 getClientId() {
+            return clientId;
+        }
+
+        public Builder clientId(Int128 clientId) {
+            setClientId(clientId);
+            return this;
+        }
+
+        public void setClientId(Int128 clientId) {
+            this.clientId = clientId;
+        }
 
         public ClientAddresses getAddresses() {
             return addresses;
@@ -66,12 +82,21 @@ public final class Hello implements Printable {
         }
     }
 
+    private final Int128 clientId;
     private final UserIdentityCard identityCard;
     private final ClientAddresses addresses;
 
     public Hello(Builder b) {
+        this.clientId = b.clientId;
+        Preconditions.checkNotNull(this.clientId, "clientId is null");
         this.identityCard = b.identityCard;
+        Preconditions.checkNotNull(this.identityCard, "identityCard is null");
         this.addresses = b.addresses;
+        Preconditions.checkNotNull(this.addresses, "addresses is null");
+    }
+
+    public Int128 getClientId() {
+        return clientId;
     }
 
     public UserIdentityCard getIdentityCard() {

@@ -17,29 +17,32 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.ipc;
+package talkeeg.common.core;
 
-import talkeeg.common.model.ClientAddress;
+import talkeeg.bf.Int128;
+import talkeeg.common.model.ClientAddresses;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * an representation of message with destination address
- *
- * Created by wayerr on 26.11.14.
+ * service which provide addresses of clients (not only acquainted) <p/>
+ * in future this service must load addresses from server
+ * Created by wayerr on 10.12.14.
  */
-final class Parcel {
-    private final ClientAddress destination;
-    private final Object message;
+public final class ClientsAddressesService {
+    private final Map<Int128, ClientAddresses> map = new HashMap<>();
 
-    Parcel(ClientAddress destination, Object message) {
-        this.destination = destination;
-        this.message = message;
+    public void updateAddress(Int128 clientId, ClientAddresses addresses) {
+        this.map.put(clientId, addresses);
     }
 
-    ClientAddress getDestination() {
-        return destination;
-    }
-
-    Object getMessage() {
-        return message;
+    /**
+     * addresses of client
+     * @param clientId
+     * @return
+     */
+    public ClientAddresses getAddresses(Int128 clientId) {
+        return map.get(clientId);
     }
 }

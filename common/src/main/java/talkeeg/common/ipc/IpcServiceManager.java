@@ -40,4 +40,8 @@ public final class IpcServiceManager {
     public void stop() {
         serviceThread.interrupt();
     }
+
+    public IpcService getIpc() {
+        return service;
+    }
 }

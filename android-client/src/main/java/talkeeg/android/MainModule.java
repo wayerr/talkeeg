@@ -26,6 +26,7 @@ import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
 import talkeeg.common.core.CacheDirsService;
 import talkeeg.common.core.CoreModule;
+import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.IpcServiceManager;
 
 import javax.inject.Singleton;

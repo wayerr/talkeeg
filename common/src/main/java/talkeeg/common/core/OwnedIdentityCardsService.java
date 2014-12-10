@@ -19,7 +19,9 @@
 
 package talkeeg.common.core;
 
+import talkeeg.bf.Int128;
 import talkeeg.common.conf.Config;
+import talkeeg.common.model.ClientIdentityCard;
 import talkeeg.common.model.UserIdentityCard;
 import talkeeg.bf.BinaryData;
 
@@ -33,7 +35,10 @@ public final class OwnedIdentityCardsService {
     private final File icdir;
     private final Object lock = new Object();
     private final CryptoService cryptoService;
+    private Int128 clientId;
+    private Int128 userId;
     private UserIdentityCard user;
+    private ClientIdentityCard client;
 
     public OwnedIdentityCardsService(Config config, CryptoService cryptoService) {
         this.cryptoService = cryptoService;
@@ -61,5 +66,49 @@ public final class OwnedIdentityCardsService {
 
     private void load(UserIdentityCard.Builder builder) {
         //TODO load attributes and client list from confiuration file
+    }
+
+    /**
+     * immutable identity card of user
+     * @return
+     */
+    public ClientIdentityCard getClientIdentityCard() {
+        synchronized(lock) {
+            if(this.client == null) {
+                ClientIdentityCard.Builder builder = ClientIdentityCard.builder();
+                builder.setUserId(getUserId());
+                //load public key in CIC
+                final OwnedKeysManager keysManager = cryptoService.getOwnedKeysManager();
+                builder.setKey(new BinaryData(keysManager.getPublicKey(OwnedKeyType.CLIENT).getEncoded()));
+                this.client = builder.build();
+            }
+            return this.client;
+        }
+    }
+
+    /**
+     * client id, in another word fingerprint of client public key
+     * @return
+     */
+    public Int128 getClientId() {
+        synchronized(lock) {
+            if(this.clientId == null) {
+                this.clientId = this.cryptoService.getFingerprint(getClientIdentityCard().getKey());
+            }
+            return clientId;
+        }
+    }
+
+    /**
+     * user id, in another word fingerprint of user public key
+     * @return
+     */
+    public Int128 getUserId() {
+        synchronized(lock) {
+            if(this.userId == null) {
+                this.userId = this.cryptoService.getFingerprint(getUserIdentityCard().getKey());
+            }
+            return userId;
+        }
     }
 }
