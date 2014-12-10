@@ -19,46 +19,18 @@
 
 package talkeeg.dc;
 
-import dagger.ObjectGraph;
-import talkeeg.common.core.CryptoService;
-import talkeeg.common.ipc.IpcServiceManager;
-import talkeeg.dc.ui.GuiManager;
-
-import java.awt.*;
-
 /**
  * the main class for desktop client
  *
  * Created by wayerr on 26.11.14.
  */
 public final class Main {
-    private final ObjectGraph graph;
-    private final IpcServiceManager serviceManager;
-    private final GuiManager guiManager;
-    private final CryptoService cryptoService;
-
-    private Main() {
-        this.graph = ObjectGraph.create(new MainModule());
-        this.serviceManager = this.graph.get(IpcServiceManager.class);
-        this.cryptoService = this.graph.get(CryptoService.class);
-        this.guiManager = new GuiManager(this.graph);
-    }
 
     public static void main(String args[]) throws Exception {
-        Main main = new Main();
-        main.start();
+        final App app = App.getInstance();
+        app.start();
 
-        final Thread atShutdownThread = new Thread(main::stop);
+        final Thread atShutdownThread = new Thread(app::stop);
         Runtime.getRuntime().addShutdownHook(atShutdownThread);
-    }
-
-    private void stop() {
-        serviceManager.stop();
-    }
-
-    private void start() {
-        serviceManager.start();
-        cryptoService.init();
-        EventQueue.invokeLater(this.guiManager);
     }
 }

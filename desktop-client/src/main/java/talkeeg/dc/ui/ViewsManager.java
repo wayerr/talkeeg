@@ -40,6 +40,7 @@ class ViewsManager implements ComponentOwner {
 
     ViewsManager(ObjectGraph objectGraph) {
         views.add(objectGraph.get(BarcodeView.class));
+        views.add(new AcquaintView());
         this.panel = new JPanel(new BorderLayout());
     }
 
@@ -64,6 +65,7 @@ class ViewsManager implements ComponentOwner {
         if(this.currentView != null) {
             this.panel.add(this.currentView.getComponent(), BorderLayout.CENTER);
             this.panel.validate();
+            this.panel.repaint();
         }
     }
 

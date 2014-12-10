@@ -32,11 +32,32 @@ public final class AcquaintService {
     private final AcquaintedUsersService acquaintedUsers;
     private final IpcService ipc;
     private final ClientsAddressesService addresses;
+    private final OwnedIdentityCardsService ownedIdentityCards;
 
-    AcquaintService(IpcService ipcService, AcquaintedUsersService acquaintedUsers, ClientsAddressesService addresses) {
+    AcquaintService(OwnedIdentityCardsService ownedIdentityCards,
+                    IpcService ipcService,
+                    AcquaintedUsersService acquaintedUsers,
+                    ClientsAddressesService addresses) {
+        this.ownedIdentityCards = ownedIdentityCards;
         this.ipc = ipcService;
         this.acquaintedUsers = acquaintedUsers;
         this.addresses = addresses;
+    }
+
+    /**
+     * acquaint process over regular network, with manual verification
+     * @param address
+     */
+    public void beginNetworkAcquaint(ClientAddress address) {
+        SingleMessage.Builder builder = SingleMessage.builder();
+        buildMessage(builder);
+        ipc.push(address, builder.build());
+    }
+
+    protected void buildMessage(SingleMessage.Builder builder) {
+        builder.setSrc(this.ownedIdentityCards.getClientId());
+        builder.setId((short)0);
+        builder.setCipherType(MessageCipherType.NONE);
     }
 
     public void acquaint(Hello hello) {
@@ -44,9 +65,10 @@ public final class AcquaintService {
         this.acquaintedUsers.acquaint(identityCard);
         final ClientAddresses clientAddresses = hello.getAddresses();
         this.addresses.updateAddress(hello.getClientId(), clientAddresses);
-        SingleMessage message = SingleMessage.builder().build();
+        SingleMessage.Builder builder = SingleMessage.builder();
+        buildMessage(builder);
         for(ClientAddress address: clientAddresses.getAddresses()) {
-            ipc.push(address, message);
+            ipc.push(address, builder.build());
         }
     }
 }

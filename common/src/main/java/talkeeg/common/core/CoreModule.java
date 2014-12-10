@@ -50,6 +50,7 @@ import java.util.function.Supplier;
         HelloService.class,
         AcquaintedUsersService.class,
         AcquaintedClientsService.class,
+        AcquaintService.class,
         IpcService.class
     }
 )
@@ -140,11 +141,12 @@ public final class CoreModule {
 
     @Provides
     @Singleton
-    AcquaintService provideAcquaintService(IpcService ipc,
+    AcquaintService provideAcquaintService(OwnedIdentityCardsService ownedIdentityCards,
+                                           IpcService ipc,
                                            AcquaintedUsersService acquaintedUsers,
                                            ClientsAddressesService clientsAddresses,
                                            AcquaintedClientsService acquaintedClients) {
-        return new AcquaintService(ipc, acquaintedUsers, clientsAddresses);
+        return new AcquaintService(ownedIdentityCards, ipc, acquaintedUsers, clientsAddresses);
     }
 
     @Provides
