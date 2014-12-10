@@ -61,5 +61,7 @@ public class FileDataTest {
             }
         });
         assertEquals(orig, readed);
+        // if test failed then file was not deleted, remain it for analyzing error
+        tempFile.delete();
     }
 }

@@ -56,18 +56,32 @@ public final class FileData {
             fis = new RandomAccessFile(this.file, "rw");
             channel = fis.getChannel();
             ByteBuffer buffer = ByteBuffer.allocate(1024);
-            while(channel.position() < channel.size()) {
-                channel.read(buffer);
-                buffer.flip();
+            boolean needData = true;
+            while(true) {
+                if(needData || !buffer.hasRemaining()) {
+                    if(channel.position() >= channel.size()) {
+                        break;
+                    }
+                    buffer.limit(buffer.capacity());//clear limit
+                    if(buffer.position() == buffer.capacity()) {
+                        //allocate more large buffer
+                        ByteBuffer newBuffer = ByteBuffer.allocate((int)(buffer.capacity() * 1.5));
+                        buffer.rewind();
+                        newBuffer.put(buffer);
+                        buffer = newBuffer;
+                    }
+                    channel.read(buffer);
+                    buffer.flip();
+                    needData = false;
+                }
                 final int length = TgbfUtils.getEntryLength(buffer, null);
-                if(length > buffer.limit()) {
-                    buffer.position(buffer.limit());
+                if(length > buffer.remaining()) {
+                    buffer.compact();
+                    needData = true;
                     continue;
                 }
-                buffer.limit(buffer.position() + length);
                 final Object readed = bf.read(buffer);
                 messageCallback.call(readed);
-                buffer.compact();
             }
         } catch(Exception e) {
             throw new RuntimeException(e);
