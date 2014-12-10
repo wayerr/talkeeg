@@ -17,31 +17,35 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.android;
+package talkeeg.common.core;
 
-import android.content.Context;
 import talkeeg.common.util.Fs;
 
 import java.io.File;
 import java.util.Random;
 
 /**
- * tool for managing by cache and tmp dirs
+ * service of cache and temp directories
  *
- * Created by wayerr on 05.12.14.
+ * Created by wayerr on 10.12.14.
  */
-public final class CacheDirManager {
+public final class CacheDirsService {
+    public interface DirectoryProvider {
+        File getDirectory();
+        void clear();
+    }
 
-    private static final String DIR_TMP = "tmp";
     private static final String RND_SRC = "1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
 
     private final Random random;
+    private final DirectoryProvider tempDirProvider;
+    private final DirectoryProvider cacheDirProvider;
 
-    private final Context context;
 
-    CacheDirManager(Context context) {
-        this.context = context;
+    public CacheDirsService(DirectoryProvider tempDirectoryProvider, DirectoryProvider cacheDirectoryProvider) {
         this.random = new Random();
+        this.tempDirProvider = tempDirectoryProvider;
+        this.cacheDirProvider = cacheDirectoryProvider;
     }
 
     /**
@@ -65,30 +69,23 @@ public final class CacheDirManager {
     }
 
     private File getTmpDir() {
-        final File cacheDir = getCacheDir();
-        final File file = new File(cacheDir, DIR_TMP);
-        return file;
+        return tempDirProvider.getDirectory();
     }
 
     private File getCacheDir() {
-        File cacheDir = this.context.getExternalCacheDir();
-        if(cacheDir == null) {
-            cacheDir = this.context.getCacheDir();
-        }
-        return cacheDir;
+        return cacheDirProvider.getDirectory();
     }
+
+
 
     /**
      * remove temp files
      */
     public void clearTmp() {
-        File cacheExtDir = this.context.getExternalCacheDir();
-        Fs.delete(cacheExtDir);
-        File cacheDir = this.context.getCacheDir();
-        Fs.delete(cacheDir);
+        this.tempDirProvider.clear();
     }
 
-    char[] getRandomString() {
+    private char[] getRandomString() {
         char rs[] = new char[10];
         int length = RND_SRC.length();
         for(int i = 0; i < rs.length; ++i) {

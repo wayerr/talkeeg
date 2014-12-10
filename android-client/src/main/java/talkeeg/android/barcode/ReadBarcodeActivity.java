@@ -36,6 +36,7 @@ import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
 import talkeeg.common.core.AcquaintedUsersService;
+import talkeeg.common.core.CacheDirsService;
 import talkeeg.common.model.Hello;
 import talkeeg.common.model.UserIdentityCard;
 
@@ -69,7 +70,7 @@ public final class ReadBarcodeActivity extends Activity {
                         bitmapLocal = bitmap;
                     }
                 }
-                final BarcodeService barcodeService = app.get(BarcodeService.class);
+                final BarcodeService barcodeService = App.get(BarcodeService.class);
                 BinaryData messageDataLocal = null;
                 if(bitmapLocal != null ) {
                     BinaryBitmap binaryBitmap = BarcodeUtils.toBinaryBitmap(bitmapLocal);
@@ -87,7 +88,7 @@ public final class ReadBarcodeActivity extends Activity {
                 }
                 synchronized(Model.this) {
                     if(messageData != null && message == null) {
-                        final Bf bf = app.get(Bf.class);
+                        final Bf bf = App.get(Bf.class);
                         try {
                             message = bf.read(ByteBuffer.wrap(messageData.getData()));
                         } catch(Exception e) {
@@ -96,7 +97,7 @@ public final class ReadBarcodeActivity extends Activity {
                     }
 
                     if(message instanceof Hello) {
-                        final AcquaintedUsersService usersService = app.get(AcquaintedUsersService.class);
+                        final AcquaintedUsersService usersService = App.get(AcquaintedUsersService.class);
                         final Hello hello = (Hello)message;
                         UserIdentityCard identityCard = hello.getIdentityCard();
                         usersService.acquaint(identityCard);
@@ -117,7 +118,6 @@ public final class ReadBarcodeActivity extends Activity {
             }
         }
 
-        private final App app;
         private ReadBarcodeActivity currentActivity;
 
         private LoadBarcodeDataTask task;
@@ -127,8 +127,7 @@ public final class ReadBarcodeActivity extends Activity {
         private Bitmap bitmap;
         private Object message;
 
-        private Model(App app) {
-            this.app = app;
+        private Model() {
         }
 
 
@@ -167,7 +166,7 @@ public final class ReadBarcodeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.read_barcode_activity);
         if(model == null) {
-            model = new Model((App)getApplication());
+            model = new Model();
         }
         updateFromModel();
     }
@@ -198,7 +197,7 @@ public final class ReadBarcodeActivity extends Activity {
      */
     public void takeBarcodeImage(View view) {
         Intent takeImageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        final File tempFile = ((App)getApplication()).get(CacheDirManager.class).createTempFile("barcode");
+        final File tempFile = App.get(CacheDirsService.class).createTempFile("barcode");
         takeImageIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
         model.setFile(tempFile);
         final ComponentName takeImageComponentName = takeImageIntent.resolveActivity(getPackageManager());

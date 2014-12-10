@@ -17,32 +17,13 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.core;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+package talkeeg.common.util;
 
 /**
+ * a callback interface
  *
- * Created by wayerr on 01.12.14.
+ * Created by wayerr on 10.12.14.
  */
-public class CurrentAddressesServiceTest {
-
-    @BeforeClass
-    public static void beforeClass() {
-        Env.getInstance().getConfig();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        Env.getInstance().close();
-    }
-
-    @Test
-    public void test() {
-        System.out.println("test");
-        CurrentAddressesService service = new CurrentAddressesService(new PublicIpService(Env.getInstance().getConfig()));
-        System.out.println(service.getAddreses());
-    }
+public interface Callback<T> {
+    void call(T value);
 }

@@ -22,15 +22,18 @@ package talkeeg.android;
 import android.app.Application;
 import dagger.ObjectGraph;
 import talkeeg.common.core.CryptoService;
-
 import javax.inject.Inject;
 
 /**
- * an application
+ * a main singleton which represents application state
  * Created by wayerr on 03.12.14.
  */
 public class App extends Application {
+
+    private static volatile App INTANCE;
+
     private ObjectGraph objectGraph;
+
     @Inject
     CryptoService cryptoService;
 
@@ -40,10 +43,7 @@ public class App extends Application {
         this.objectGraph = ObjectGraph.create(new MainModule(this));
         this.objectGraph.inject(this);
         this.cryptoService.init();
-    }
-
-    public ObjectGraph getObjectGraph() {
-        return objectGraph;
+        INTANCE = this;//share app instance
     }
 
     /**
@@ -52,7 +52,7 @@ public class App extends Application {
      * @param <T>
      * @return
      */
-    public <T> T get(Class<T> type) {
-        return objectGraph.get(type);
+    public static <T> T get(Class<T> type) {
+        return INTANCE.objectGraph.get(type);
     }
 }

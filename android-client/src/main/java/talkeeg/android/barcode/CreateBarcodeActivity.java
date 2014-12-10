@@ -45,9 +45,8 @@ public final class CreateBarcodeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_barcode_activity);
 
-        final ObjectGraph objectGraph = ((App)getApplication()).getObjectGraph();
-        BarcodeService barcodeService = objectGraph.get(BarcodeService.class);
-        HelloService helloService = objectGraph.get(HelloService.class);
+        BarcodeService barcodeService = App.get(BarcodeService.class);
+        HelloService helloService = App.get(HelloService.class);
         final ImageView image = (ImageView)findViewById(R.id.imageView);
         BinaryData data = helloService.helloAsBinaryData();
         final BitMatrix matrix = barcodeService.encode(data);

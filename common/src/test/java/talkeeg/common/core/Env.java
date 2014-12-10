@@ -17,15 +17,16 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common;
+package talkeeg.common.core;
 
 import com.google.common.base.Function;
+import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
+import talkeeg.common.util.DefaultTempDirProvider;
 import talkeeg.common.util.Fs;
 
 import java.io.File;
-import java.nio.file.Files;
 
 /**
  * testing environment
@@ -36,8 +37,11 @@ public final class Env implements AutoCloseable {
 
     private static final Env INSTANCE = new Env();
     private final Config config;
+    private final Bf bf;
+    private final CacheDirsService cacheDirsService;
 
     public Env() {
+        CoreModule coreModule = new CoreModule();
         this.config = ConfigImpl.builder()
             .applicationName("talkeeg-test")
             .configDirFunction(new Function<String, File>() {
@@ -49,6 +53,10 @@ public final class Env implements AutoCloseable {
             .putMap("net.port", 11661)
             .putMap("net.publicIpServices", "http://checkip.amazonaws.com http://curlmyip.com http://www.trackip.net/ip http://whatismyip.akamai.com http://ifconfig.me/ip http://ipv4.icanhazip.com http://shtuff.it/myip/text http://cydev.ru/ip")
             .build();
+
+        this.bf = coreModule.provideBf();
+        CacheDirsService.DirectoryProvider provider = new DefaultTempDirProvider(this.config);
+        this.cacheDirsService = new CacheDirsService(provider, provider);
     }
 
     public static Env getInstance() {
@@ -62,5 +70,13 @@ public final class Env implements AutoCloseable {
     @Override
     public void close() {
         Fs.delete(this.config.getConfigDir());
+    }
+
+    public Bf getBf() {
+        return bf;
+    }
+
+    public CacheDirsService getCacheDirsService() {
+        return cacheDirsService;
     }
 }

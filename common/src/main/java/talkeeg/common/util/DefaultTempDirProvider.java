@@ -17,32 +17,35 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.core;
+package talkeeg.common.util;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import talkeeg.common.conf.Config;
+import talkeeg.common.core.CacheDirsService;
+
+import java.io.File;
 
 /**
+ * default provider of temp directory
  *
- * Created by wayerr on 01.12.14.
+ * Created by wayerr on 10.12.14.
  */
-public class CurrentAddressesServiceTest {
+public final class DefaultTempDirProvider implements CacheDirsService.DirectoryProvider {
 
-    @BeforeClass
-    public static void beforeClass() {
-        Env.getInstance().getConfig();
+    private final String appName;
+    private final File file;
+
+    public DefaultTempDirProvider(Config config) {
+        this.appName = config.getApplicationName();
+        this.file = new File(System.getProperty("java.io.tmpdir"), appName);
     }
 
-    @AfterClass
-    public static void afterClass() {
-        Env.getInstance().close();
+    @Override
+    public File getDirectory() {
+        return file;
     }
 
-    @Test
-    public void test() {
-        System.out.println("test");
-        CurrentAddressesService service = new CurrentAddressesService(new PublicIpService(Env.getInstance().getConfig()));
-        System.out.println(service.getAddreses());
+    @Override
+    public void clear() {
+        Fs.delete(this.file);
     }
 }

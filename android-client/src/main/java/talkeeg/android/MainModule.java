@@ -24,6 +24,7 @@ import dagger.Module;
 import dagger.Provides;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
+import talkeeg.common.core.CacheDirsService;
 import talkeeg.common.core.CoreModule;
 import talkeeg.common.ipc.IpcServiceManager;
 
@@ -37,7 +38,7 @@ import javax.inject.Singleton;
                 Config.class,
                 IpcServiceManager.class,
                 App.class,
-                CacheDirManager.class
+                CacheDirsService.class
         },
         includes = {
                 CoreModule.class
@@ -45,9 +46,9 @@ import javax.inject.Singleton;
 )
 final class MainModule {
 
-    private App app;
+    private Application app;
 
-    MainModule(App app) {
+    MainModule(Application app) {
         this.app = app;
     }
 
@@ -64,14 +65,9 @@ final class MainModule {
 
     @Provides
     @Singleton
-    App provideApp() {
-        return this.app;
-    }
-
-    @Provides
-    @Singleton
-    CacheDirManager provideCacheDirManager(App app) {
-        return new CacheDirManager(app.getApplicationContext());
+    CacheDirsService provideCacheDirManager(final App app) {
+        final AndroidCacheDirectoryProvider provider = new AndroidCacheDirectoryProvider(this.app);
+        return new CacheDirsService(provider, provider.getTempProvider());
     }
 
     @Provides
@@ -79,4 +75,5 @@ final class MainModule {
     IpcServiceManager provideIpcServiceManager(Config config) {
         return new IpcServiceManager(config);
     }
+
 }

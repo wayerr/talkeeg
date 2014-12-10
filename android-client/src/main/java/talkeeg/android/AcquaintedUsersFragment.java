@@ -42,7 +42,7 @@ public final class AcquaintedUsersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflate = inflater.inflate(R.layout.acquainted_users_fragment, container, false);
         ListView listView = (ListView)inflate.findViewById(R.id.acquaintedUsersList);
-        AcquaintedUsersService service = ((App)getActivity().getApplication()).get(AcquaintedUsersService.class);
+        AcquaintedUsersService service = App.get(AcquaintedUsersService.class);
         listView.setAdapter(new AcquaintedUserListAdapter(getActivity(), R.layout.acquainted_user_view, service));
         return inflate;
     }

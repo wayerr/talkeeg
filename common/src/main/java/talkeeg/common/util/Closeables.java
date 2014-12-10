@@ -17,32 +17,30 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.core;
+package talkeeg.common.util;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
+ * utils for {@link Closeable}
  *
- * Created by wayerr on 01.12.14.
+ * Created by wayerr on 10.12.14.
  */
-public class CurrentAddressesServiceTest {
+public final class Closeables {
 
-    @BeforeClass
-    public static void beforeClass() {
-        Env.getInstance().getConfig();
-    }
+    public static final Logger LOG = Logger.getLogger(Closeables.class.getName());
 
-    @AfterClass
-    public static void afterClass() {
-        Env.getInstance().close();
-    }
-
-    @Test
-    public void test() {
-        System.out.println("test");
-        CurrentAddressesService service = new CurrentAddressesService(new PublicIpService(Env.getInstance().getConfig()));
-        System.out.println(service.getAddreses());
+    public static final void close(Closeable closeable) {
+        if(closeable == null) {
+            return;
+        }
+        try {
+            closeable.close();
+        } catch(IOException e) {
+            LOG.log(Level.SEVERE, "at closing", e);
+        }
     }
 }
