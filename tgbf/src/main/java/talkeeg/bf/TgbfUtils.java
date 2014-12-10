@@ -129,7 +129,7 @@ public final class TgbfUtils {
     public static int getEntryLength(ByteBuffer buffer, EntryType type) {
         final int position = buffer.position();
         try {
-            readAndCheckType(buffer, type);
+            type = readAndCheckType(buffer, type);
             int size;
             if(type == EntryType.BYTES) {
                 final long val = readUnsignedInteger(buffer);
@@ -293,15 +293,17 @@ public final class TgbfUtils {
     }
 
     /**
-     * read first byte from buffer and check that it matches with specified
+     * read first byte from buffer and check that it matches with specified <p/>
+     * if specified null then return type which readed
      * @param buffer
      * @param expected
      */
-    public static void readAndCheckType(ByteBuffer buffer, EntryType expected) {
+    public static EntryType readAndCheckType(ByteBuffer buffer, EntryType expected) {
         final byte typeByte = buffer.get();//read type of entity, we believe that it type is correct
         final EntryType readedType = EntryType.getEntryType(typeByte);
-        if(readedType != expected) {
+        if(expected != null && readedType != expected) {
             throw new RuntimeException("unexpected type " + readedType + " when expect " + expected);
         }
+        return readedType;
     }
 }

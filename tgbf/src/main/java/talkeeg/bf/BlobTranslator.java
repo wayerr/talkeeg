@@ -137,15 +137,7 @@ public class BlobTranslator implements Translator {
 
     @Override
     public int needSize(TranslationContext context, ByteBuffer buffer) throws Exception {
-        final int position = buffer.position();
-        try {
-            TgbfUtils.readAndCheckType(buffer, EntryType.BYTES);
-            final long length = TgbfUtils.readUnsignedInteger(buffer);
-            checkLength(length);
-            return (int) length;
-        } finally {
-            buffer.position(position);
-        }
+        return TgbfUtils.getEntryLength(buffer, EntryType.BYTES);
     }
 
     protected void checkLength(long length) {

@@ -67,6 +67,7 @@ final class DefaultStructTranslator implements Translator {
             Translator translator = getWriteTranslator(context, i, fieldValue);
             size += translator.getSize(context, fieldValue);
         }
+        size += TgbfUtils.getSizeOfPrimitiveEntry(size);
         return size;
     }
 
@@ -89,6 +90,7 @@ final class DefaultStructTranslator implements Translator {
     public void to(TranslationContext context, Object message, ByteBuffer buffer) throws Exception {
         buffer.put(EntryType.STRUCT.getValue());
         TgbfUtils.writeSignedInteger(buffer, struct.getId());
+        TgbfUtils.writeSignedInteger(buffer, getSize(context, message));
         final List<SchemaEntry> fields = this.struct.getChilds();
         for(int i = 0; i < fields.size(); ++i) {
             final SchemaEntry field = fields.get(i);
@@ -101,6 +103,8 @@ final class DefaultStructTranslator implements Translator {
     @Override
     public Object from(TranslationContext context, ByteBuffer buffer) throws Exception {
         final int structId = readStructId(buffer);
+        //read structure size
+        TgbfUtils.readUnsignedInteger(buffer);
         if(struct.getId() != structId) {
             throw new RuntimeException("unexpected structure: " + structId + "  when expect: " + struct.getId());
         }
