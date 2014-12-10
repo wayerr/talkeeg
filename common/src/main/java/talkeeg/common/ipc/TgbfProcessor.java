@@ -20,7 +20,10 @@
 package talkeeg.common.ipc;
 
 import talkeeg.bf.Arrays;
+import talkeeg.bf.Bf;
+import talkeeg.common.model.ClientAddress;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
@@ -33,6 +36,11 @@ import java.nio.channels.DatagramChannel;
  */
 final class TgbfProcessor implements Io {
 
+    private final Bf bf;
+
+    public TgbfProcessor(Bf bf) {
+        this.bf = bf;
+    }
 
     @Override
     public void read(DatagramChannel channel) throws Exception {
@@ -47,7 +55,11 @@ final class TgbfProcessor implements Io {
     }
 
     @Override
-    public void write(DatagramChannel channel) throws Exception {
-
+    public void write(Parcel parcel, DatagramChannel channel) throws Exception {
+        final ClientAddress destination = parcel.getDestination();
+        final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
+        //TODO reuse buffer
+        final ByteBuffer buffer = bf.write(parcel.getMessage());
+        channel.send(buffer, socketAddress);
     }
 }

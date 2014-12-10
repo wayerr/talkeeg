@@ -28,5 +28,5 @@ import java.nio.channels.DatagramChannel;
  */
 public interface Io {
     void read(DatagramChannel channel) throws Exception;
-    void write(DatagramChannel channel) throws Exception;
+    void write(Parcel parcel, DatagramChannel channel) throws Exception;
 }

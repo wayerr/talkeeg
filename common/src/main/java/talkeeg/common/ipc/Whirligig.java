@@ -24,11 +24,12 @@ import talkeeg.common.conf.Node;
 
 import java.net.*;
 import java.nio.channels.DatagramChannel;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Iterator;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,7 +87,6 @@ final class Whirligig implements Runnable {
         }
     }
 
-
     Whirligig(Config config, Io io) {
         this.config = config;
         this.io = io;
@@ -137,8 +137,18 @@ final class Whirligig implements Runnable {
         if(key.isReadable()) {
             io.read(channel);
         }
-        if(key.isWritable()) {
-            io.write(channel);
+    }
+
+    void push(Parcel parcel) {
+        State state = this.state;
+        DatagramChannel channel = state.channel6;
+        if(channel == null) {
+            channel = state.channel4;
+        }
+        try {
+            io.write(parcel, channel);
+        } catch(Exception e) {
+            throw new RuntimeException("at parcel " + parcel, e);
         }
     }
 }

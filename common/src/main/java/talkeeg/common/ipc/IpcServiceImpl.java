@@ -19,6 +19,7 @@
 
 package talkeeg.common.ipc;
 
+import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 import talkeeg.common.model.ClientAddress;
 
@@ -32,16 +33,15 @@ import java.util.concurrent.ArrayBlockingQueue;
 final class IpcServiceImpl implements IpcService {
     private final Whirligig whirligig;
     private final TgbfProcessor processor;
-    private final Queue<Parcel> parcelQueue = new ArrayBlockingQueue<Parcel>(64 /*we need configure size of queue?*/);
 
-    IpcServiceImpl(Config config) {
-        this.processor = new TgbfProcessor();
+    IpcServiceImpl(Config config, Bf bf) {
+        this.processor = new TgbfProcessor(bf);
         this.whirligig = new Whirligig(config, this.processor);
     }
 
     @Override
     public void push(ClientAddress address, Object message) {
-        this.parcelQueue.add(new Parcel(address, message));
+        this.whirligig.push(new Parcel(address, message));
     }
 
     @Override

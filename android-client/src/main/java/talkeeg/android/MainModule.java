@@ -22,6 +22,7 @@ package talkeeg.android;
 import android.app.Application;
 import dagger.Module;
 import dagger.Provides;
+import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
 import talkeeg.common.core.CacheDirsService;
@@ -73,8 +74,8 @@ final class MainModule {
 
     @Provides
     @Singleton
-    IpcServiceManager provideIpcServiceManager(Config config) {
-        return new IpcServiceManager(config);
+    IpcServiceManager provideIpcServiceManager(Config config, Bf bf) {
+        return new IpcServiceManager(config, bf);
     }
 
 }

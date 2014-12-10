@@ -19,6 +19,7 @@
 
 package talkeeg.common.ipc;
 
+import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 
 /**
@@ -28,8 +29,8 @@ public final class IpcServiceManager {
     private final Thread serviceThread;
     private final IpcServiceImpl service;
 
-    public IpcServiceManager(Config config) {
-        this.service = new IpcServiceImpl(config);
+    public IpcServiceManager(Config config, Bf bf) {
+        this.service = new IpcServiceImpl(config, bf);
         this.serviceThread = new Thread(service.getWhirligig(), config.getApplicationName() + "-ipc-service-thread");
     }
 
