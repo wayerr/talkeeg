@@ -46,7 +46,8 @@ import java.util.function.Supplier;
         OwnedIdentityCardsService.class,
         BarcodeService.class,
         HelloService.class,
-        AcquaintedUsersService.class
+        AcquaintedUsersService.class,
+        AcquaintedClientsService.class
     }
 )
 public final class CoreModule {
@@ -103,6 +104,7 @@ public final class CoreModule {
                     .build())
             .putType(SingleMessage.class, SingleMessage.STRUCT_BUILDER_FACTORY)
             .putType(UserIdentityCard.class, UserIdentityCard.STRUCT_BUILDER_FACTORY)
+            .putType(ClientIdentityCard.class, ClientIdentityCard.STRUCT_BUILDER_FACTORY)
             .putType(ClientAddresses.class, ClientAddresses.STRUCT_BUILDER_FACTORY)
             .putType(ClientAddress.class, ClientAddress.STRUCT_BUILDER_FACTORY)
             .putType(Hello.class, Hello.STRUCT_BUILDER_FACTORY)
@@ -117,8 +119,14 @@ public final class CoreModule {
 
     @Provides
     @Singleton
-    AcquaintedUsersService provideAcquaintedUsersService(Config config, Bf bf,CryptoService cryptoService, KeyLoader keyLoader) {
+    AcquaintedUsersService provideAcquaintedUsersService(Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
         return new AcquaintedUsersService(config, bf, cryptoService, keyLoader);
+    }
+
+    @Provides
+    @Singleton
+    AcquaintedClientsService provideAcquaintedClientsService(Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
+        return new AcquaintedClientsService(config, bf, cryptoService, keyLoader);
     }
 
 }

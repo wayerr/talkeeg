@@ -19,8 +19,25 @@
 
 package talkeeg.common.core;
 
+import talkeeg.bf.Int128;
+
+import java.security.PublicKey;
+
 /**
+ * representation of acquainted user
+ *
  * Created by wayerr on 28.11.14.
  */
-final class AcquaintedClient {
+public final class AcquaintedClient {
+    private final Int128 id;
+    private final PublicKey publicKey;
+
+    AcquaintedClient(Int128 id, PublicKey publicKey) {
+        this.id = id;
+        this.publicKey = publicKey;
+    }
+
+    public Int128 getId() {
+        return id;
+    }
 }

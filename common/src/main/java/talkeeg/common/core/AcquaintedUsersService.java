@@ -85,8 +85,9 @@ public final class AcquaintedUsersService {
      */
     public AcquaintedUser acquaint(BinaryData userPublicKey) {
         Preconditions.checkNotNull(userPublicKey, "userPublicKey is null");
+        final Int128 id = this.cryptoService.getFingerprint(userPublicKey);
         final PublicKey publicKey = this.keyLoader.loadPublic(userPublicKey.getData());
-        final AcquaintedUser user = new AcquaintedUser(this.cryptoService, publicKey);
+        final AcquaintedUser user = new AcquaintedUser(id, publicKey);
         final AcquaintedUser oldUser = users.putIfAbsent(user.getId(), user);
         if(oldUser != null) {
             return oldUser;

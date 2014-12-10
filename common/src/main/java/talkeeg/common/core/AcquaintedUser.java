@@ -44,9 +44,9 @@ public final class AcquaintedUser {
     private BinaryData sign;
     private UserIdentityCard identityCard;
 
-    AcquaintedUser(CryptoService cryptoService, PublicKey publicKey) {
+    AcquaintedUser(Int128 id, PublicKey publicKey) {
         this.publicKey = publicKey;
-        this.id = cryptoService.getFingerprint(publicKey);
+        this.id = id;
     }
 
     public Int128 getId() {

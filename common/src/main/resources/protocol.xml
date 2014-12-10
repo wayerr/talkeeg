@@ -11,6 +11,10 @@
             <id />
         </list>
     </struct>
+    <struct name="ClientIdentityCard" structId="15">
+        <id fieldName="userId" />
+        <blob fieldName="key"/>
+    </struct>
     <struct name="ClientAddress" structId="13">
         <integer fieldName="type" storeAs="01_BYTE"/>
         <string fieldName="value" />
