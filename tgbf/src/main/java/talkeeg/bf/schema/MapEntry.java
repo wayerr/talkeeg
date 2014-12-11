@@ -36,6 +36,11 @@ public final class MapEntry extends Base {
             return keyEntry;
         }
 
+        public Builder keyEntry(SchemaEntry keyEntry) {
+            setKeyEntry(keyEntry);
+            return this;
+        }
+
         public void setKeyEntry(SchemaEntry keyEntry) {
             this.keyEntry = keyEntry;
         }
@@ -44,6 +49,10 @@ public final class MapEntry extends Base {
             return valueEntry;
         }
 
+        public Builder valueEntry(SchemaEntry valueEntry) {
+            setValueEntry(valueEntry);
+            return this;
+        }
         public void setValueEntry(SchemaEntry valueEntry) {
             this.valueEntry = valueEntry;
         }
@@ -60,6 +69,10 @@ public final class MapEntry extends Base {
         super(EnumSet.of(EntryType.LIST), b);
         this.keyEntry = b.keyEntry;
         this.valueEntry = b.valueEntry;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**

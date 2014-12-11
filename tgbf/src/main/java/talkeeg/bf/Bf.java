@@ -36,6 +36,17 @@ import java.util.TreeMap;
  */
 public final class Bf {
 
+    /**
+     * constanc sche,a entry for list of generic
+     */
+    static final ListEntry LIST_OF_GENERIC = ListEntry.builder()
+      .itemEntry(GenericEntry.builder().build())
+      .build();
+    static final MapEntry MAP_OF_GENERIC = MapEntry.builder()
+      .keyEntry(GenericEntry.builder().build())
+      .valueEntry(GenericEntry.builder().build())
+      .build();
+
     public static class Builder {
         private final Map<Integer, TypeData.Builder> types = new TreeMap<>();
         private Schema schema;
@@ -127,18 +138,7 @@ public final class Bf {
      * @throws IOException
      */
     public ByteBuffer write(Object obj) throws Exception {
-        final SchemaEntry message;
-        if(obj instanceof List) {
-            message = ListEntry.builder()
-              .itemEntry(GenericEntry.builder().build())
-              .build();
-        } else {
-            final int messageId = getStructId(obj);
-            message = schema.getMessage(messageId);
-            if(message == null) {
-                throw new RuntimeException("Can not find message for structId=" + messageId);
-            }
-        }
+        final SchemaEntry message = getSchemaEntry(obj);
         final TranslationContextImpl context = new TranslationContextImpl(this, message);
         final TranslatorStaticContext staticContext = new TranslatorStaticContext(this, null, message, obj.getClass());
         final Translator translator = createTranslator(staticContext);
@@ -147,6 +147,24 @@ public final class Bf {
         translator.to(context, obj, buffer);
         buffer.rewind();
         return buffer;
+    }
+
+    SchemaEntry getSchemaEntry(Object obj) {
+        final SchemaEntry message;
+        if(obj instanceof List) {
+            message = LIST_OF_GENERIC;
+        } else {
+            final int messageId = getStructId(obj);
+            message = getStructEntry(messageId);
+            if(message == null) {
+                throw new RuntimeException("Can not find message for structId=" + messageId);
+            }
+        }
+        return message;
+    }
+
+    Struct getStructEntry(int structId) {
+        return this.schema.getMessage(structId);
     }
 
     private static int getStructId(Object obj) {
@@ -182,7 +200,7 @@ public final class Bf {
     public Object read(ByteBuffer buffer) throws Exception {
         //after reading struct header current buffer position must remain untouched
         final int structId = DefaultStructTranslator.readStructId(buffer.asReadOnlyBuffer());
-        final Struct message = schema.getMessage(structId);
+        final Struct message = getStructEntry(structId);
         final TranslationContextImpl context = new TranslationContextImpl(this, message);
         final Translator translator = createTranslator(message);
         return translator.from(context, buffer);
@@ -228,11 +246,6 @@ public final class Bf {
         return typeData;
     }
 
-    MetaTypeResolver getMetaTypeResolver() {
-        return resolver;
-    }
-
-
     /**
      * translator for specified schema entry (allow only structs and messages) <p/>
      * If context does not have appropriate translator, then error will be thrown
@@ -268,6 +281,8 @@ public final class Bf {
             translator = new ListTranslator(staticContext);
         } else if(schemaEntry instanceof MapEntry) {
             translator = new MapTranslator(staticContext);
+        } else if(schemaEntry instanceof GenericEntry) {
+            translator = new GenericTranslator(staticContext);
         }
         if(translator == null) {
             throw new RuntimeException("Can not find translator for schemaEntry=" + schemaEntry);
