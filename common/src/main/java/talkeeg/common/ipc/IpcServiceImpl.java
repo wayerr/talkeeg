@@ -19,12 +19,10 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.bf.Bf;
-import talkeeg.common.conf.Config;
-import talkeeg.common.model.ClientAddress;
-
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * ipc service implementation
@@ -33,20 +31,40 @@ import java.util.concurrent.ArrayBlockingQueue;
 final class IpcServiceImpl implements IpcService {
     private final Whirligig whirligig;
     private final TgbfProcessor processor;
+    private final IpcServiceManager sm;
+    private final Map<String, IpcCallback> handlers = new HashMap<>();
 
-    IpcServiceImpl(Config config, Bf bf) {
-        this.processor = new TgbfProcessor(bf);
-        this.whirligig = new Whirligig(config, this.processor);
+    IpcServiceImpl(IpcServiceManager serviceManager) {
+        this.sm = serviceManager;
+        this.processor = new TgbfProcessor(this.sm.bf, this.sm.ownedIdentityCards);
+        this.whirligig = new Whirligig(this.sm.config, this.processor);
     }
 
     @Override
-    public void push(ClientAddress address, Object message) {
-        this.whirligig.push(new Parcel(address, message));
+    public void push(Parcel parcel) {
+        this.whirligig.push(parcel);
     }
 
     @Override
-    public void addHandler(String handler, IpcCallback callback) {
-
+    public Closeable addHandler(final String action, final IpcCallback callback) {
+        synchronized(this.handlers) {
+            IpcCallback oldCallback = this.handlers.get(action);
+            if(oldCallback != null) {
+                throw new RuntimeException("can not replace " + oldCallback + " with " + callback + " on action " + action);
+            }
+            this.handlers.put(action, callback);
+            return new Closeable() {
+                @Override
+                public void close() {
+                    synchronized(IpcServiceImpl.this.handlers) {
+                        final IpcCallback oldCallback = IpcServiceImpl.this.handlers.get(action);
+                        if(oldCallback == callback) {
+                            IpcServiceImpl.this.handlers.remove(action);
+                        }
+                    }
+                }
+            };
+        }
     }
 
     Whirligig getWhirligig() {

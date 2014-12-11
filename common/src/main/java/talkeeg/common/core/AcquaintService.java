@@ -19,7 +19,9 @@
 
 package talkeeg.common.core;
 
+import talkeeg.bf.Int128;
 import talkeeg.common.ipc.IpcService;
+import talkeeg.common.ipc.Parcel;
 import talkeeg.common.model.*;
 
 /**
@@ -32,13 +34,10 @@ public final class AcquaintService {
     private final AcquaintedUsersService acquaintedUsers;
     private final IpcService ipc;
     private final ClientsAddressesService addresses;
-    private final OwnedIdentityCardsService ownedIdentityCards;
 
-    AcquaintService(OwnedIdentityCardsService ownedIdentityCards,
-                    IpcService ipcService,
+    AcquaintService(IpcService ipcService,
                     AcquaintedUsersService acquaintedUsers,
                     ClientsAddressesService addresses) {
-        this.ownedIdentityCards = ownedIdentityCards;
         this.ipc = ipcService;
         this.acquaintedUsers = acquaintedUsers;
         this.addresses = addresses;
@@ -49,26 +48,19 @@ public final class AcquaintService {
      * @param address
      */
     public void beginNetworkAcquaint(ClientAddress address) {
-        SingleMessage.Builder builder = SingleMessage.builder();
-        buildMessage(builder);
-        ipc.push(address, builder.build());
-    }
-
-    protected void buildMessage(SingleMessage.Builder builder) {
-        builder.setSrc(this.ownedIdentityCards.getClientId());
-        builder.setId((short)0);
-        builder.setCipherType(MessageCipherType.NONE);
+        Parcel parcel = new Parcel(null, address);
+        ipc.push(parcel);
     }
 
     public void acquaint(Hello hello) {
         final UserIdentityCard identityCard = hello.getIdentityCard();
         this.acquaintedUsers.acquaint(identityCard);
         final ClientAddresses clientAddresses = hello.getAddresses();
-        this.addresses.updateAddress(hello.getClientId(), clientAddresses);
-        SingleMessage.Builder builder = SingleMessage.builder();
-        buildMessage(builder);
+        final Int128 clientId = hello.getClientId();
+        this.addresses.updateAddress(clientId, clientAddresses);
         for(ClientAddress address: clientAddresses.getAddresses()) {
-            ipc.push(address, builder.build());
+            Parcel parcel = new Parcel(clientId, address);
+            ipc.push(parcel);
         }
     }
 }

@@ -37,6 +37,8 @@
         <id fieldName="src" />
         <!-- fingerprint of destination public key -->
         <id fieldName="dst" />
+        <!-- action of IPC which handle this message -->
+        <string fieldName="action" />
         <!-- -->
         <blob fieldName="clientSign" />
         <blob fieldName="userSign" />

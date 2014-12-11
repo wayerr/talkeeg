@@ -21,10 +21,12 @@ package talkeeg.dc;
 
 import dagger.Module;
 import dagger.Provides;
+import sun.security.acl.OwnerImpl;
 import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
 import talkeeg.common.core.CoreModule;
+import talkeeg.common.core.OwnedIdentityCardsService;
 import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.dc.ui.UiModule;
@@ -38,8 +40,7 @@ import javax.inject.Singleton;
  */
 @Module(
     injects = {
-        Config.class,
-        IpcServiceManager.class
+        Config.class
     },
     includes = {
         CoreModule.class,
@@ -56,11 +57,5 @@ final class MainModule {
                 .putMap("net.port", 11661)
                 .putMap("net.publicIpServices", "http://checkip.amazonaws.com http://curlmyip.com http://www.trackip.net/ip http://whatismyip.akamai.com http://ifconfig.me/ip http://ipv4.icanhazip.com http://shtuff.it/myip/text http://cydev.ru/ip")
                 .build();
-    }
-
-    @Provides
-    @Singleton
-    IpcServiceManager provideIpcServiceManager(Config config, Bf bf) {
-        return new IpcServiceManager(config, bf);
     }
 }

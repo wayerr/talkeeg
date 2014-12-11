@@ -19,27 +19,37 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.bf.Arrays;
 import talkeeg.bf.Bf;
+import talkeeg.bf.Int128;
+import talkeeg.common.core.OwnedIdentityCardsService;
 import talkeeg.common.model.ClientAddress;
+import talkeeg.common.model.MessageCipherType;
+import talkeeg.common.model.SingleMessage;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * tgbd datagrams processor
+ * tgbf datagrams processor
  *
  * Created by wayerr on 26.11.14.
  */
 final class TgbfProcessor implements Io {
 
+    private static final Logger LOG = Logger.getLogger(TgbfProcessor.class.getName());
     private final Bf bf;
+    private final OwnedIdentityCardsService ownedIdentityCards;
 
-    public TgbfProcessor(Bf bf) {
+
+    public TgbfProcessor(Bf bf, OwnedIdentityCardsService ownedIdentityCards) {
         this.bf = bf;
+        this.ownedIdentityCards = ownedIdentityCards;
     }
 
     @Override
@@ -50,16 +60,47 @@ final class TgbfProcessor implements Io {
         if(remote == null) {
             return;
         }
-        System.out.println("receive " + remote);
-        System.out.println("  data " + Arrays.toHexString((ByteBuffer)readBuffer.duplicate().flip()));
+        readBuffer.flip();
+        //TODO check sign on decoding
+        Object message = bf.read(readBuffer);
+        if(message instanceof SingleMessage) {
+            consume((SingleMessage)message, remote);
+        } else {
+            LOG.log(Level.SEVERE, "unsupported message type " + message.getClass() + " from " + remote);
+        }
+    }
+
+    private void consume(SingleMessage message, SocketAddress remote) {
+        final Int128 dst = message.getDst();
+        if(dst != null && !dst.equals(getClientId())) {
+            LOG.log(Level.SEVERE, "SingleMessage.dst == " + dst + " , but expected null or clientId. It came from " + remote);
+        }
+        List<Object> list = message.getData();
+        System.out.println("receive message from " + remote + " to action " + message.getAction());
+        for(Object entry: list) {
+            System.out.println("\t"+ entry);
+        }
     }
 
     @Override
     public void write(Parcel parcel, DatagramChannel channel) throws Exception {
-        final ClientAddress destination = parcel.getDestination();
+        final ClientAddress destination = parcel.getAddress();
         final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
+        SingleMessage.Builder builder = SingleMessage.builder();
+        buildMessage(builder);
+        builder.setData(parcel.getMessages());
         //TODO reuse buffer
-        final ByteBuffer buffer = bf.write(parcel.getMessage());
+        final ByteBuffer buffer = bf.write(builder.build());
         channel.send(buffer, socketAddress);
+    }
+
+    protected void buildMessage(SingleMessage.Builder builder) {
+        builder.setSrc(getClientId());
+        builder.setId((short)0);
+        builder.setCipherType(MessageCipherType.NONE);
+    }
+
+    private Int128 getClientId() {
+        return this.ownedIdentityCards.getClientId();
     }
 }

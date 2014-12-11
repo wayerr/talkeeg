@@ -21,6 +21,7 @@ package talkeeg.common.ipc;
 
 import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
+import talkeeg.common.core.OwnedIdentityCardsService;
 
 /**
  * Created by wayerr on 26.11.14.
@@ -28,9 +29,15 @@ import talkeeg.common.conf.Config;
 public final class IpcServiceManager {
     private final Thread serviceThread;
     private final IpcServiceImpl service;
+    final OwnedIdentityCardsService ownedIdentityCards;
+    final Bf bf;
+    final Config config;
 
-    public IpcServiceManager(Config config, Bf bf) {
-        this.service = new IpcServiceImpl(config, bf);
+    public IpcServiceManager(Config config, Bf bf, OwnedIdentityCardsService ownedIdentityCards) {
+        this.config = config;
+        this.bf = bf;
+        this.ownedIdentityCards = ownedIdentityCards;
+        this.service = new IpcServiceImpl(this);
         this.serviceThread = new Thread(service.getWhirligig(), config.getApplicationName() + "-ipc-service-thread");
     }
 

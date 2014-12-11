@@ -19,7 +19,7 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.common.model.ClientAddress;
+import java.io.Closeable;
 
 /**
  * service for inter process communication over tgbf protocol
@@ -27,6 +27,17 @@ import talkeeg.common.model.ClientAddress;
  * Created by wayerr on 26.11.14.
  */
 public interface IpcService {
-    void push(ClientAddress address, Object message);
-    void addHandler(String handler, IpcCallback callback);
+
+    /**
+     * pushes parcel to queue for delivering to client
+     * @param parcel
+     */
+    void push(Parcel parcel);
+
+    /**
+     * register handler for specific action
+     * @param action
+     * @param callback a closeable instance which used for cancelling registration
+     */
+    Closeable addHandler(String action, IpcCallback callback);
 }

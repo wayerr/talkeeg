@@ -51,6 +51,7 @@ import java.util.function.Supplier;
         AcquaintedUsersService.class,
         AcquaintedClientsService.class,
         AcquaintService.class,
+        IpcServiceManager.class,
         IpcService.class
     }
 )
@@ -146,12 +147,18 @@ public final class CoreModule {
                                            AcquaintedUsersService acquaintedUsers,
                                            ClientsAddressesService clientsAddresses,
                                            AcquaintedClientsService acquaintedClients) {
-        return new AcquaintService(ownedIdentityCards, ipc, acquaintedUsers, clientsAddresses);
+        return new AcquaintService(ipc, acquaintedUsers, clientsAddresses);
     }
 
     @Provides
     @Singleton
     IpcService provideIpcService(IpcServiceManager ipcServiceManager) {
         return ipcServiceManager.getIpc();
+    }
+
+    @Provides
+    @Singleton
+    IpcServiceManager provideIpcServiceManager(Config config, Bf bf, OwnedIdentityCardsService ownedIdentityCardsService) {
+        return new IpcServiceManager(config, bf, ownedIdentityCardsService);
     }
 }

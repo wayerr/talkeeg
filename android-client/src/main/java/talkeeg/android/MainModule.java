@@ -38,7 +38,6 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 Config.class,
-                IpcServiceManager.class,
                 App.class,
                 CacheDirsService.class
         },
@@ -71,11 +70,4 @@ final class MainModule {
         final AndroidCacheDirectoryProvider provider = new AndroidCacheDirectoryProvider(this.app);
         return new CacheDirsService(provider, provider.getTempProvider());
     }
-
-    @Provides
-    @Singleton
-    IpcServiceManager provideIpcServiceManager(Config config, Bf bf) {
-        return new IpcServiceManager(config, bf);
-    }
-
 }

@@ -19,27 +19,45 @@
 
 package talkeeg.common.ipc;
 
+import talkeeg.bf.Int128;
 import talkeeg.common.model.ClientAddress;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * an representation of message with destination address
  *
  * Created by wayerr on 26.11.14.
  */
-final class Parcel {
-    private final ClientAddress destination;
-    private final Object message;
+public final class Parcel {
+    private final Int128 destinationId;
+    private final ClientAddress address;
+    private final List<Object> messages = new ArrayList<>();
 
-    Parcel(ClientAddress destination, Object message) {
-        this.destination = destination;
-        this.message = message;
+    /**
+     * create instance of parcel
+     * @param destinationId id of target client, maybe null
+     * @param address
+     */
+    public Parcel(Int128 destinationId, ClientAddress address) {
+        this.destinationId = destinationId;
+        this.address = address;
     }
 
-    ClientAddress getDestination() {
-        return destination;
+    /**
+     * id of target client, maybe null
+     * @return
+     */
+    public Int128 getDestinationId() {
+        return destinationId;
     }
 
-    Object getMessage() {
-        return message;
+    ClientAddress getAddress() {
+        return address;
+    }
+
+    public List<Object> getMessages() {
+        return messages;
     }
 }
