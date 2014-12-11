@@ -42,24 +42,10 @@ public class SingleMessage extends BaseSingleMessage {
     };
 
     public static class Builder extends BaseSingleMessage.Builder {
-        private String action;
         private BinaryData clientSign;
         private BinaryData userSign;
         private BinaryData data;
         private MessageCipherType cipherType;
-
-        public String getAction() {
-            return action;
-        }
-
-        public Builder action(String action) {
-            setAction(action);
-            return this;
-        }
-
-        public void setAction(String action) {
-            this.action = action;
-        }
 
         public BinaryData getData() {
             return data;
@@ -115,7 +101,6 @@ public class SingleMessage extends BaseSingleMessage {
         }
     }
 
-    private final String action;
     private final BinaryData clientSign;
     private final BinaryData userSign;
     private final MessageCipherType cipherType;
@@ -123,7 +108,6 @@ public class SingleMessage extends BaseSingleMessage {
 
     private SingleMessage(Builder b) {
         super(b);
-        this.action = b.action;
         this.clientSign = b.clientSign;
         this.userSign = b.userSign;
         this.data = b.data;
@@ -132,14 +116,6 @@ public class SingleMessage extends BaseSingleMessage {
 
     public static Builder builder() {
         return new Builder();
-    }
-
-    /**
-     * action of ipc which handle this message
-     * @return
-     */
-    public String getAction() {
-        return action;
     }
 
     /**
@@ -188,9 +164,6 @@ public class SingleMessage extends BaseSingleMessage {
 
         final SingleMessage that = (SingleMessage)o;
 
-        if(action != null ? !action.equals(that.action) : that.action != null) {
-            return false;
-        }
         if(cipherType != that.cipherType) {
             return false;
         }
@@ -210,7 +183,6 @@ public class SingleMessage extends BaseSingleMessage {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (action != null ? action.hashCode() : 0);
         result = 31 * result + (clientSign != null ? clientSign.hashCode() : 0);
         result = 31 * result + (userSign != null ? userSign.hashCode() : 0);
         result = 31 * result + (cipherType != null ? cipherType.hashCode() : 0);

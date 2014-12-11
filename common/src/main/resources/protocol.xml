@@ -42,6 +42,7 @@
     <struct name="CommandResult" structId="17">
         <!-- command id must be unique for each client -->
         <integer fieldName="id" storeAs="04_BYTE"/>
+        <integer fieldName="code" storeAs="01_BYTE"/>
         <generic fieldName="value"/>
     </struct>
 

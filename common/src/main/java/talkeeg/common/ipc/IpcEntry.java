@@ -19,15 +19,15 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.common.model.Command;
-
-import java.net.SocketAddress;
-
 /**
- * handler which register on {@link talkeeg.common.model.Command#getAction()} and process low level messages
+ * common iface for any IPC entry like COMMAND or COMAND_RESULT
  *
  * Created by wayerr on 11.12.14.
  */
-public interface TgbfHandler {
-    void handle(SocketAddress srcAddress, Command args);
+public interface IpcEntry {
+    /**
+     * unique per client id of entry (for result entry command_result.id == command.id)
+     * @return id of entry
+     */
+    int getId();
 }

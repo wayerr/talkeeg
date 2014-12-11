@@ -20,6 +20,7 @@
 package talkeeg.common.core;
 
 import talkeeg.bf.Int128;
+import talkeeg.common.ipc.IpcEntry;
 import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.Parcel;
 import talkeeg.common.ipc.TgbfHandler;
@@ -43,7 +44,8 @@ public final class AcquaintService {
     private final CurrentAddressesService currentAddresses;
     final TgbfHandler handlerHello = new TgbfHandler() {
         @Override
-        public void handle(SocketAddress srcAddress, List<?> args) {
+        public void handle(SocketAddress srcAddress, Command command) {
+            List<Object> args = command.getArgs();
             //see createParcel() for order of arguments
             UserIdentityCard userIdentityCard = (UserIdentityCard)args.get(0);
             ClientIdentityCard clientIdentityCard = (ClientIdentityCard)args.get(1);
@@ -82,11 +84,14 @@ public final class AcquaintService {
     }
 
     private Parcel createParcel(Int128 dstClientId, ClientAddress address) {
-        Parcel parcel = new Parcel(Constants.ACTION_HELLO, dstClientId, address);
-        List<Object> messages = parcel.getMessages();
-        messages.add(this.ownedIdentityCards.getUserIdentityCard());
-        messages.add(this.ownedIdentityCards.getClientIdentityCard());
-        messages.add(this.currentAddresses.getClientAddreses());
+        Parcel parcel = new Parcel(dstClientId, address);
+        Command command = Command.builder()
+          .action(Constants.ACTION_HELLO)
+          .addArg(this.ownedIdentityCards.getUserIdentityCard())
+          .addArg(this.ownedIdentityCards.getClientIdentityCard())
+          .addArg(this.currentAddresses.getClientAddreses())
+          .build();
+        parcel.getMessages().add(command);
         return parcel;
     }
 

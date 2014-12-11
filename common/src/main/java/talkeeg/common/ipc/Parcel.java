@@ -22,6 +22,7 @@ package talkeeg.common.ipc;
 import com.google.common.base.Preconditions;
 import talkeeg.bf.Int128;
 import talkeeg.common.model.ClientAddress;
+import talkeeg.common.model.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,30 +33,18 @@ import java.util.List;
  * Created by wayerr on 26.11.14.
  */
 public final class Parcel {
-    private final String action;
     private final Int128 destinationId;
     private final ClientAddress address;
-    private final List<Object> messages = new ArrayList<>();
+    private final List<IpcEntry> messages = new ArrayList<>();
 
     /**
      * create instance of parcel
      * @param destinationId id of target client, maybe null
      * @param address
      */
-    public Parcel(String action, Int128 destinationId, ClientAddress address) {
-        this.action = action;
-        Preconditions.checkNotNull(this.action, "action is null");
+    public Parcel(Int128 destinationId, ClientAddress address) {
         this.destinationId = destinationId;
         this.address = address;
-    }
-
-    /**
-     * method which used for procession this parcel
-     * @see talkeeg.common.model.Constants
-     * @return
-     */
-    public String getAction() {
-        return action;
     }
 
     /**
@@ -70,7 +59,7 @@ public final class Parcel {
         return address;
     }
 
-    public List<Object> getMessages() {
+    public List<IpcEntry> getMessages() {
         return messages;
     }
 }

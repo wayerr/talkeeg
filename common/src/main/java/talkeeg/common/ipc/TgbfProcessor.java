@@ -24,6 +24,7 @@ import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.model.ClientAddress;
+import talkeeg.common.model.Command;
 import talkeeg.common.model.MessageCipherType;
 import talkeeg.common.model.SingleMessage;
 import talkeeg.common.util.Closeable;
@@ -87,14 +88,21 @@ final class TgbfProcessor implements Io {
         if(dst != null && !dst.equals(getClientId())) {
             LOG.log(Level.SEVERE, "SingleMessage.dst == " + dst + " , but expected null or clientId. It came from " + remote);
         }
-        final String action = message.getAction();
         final BinaryData data = message.getData();
         final List<?> objects = (List<?>)getBf().read(ByteBuffer.wrap(data.getData()));
-        TgbfHandler handler = this.handlers.get(action);
-        if(handler == null) {
-            LOG.log(Level.SEVERE, "No handler for '" + action + "'. It came from " + remote);
-        } else {
-            handler.handle(remote, objects);
+        for(Object obj: objects) {
+            if(obj instanceof Command) {
+                Command command = (Command)obj;
+                final String action = command.getAction();
+                TgbfHandler handler = this.handlers.get(action);
+                if(handler == null) {
+                    LOG.log(Level.SEVERE, "No handler for '" + action + "'. It came from " + remote);
+                } else {
+                    handler.handle(remote, command);
+                }
+            } else {
+                LOG.log(Level.SEVERE, "unsupported IpcEntry type '" + obj.getClass() + "'. It came from " + remote);
+            }
         }
     }
 
@@ -112,7 +120,6 @@ final class TgbfProcessor implements Io {
         final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
         SingleMessage.Builder builder = SingleMessage.builder();
         buildMessage(builder);
-        builder.setAction(parcel.getAction());
         builder.setData(new BinaryData(data));
         //TODO reuse buffer
         final ByteBuffer buffer = bf.write(builder.build());

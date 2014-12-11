@@ -98,14 +98,16 @@ public final class CoreModule {
         return Bf.build()
             .schema(schema)
             .resolver(MetaTypeResolver.builder()
-                    .putFactory(MetaTypes.BLOB, new Function<TranslatorStaticContext, Translator>() {
-                        @Override
-                        public Translator apply(TranslatorStaticContext context) {
-                            return new BlobTranslator((PrimitiveEntry)context.getEntry(), BlobTranslator.ADAPTER_BINARY_DATA);
-                        }
-                    })
-                    .build())
+              .putFactory(MetaTypes.BLOB, new Function<TranslatorStaticContext, Translator>() {
+                  @Override
+                  public Translator apply(TranslatorStaticContext context) {
+                      return new BlobTranslator((PrimitiveEntry)context.getEntry(), BlobTranslator.ADAPTER_BINARY_DATA);
+                  }
+              })
+              .build())
             .putType(SingleMessage.class, SingleMessage.STRUCT_BUILDER_FACTORY)
+            .putType(Command.class, Command.STRUCT_BUILDER_FACTORY)
+            .putType(CommandResult.class, CommandResult.STRUCT_BUILDER_FACTORY)
             .putType(UserIdentityCard.class, UserIdentityCard.STRUCT_BUILDER_FACTORY)
             .putType(ClientIdentityCard.class, ClientIdentityCard.STRUCT_BUILDER_FACTORY)
             .putType(ClientAddresses.class, ClientAddresses.STRUCT_BUILDER_FACTORY)
