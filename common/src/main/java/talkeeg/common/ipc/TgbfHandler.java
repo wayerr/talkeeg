@@ -17,30 +17,16 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.util;
+package talkeeg.common.ipc;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.net.SocketAddress;
+import java.util.List;
 
 /**
- * utils for {@link Closeable}
+ * handler which register on {@link talkeeg.common.model.SingleMessage#getAction()} and process low level messages
  *
- * Created by wayerr on 10.12.14.
+ * Created by wayerr on 11.12.14.
  */
-public final class Closeables {
-
-    public static final Logger LOG = Logger.getLogger(Closeables.class.getName());
-
-    public static final void close(AutoCloseable closeable) {
-        if(closeable == null) {
-            return;
-        }
-        try {
-            closeable.close();
-        } catch(Exception e) {
-            LOG.log(Level.SEVERE, "at closing", e);
-        }
-    }
+public interface TgbfHandler {
+    void handle(SocketAddress srcAddress, List<Object> args);
 }

@@ -19,6 +19,7 @@
 
 package talkeeg.common.ipc;
 
+import com.google.common.base.Preconditions;
 import talkeeg.bf.Int128;
 import talkeeg.common.model.ClientAddress;
 
@@ -43,6 +44,7 @@ public final class Parcel {
      */
     public Parcel(String action, Int128 destinationId, ClientAddress address) {
         this.action = action;
+        Preconditions.checkNotNull(this.action, "action is null");
         this.destinationId = destinationId;
         this.address = address;
     }

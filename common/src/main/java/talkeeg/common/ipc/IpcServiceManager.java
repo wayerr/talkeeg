@@ -19,11 +19,14 @@
 
 package talkeeg.common.ipc;
 
+import com.google.common.base.Preconditions;
 import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 import talkeeg.common.core.OwnedIdentityCardsService;
 
 /**
+ * IPC service lifecycle manager
+ *
  * Created by wayerr on 26.11.14.
  */
 public final class IpcServiceManager {
@@ -32,11 +35,15 @@ public final class IpcServiceManager {
     final OwnedIdentityCardsService ownedIdentityCards;
     final Bf bf;
     final Config config;
+    final TgbfProcessor processor;
 
     public IpcServiceManager(Config config, Bf bf, OwnedIdentityCardsService ownedIdentityCards) {
         this.config = config;
         this.bf = bf;
+        Preconditions.checkNotNull(this.bf, "bf is null");
         this.ownedIdentityCards = ownedIdentityCards;
+        Preconditions.checkNotNull(this.ownedIdentityCards, "ownedIdentityCards is null");
+        this.processor = new TgbfProcessor(this);
         this.service = new IpcServiceImpl(this);
         this.serviceThread = new Thread(service.getWhirligig(), config.getApplicationName() + "-ipc-service-thread");
     }

@@ -31,9 +31,7 @@ import talkeeg.common.conf.Config;
 import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.*;
-
 import javax.inject.Singleton;
-import java.util.function.Supplier;
 
 /**
  * module for configure instances of services
@@ -145,9 +143,15 @@ public final class CoreModule {
     AcquaintService provideAcquaintService(OwnedIdentityCardsService ownedIdentityCards,
                                            IpcService ipc,
                                            AcquaintedUsersService acquaintedUsers,
+                                           AcquaintedClientsService acquaintedClients,
                                            ClientsAddressesService clientsAddresses,
                                            CurrentAddressesService currentAddressesService) {
-        return new AcquaintService(ipc, acquaintedUsers, clientsAddresses, ownedIdentityCards, currentAddressesService);
+        return new AcquaintService(ipc,
+                                  acquaintedUsers,
+                                  acquaintedClients,
+                                  clientsAddresses,
+                                  ownedIdentityCards,
+                                  currentAddressesService);
     }
 
     @Provides
@@ -158,7 +162,9 @@ public final class CoreModule {
 
     @Provides
     @Singleton
-    IpcServiceManager provideIpcServiceManager(Config config, Bf bf, OwnedIdentityCardsService ownedIdentityCardsService) {
+    IpcServiceManager provideIpcServiceManager(Config config,
+                                               Bf bf,
+                                               OwnedIdentityCardsService ownedIdentityCardsService) {
         return new IpcServiceManager(config, bf, ownedIdentityCardsService);
     }
 }

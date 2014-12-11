@@ -19,10 +19,8 @@
 
 package talkeeg.common.ipc;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import talkeeg.common.util.Closeable;
+import talkeeg.common.util.HandlersRegistry;
 
 /**
  * ipc service implementation
@@ -30,14 +28,12 @@ import java.util.Map;
  */
 final class IpcServiceImpl implements IpcService {
     private final Whirligig whirligig;
-    private final TgbfProcessor processor;
     private final IpcServiceManager sm;
-    private final Map<String, IpcCallback> handlers = new HashMap<>();
+    private final HandlersRegistry<IpcCallback> handlers = new HandlersRegistry<>();
 
     IpcServiceImpl(IpcServiceManager serviceManager) {
         this.sm = serviceManager;
-        this.processor = new TgbfProcessor(this.sm.bf, this.sm.ownedIdentityCards);
-        this.whirligig = new Whirligig(this.sm.config, this.processor);
+        this.whirligig = new Whirligig(this.sm.config, this.sm.processor);
     }
 
     @Override
@@ -46,25 +42,13 @@ final class IpcServiceImpl implements IpcService {
     }
 
     @Override
-    public Closeable addHandler(final String action, final IpcCallback callback) {
-        synchronized(this.handlers) {
-            IpcCallback oldCallback = this.handlers.get(action);
-            if(oldCallback != null) {
-                throw new RuntimeException("can not replace " + oldCallback + " with " + callback + " on action " + action);
-            }
-            this.handlers.put(action, callback);
-            return new Closeable() {
-                @Override
-                public void close() {
-                    synchronized(IpcServiceImpl.this.handlers) {
-                        final IpcCallback oldCallback = IpcServiceImpl.this.handlers.get(action);
-                        if(oldCallback == callback) {
-                            IpcServiceImpl.this.handlers.remove(action);
-                        }
-                    }
-                }
-            };
-        }
+    public Closeable addDataHandler(final String action, final IpcCallback handler) {
+        return handlers.register(action, handler);
+    }
+
+    @Override
+    public Closeable addIpcHandler(String action, TgbfHandler handler) {
+        return this.sm.processor.addHandler(action, handler);
     }
 
     Whirligig getWhirligig() {

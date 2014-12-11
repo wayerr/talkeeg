@@ -19,37 +19,48 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.bf.Bf;
+import com.google.common.base.Preconditions;
 import talkeeg.bf.Int128;
-import talkeeg.common.core.OwnedIdentityCardsService;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.MessageCipherType;
 import talkeeg.common.model.SingleMessage;
+import talkeeg.common.util.Closeable;
+import talkeeg.common.util.HandlersRegistry;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * tgbf datagrams processor
- *
+ * <p/>
  * Created by wayerr on 26.11.14.
  */
 final class TgbfProcessor implements Io {
 
     private static final Logger LOG = Logger.getLogger(TgbfProcessor.class.getName());
-    private final Bf bf;
-    private final OwnedIdentityCardsService ownedIdentityCards;
+    private final HandlersRegistry<TgbfHandler> handlers = new HandlersRegistry<>();
+    private final IpcServiceManager manager;
 
+    TgbfProcessor(IpcServiceManager manager) {
+        this.manager = manager;
+        Preconditions.checkNotNull(this.manager, "manager is null");
+    }
 
-    public TgbfProcessor(Bf bf, OwnedIdentityCardsService ownedIdentityCards) {
-        this.bf = bf;
-        this.ownedIdentityCards = ownedIdentityCards;
+    /**
+     * register handler for action
+     * @param action
+     * @param handler
+     * @return closeable instance which can unregister handler from this processor
+     */
+    public Closeable addHandler(String action, TgbfHandler handler) {
+        return this.handlers.register(action, handler);
     }
 
     @Override
@@ -62,7 +73,7 @@ final class TgbfProcessor implements Io {
         }
         readBuffer.flip();
         //TODO check sign on decoding
-        Object message = bf.read(readBuffer);
+        Object message = this.manager.bf.read(readBuffer);
         if(message instanceof SingleMessage) {
             consume((SingleMessage)message, remote);
         } else {
@@ -75,10 +86,12 @@ final class TgbfProcessor implements Io {
         if(dst != null && !dst.equals(getClientId())) {
             LOG.log(Level.SEVERE, "SingleMessage.dst == " + dst + " , but expected null or clientId. It came from " + remote);
         }
-        List<Object> list = message.getData();
-        System.out.println("receive message from " + remote + " to action " + message.getAction());
-        for(Object entry: list) {
-            System.out.println("\t"+ entry);
+        final String action = message.getAction();
+        TgbfHandler handler = this.handlers.get(action);
+        if(handler == null) {
+            LOG.log(Level.SEVERE, "No handler for '" + action + "'. It came from " + remote);
+        } else {
+            handler.handle(remote, message.getData());
         }
     }
 
@@ -88,9 +101,10 @@ final class TgbfProcessor implements Io {
         final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
         SingleMessage.Builder builder = SingleMessage.builder();
         buildMessage(builder);
+        builder.setAction(parcel.getAction());
         builder.setData(parcel.getMessages());
         //TODO reuse buffer
-        final ByteBuffer buffer = bf.write(builder.build());
+        final ByteBuffer buffer = this.manager.bf.write(builder.build());
         channel.send(buffer, socketAddress);
     }
 
@@ -101,6 +115,6 @@ final class TgbfProcessor implements Io {
     }
 
     private Int128 getClientId() {
-        return this.ownedIdentityCards.getClientId();
+        return this.manager.ownedIdentityCards.getClientId();
     }
 }

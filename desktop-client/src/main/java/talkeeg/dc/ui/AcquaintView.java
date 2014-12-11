@@ -77,6 +77,6 @@ final class AcquaintView implements View {
         BasicAddressType addressType = addressString.indexOf('.') >= 0? BasicAddressType.IPV4 : BasicAddressType.IPV6;
         ClientAddress address = new ClientAddress(addressType, false, addressString);
         AcquaintService service = App.get(AcquaintService.class);
-        service.beginNetworkAcquaint(address);
+        service.acquaint(address);
     }
 }

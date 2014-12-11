@@ -22,8 +22,10 @@ package talkeeg.common.core;
 import talkeeg.bf.Int128;
 import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.Parcel;
+import talkeeg.common.ipc.TgbfHandler;
 import talkeeg.common.model.*;
 
+import java.net.SocketAddress;
 import java.util.List;
 
 /**
@@ -34,28 +36,48 @@ import java.util.List;
 public final class AcquaintService {
 
     private final AcquaintedUsersService acquaintedUsers;
+    private final AcquaintedClientsService acquaintedClients;
     private final IpcService ipc;
     private final ClientsAddressesService addresses;
     private final OwnedIdentityCardsService ownedIdentityCards;
     private final CurrentAddressesService currentAddresses;
+    final TgbfHandler handlerHello = new TgbfHandler() {
+        @Override
+        public void handle(SocketAddress srcAddress, List<Object> args) {
+            //see createParcel() for order of arguments
+            UserIdentityCard userIdentityCard = (UserIdentityCard)args.get(0);
+            ClientIdentityCard clientIdentityCard = (ClientIdentityCard)args.get(1);
+            ClientAddresses clientAddresses = (ClientAddresses)args.get(2);
+            acquaintedUsers.acquaint(userIdentityCard);
+            acquaintedClients.acquaint(clientIdentityCard);
+            addresses.updateAddress(clientIdentityCard.getUserId(), clientAddresses);
+            //TODO response acquaint(new ClientAddress());
+        }
+
+    };
+
 
     AcquaintService(IpcService ipcService,
                     AcquaintedUsersService acquaintedUsers,
+                    AcquaintedClientsService acquaintedClients,
                     ClientsAddressesService addresses,
                     OwnedIdentityCardsService ownedIdentityCards,
                     CurrentAddressesService currentAddresses) {
         this.ipc = ipcService;
         this.acquaintedUsers = acquaintedUsers;
+        this.acquaintedClients = acquaintedClients;
         this.addresses = addresses;
         this.ownedIdentityCards = ownedIdentityCards;
         this.currentAddresses = currentAddresses;
+
+        this.ipc.addIpcHandler(Constants.ACTION_HELLO, handlerHello);
     }
 
     /**
      * acquaint process over regular network, with manual verification
      * @param address
      */
-    public void beginNetworkAcquaint(ClientAddress address) {
+    public void acquaint(ClientAddress address) {
         ipc.push(createParcel(null, address));
     }
 
@@ -63,16 +85,16 @@ public final class AcquaintService {
         Parcel parcel = new Parcel(Constants.ACTION_HELLO, dstClientId, address);
         List<Object> messages = parcel.getMessages();
         messages.add(this.ownedIdentityCards.getUserIdentityCard());
-        messages.add(this.currentAddresses.getClientAddreses());
         messages.add(this.ownedIdentityCards.getClientIdentityCard());
+        messages.add(this.currentAddresses.getClientAddreses());
         return parcel;
     }
 
     public void acquaint(Hello hello) {
         final UserIdentityCard identityCard = hello.getIdentityCard();
-        this.acquaintedUsers.acquaint(identityCard);
         final ClientAddresses clientAddresses = hello.getAddresses();
         final Int128 clientId = hello.getClientId();
+        this.acquaintedUsers.acquaint(identityCard);
         this.addresses.updateAddress(clientId, clientAddresses);
         for(ClientAddress address: clientAddresses.getAddresses()) {
             Parcel parcel = createParcel(clientId, address);

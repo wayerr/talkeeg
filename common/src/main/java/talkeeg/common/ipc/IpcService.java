@@ -19,7 +19,8 @@
 
 package talkeeg.common.ipc;
 
-import java.io.Closeable;
+
+import talkeeg.common.util.Closeable;
 
 /**
  * service for inter process communication over tgbf protocol
@@ -35,9 +36,17 @@ public interface IpcService {
     void push(Parcel parcel);
 
     /**
-     * register handler for specific action
+     * register handler for specific data layer action
      * @param action
-     * @param callback a closeable instance which used for cancelling registration
+     * @param handler a closeable instance which used for cancelling registration
      */
-    Closeable addHandler(String action, IpcCallback callback);
+    Closeable addDataHandler(String action, IpcCallback handler);
+
+    /**
+     * register handler for specific IPC layer action
+     * @param action
+     * @param handler
+     * @return a closeable instance which used for cancelling registration
+     */
+    Closeable addIpcHandler(String action, TgbfHandler handler);
 }

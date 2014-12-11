@@ -19,28 +19,11 @@
 
 package talkeeg.common.util;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * utils for {@link Closeable}
- *
- * Created by wayerr on 10.12.14.
+ * closeable that does not throw an exception
+ * Created by wayerr on 11.12.14.
  */
-public final class Closeables {
-
-    public static final Logger LOG = Logger.getLogger(Closeables.class.getName());
-
-    public static final void close(AutoCloseable closeable) {
-        if(closeable == null) {
-            return;
-        }
-        try {
-            closeable.close();
-        } catch(Exception e) {
-            LOG.log(Level.SEVERE, "at closing", e);
-        }
-    }
+public interface Closeable extends AutoCloseable {
+    @Override
+    void close();
 }
