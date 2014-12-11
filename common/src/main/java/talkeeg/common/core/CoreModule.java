@@ -146,8 +146,8 @@ public final class CoreModule {
                                            IpcService ipc,
                                            AcquaintedUsersService acquaintedUsers,
                                            ClientsAddressesService clientsAddresses,
-                                           AcquaintedClientsService acquaintedClients) {
-        return new AcquaintService(ipc, acquaintedUsers, clientsAddresses);
+                                           CurrentAddressesService currentAddressesService) {
+        return new AcquaintService(ipc, acquaintedUsers, clientsAddresses, ownedIdentityCards, currentAddressesService);
     }
 
     @Provides

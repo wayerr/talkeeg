@@ -31,6 +31,7 @@ import java.util.List;
  * Created by wayerr on 26.11.14.
  */
 public final class Parcel {
+    private final String action;
     private final Int128 destinationId;
     private final ClientAddress address;
     private final List<Object> messages = new ArrayList<>();
@@ -40,9 +41,19 @@ public final class Parcel {
      * @param destinationId id of target client, maybe null
      * @param address
      */
-    public Parcel(Int128 destinationId, ClientAddress address) {
+    public Parcel(String action, Int128 destinationId, ClientAddress address) {
+        this.action = action;
         this.destinationId = destinationId;
         this.address = address;
+    }
+
+    /**
+     * method which used for procession this parcel
+     * @see talkeeg.common.model.Constants
+     * @return
+     */
+    public String getAction() {
+        return action;
     }
 
     /**

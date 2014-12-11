@@ -47,6 +47,7 @@
             <union>
                 <struct structId="11"/>
                 <struct structId="12"/>
+                <struct structId="15"/>
             </union>
         </list>
     </message>

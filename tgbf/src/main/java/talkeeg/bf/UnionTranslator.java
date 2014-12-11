@@ -65,7 +65,7 @@ public final class UnionTranslator implements Translator {
                 throw new RuntimeException("TODO implement resolving uinion non structure types");
             }
         }
-        throw new RuntimeException("can not find appropriate entry for " + message);
+        throw new RuntimeException("can not find appropriate entry for " + message + " allowed only:" + entries);
     }
 
     private Translator getTranslatorByBuffer(ByteBuffer b) {
@@ -131,6 +131,11 @@ public final class UnionTranslator implements Translator {
 
         private Translator getTranslator() {
             return translator;
+        }
+
+        @Override
+        public String toString() {
+            return schema.toString();
         }
     }
 }
