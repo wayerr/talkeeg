@@ -29,9 +29,14 @@ import java.util.Set;
  */
 public abstract class Base implements SchemaEntry {
 
-    public static abstract class Builder implements SchemaEntryBuilder {
+    public static abstract class Builder<T extends Builder> implements SchemaEntryBuilder {
         private EntryType type;
         private String fieldName;
+
+        @SuppressWarnings("unchecked")
+        protected T thiz() {
+            return (T)this;
+        }
 
         /**
          * persistence type for current entry
@@ -41,6 +46,10 @@ public abstract class Base implements SchemaEntry {
             return type;
         }
 
+        public T type(EntryType type) {
+            setType(type);
+            return thiz();
+        }
         /**
          * persistence type for current entry
          * @param type
@@ -55,6 +64,11 @@ public abstract class Base implements SchemaEntry {
          */
         public String getFieldName() {
             return fieldName;
+        }
+
+        public T fieldName(String fieldName) {
+            setFieldName(fieldName);
+            return thiz();
         }
 
         /**

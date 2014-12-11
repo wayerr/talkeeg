@@ -135,7 +135,7 @@ final class DefaultStructTranslator implements Translator {
      * read struct type byte and struct id value
      * @param buffer
      */
-    static int readStructId(ByteBuffer buffer) {
+    private static int readStructId(ByteBuffer buffer) {
         TgbfUtils.readAndCheckType(buffer, EntryType.STRUCT);
         final long rawStructId = TgbfUtils.readUnsignedInteger(buffer);
         if(rawStructId > Integer.MAX_VALUE) {

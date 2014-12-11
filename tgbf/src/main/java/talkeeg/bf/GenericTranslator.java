@@ -63,20 +63,28 @@ final class GenericTranslator implements Translator {
     @Override
     public Object from(TranslationContext context, ByteBuffer buffer) throws Exception {
         final Bf bf = this.context.getBf();
+        final SchemaEntry schemaEntry = getSchemaEntry(bf, buffer);
+        final Class<?> clazz = bf.getType(schemaEntry);
+        Translator translator = this.context.createTranslator(schemaEntry, clazz);
+        return translator.from(context, buffer);
+    }
+
+    static SchemaEntry getSchemaEntry(Bf bf, ByteBuffer buffer) {
         final int begin = buffer.position();
         final EntryType type = TgbfUtils.readAndCheckType(buffer, null);
         final SchemaEntry schemaEntry;
         if(type == EntryType.STRUCT) {
-            final int structId = (int)TgbfUtils.readSignedInteger(buffer);
-            schemaEntry = bf.getStructEntry(structId);
+            final long structId = TgbfUtils.readSignedInteger(buffer);
+            if(structId > Integer.MAX_VALUE) {
+                throw new RuntimeException("reader structId " + structId + " is greater than integer max value");
+            }
+            schemaEntry = bf.getStructEntry((int)structId);
         } else if(type == EntryType.LIST) {
             schemaEntry = Bf.LIST_OF_GENERIC;
         } else {
             throw new RuntimeException(type + " as generic entry is not supported ");
         }
         buffer.position(begin);
-        final Class<?> clazz = bf.getType(schemaEntry);
-        Translator translator = this.context.createTranslator(schemaEntry, clazz);
-        return translator.from(context, buffer);
+        return schemaEntry;
     }
 }

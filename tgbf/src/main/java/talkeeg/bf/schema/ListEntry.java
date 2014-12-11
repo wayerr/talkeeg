@@ -28,7 +28,7 @@ import java.util.EnumSet;
  * Created by wayerr on 24.11.14.
  */
 public final class ListEntry extends Base {
-    public static final class Builder extends Base.Builder {
+    public static final class Builder extends Base.Builder<Builder> {
         private SchemaEntry itemEntry;
 
         public SchemaEntry getItemEntry() {

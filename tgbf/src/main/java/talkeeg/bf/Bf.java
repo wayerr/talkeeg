@@ -25,6 +25,7 @@ import com.google.common.base.Supplier;
 import talkeeg.bf.schema.*;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -199,8 +200,7 @@ public final class Bf {
 
     public Object read(ByteBuffer buffer) throws Exception {
         //after reading struct header current buffer position must remain untouched
-        final int structId = DefaultStructTranslator.readStructId(buffer.asReadOnlyBuffer());
-        final Struct message = getStructEntry(structId);
+        final SchemaEntry message = GenericTranslator.getSchemaEntry(this, buffer.asReadOnlyBuffer());
         final TranslationContextImpl context = new TranslationContextImpl(this, message);
         final Translator translator = createTranslator(message);
         return translator.from(context, buffer);
@@ -232,6 +232,8 @@ public final class Bf {
             type = typeData.getType();
         } else if(schemaEntry instanceof PrimitiveEntry) {
             type = ((PrimitiveEntry)schemaEntry).getJavaType();
+        } else if(schemaEntry instanceof ListEntry) {
+            type = ArrayList.class;
         } else {
             type = null;
         }

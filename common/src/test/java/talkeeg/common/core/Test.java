@@ -56,16 +56,19 @@ public class Test {
         smbuilder.setClientSign(BinaryData.fromString(""));
         SingleMessage sm = smbuilder.build();
 
-
-        writeAndRead(uic, bf);
-
-        writeAndRead(sm, bf);
+        SingleMessage res = (SingleMessage)writeAndRead(sm, bf);
+        BinaryData data = res.getData();
+        Object readedData = bf.read(ByteBuffer.wrap(data.getData()));
+        List<?> readedList = (List<?>)readedData;
+        assertEquals(uic, readedList.get(0));
+        assertEquals(addresses, readedList.get(1));
     }
 
-    protected void writeAndRead(Object uic, Bf bf) throws Exception {
+    protected Object writeAndRead(Object uic, Bf bf) throws Exception {
         ByteBuffer buffer = bf.write(uic);
         System.out.println(uic + " (" + buffer.remaining() + " bytes) :" + Arrays.toHexString(buffer));
         final Object r = bf.read(buffer);
         assertEquals(uic, r);
+        return r;
     }
 }
