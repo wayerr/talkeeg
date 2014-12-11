@@ -29,6 +29,21 @@
         <struct fieldName="identityCard" structId="11" />
         <struct fieldName="addresses" structId="12" />
     </struct>
+    <struct name="Command" structId="16">
+        <!-- command id must be unique for each client -->
+        <integer fieldName="id" storeAs="04_BYTE"/>
+        <!-- action of IPC which handle this message -->
+        <string fieldName="action" />
+        <list fieldName="args" >
+            <generic />
+        </list>
+    </struct>
+    <!-- response of IPC command -->
+    <struct name="CommandResult" structId="17">
+        <!-- command id must be unique for each client -->
+        <integer fieldName="id" storeAs="04_BYTE"/>
+        <generic fieldName="value"/>
+    </struct>
 
     <message name="SingleMessage" structId="1">
         <!-- cyclic id of message for prevent duplicating-->
@@ -37,26 +52,10 @@
         <id fieldName="src" />
         <!-- fingerprint of destination public key -->
         <id fieldName="dst" />
-        <!-- action of IPC which handle this message -->
-        <string fieldName="action" />
         <!-- -->
         <blob fieldName="clientSign" />
         <blob fieldName="userSign" />
         <integer fieldName="cipherType" storeAs="HALF"/>
-        <list fieldName="data">
-            <union>
-                <struct structId="11"/>
-                <struct structId="12"/>
-                <struct structId="15"/>
-            </union>
-        </list>
-    </message>
-    <message name="ResponseMessage" structId="2">
-        <!-- cyclic id of message for prevent duplicating-->
-        <integer fieldName="id" storeAs="02_BYTE"/>
-        <!-- fingerprint of source public key -->
-        <id fieldName="src" />
-        <!-- fingerprint of destination public key -->
-        <id fieldName="dst" />
+        <blob fieldName="data" />
     </message>
 </schema>

@@ -19,6 +19,7 @@
 
 package talkeeg.bf;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
@@ -36,6 +37,16 @@ public class BinaryData implements Comparable<BinaryData>, BinaryContainer {
     public BinaryData(byte[] data) {
         check(data);
         this.data = data.clone();
+    }
+
+    /**
+     * create instance of BinaryData with copy of ByteBuffer content
+     * @param data
+     */
+    public BinaryData(ByteBuffer data) {
+        byte[] arr = talkeeg.bf.Arrays.toArray(data);
+        check(arr);
+        this.data = arr;
     }
 
     /**

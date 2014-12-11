@@ -35,6 +35,11 @@ public final class ListEntry extends Base {
             return itemEntry;
         }
 
+        public Builder itemEntry(SchemaEntry itemEntry) {
+            setItemEntry(itemEntry);
+            return this;
+        }
+
         public void setItemEntry(SchemaEntry itemEntry) {
             this.itemEntry = itemEntry;
         }
@@ -49,6 +54,10 @@ public final class ListEntry extends Base {
     private ListEntry(Builder b) {
         super(EnumSet.of(EntryType.LIST), b);
         this.itemEntry = b.itemEntry;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**

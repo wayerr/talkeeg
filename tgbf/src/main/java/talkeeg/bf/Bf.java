@@ -25,6 +25,7 @@ import com.google.common.base.Supplier;
 import talkeeg.bf.schema.*;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -126,14 +127,21 @@ public final class Bf {
      * @throws IOException
      */
     public ByteBuffer write(Object obj) throws Exception {
-
-        final int messageId = getStructId(obj);
-        Struct message = schema.getMessage(messageId);
-        if(message == null) {
-            throw new RuntimeException("Can not find message for structId=" + messageId);
+        final SchemaEntry message;
+        if(obj instanceof List) {
+            message = ListEntry.builder()
+              .itemEntry(GenericEntry.builder().build())
+              .build();
+        } else {
+            final int messageId = getStructId(obj);
+            message = schema.getMessage(messageId);
+            if(message == null) {
+                throw new RuntimeException("Can not find message for structId=" + messageId);
+            }
         }
         final TranslationContextImpl context = new TranslationContextImpl(this, message);
-        final Translator translator = createTranslator(message);
+        final TranslatorStaticContext staticContext = new TranslatorStaticContext(this, null, message, obj.getClass());
+        final Translator translator = createTranslator(staticContext);
         final int size = translator.getSize(context, obj);
         ByteBuffer buffer = ByteBuffer.allocate(size);
         translator.to(context, obj, buffer);
@@ -235,31 +243,31 @@ public final class Bf {
         if(schemaEntry == null) {
             throw  new NullPointerException("schemaEntry is null");
         }
-        final Class<?> type = getType((Struct)schemaEntry);
+        final Class<?> type = getType(schemaEntry);
         final TranslatorStaticContext factoryContext = new TranslatorStaticContext(this, null, schemaEntry, type);
         final Translator translator = createTranslator(factoryContext);
         return translator;
     }
 
-    Translator createTranslator(TranslatorStaticContext factoryContext) {
+    Translator createTranslator(TranslatorStaticContext staticContext) {
         Translator translator = null;
-        SchemaEntry schemaEntry = factoryContext.getEntry();
+        SchemaEntry schemaEntry = staticContext.getEntry();
         if(schemaEntry instanceof PrimitiveEntry) {
-            translator = resolver.createTranslator(factoryContext);
+            translator = resolver.createTranslator(staticContext);
         } else if(schemaEntry instanceof Struct) {
             final Struct struct = (Struct) schemaEntry;
             translator = structs.get(struct.getId());
             if(translator == null) {
                 // create default translator
-                translator = new DefaultStructTranslator(factoryContext);
+                translator = new DefaultStructTranslator(staticContext);
                 structs.put(struct.getId(), translator);
             }
         } else if(schemaEntry instanceof UnionEntry) {
-            translator = new UnionTranslator(factoryContext);
+            translator = new UnionTranslator(staticContext);
         } else if(schemaEntry instanceof ListEntry) {
-            translator = new ListTranslator(factoryContext);
+            translator = new ListTranslator(staticContext);
         } else if(schemaEntry instanceof MapEntry) {
-            translator = new MapTranslator(factoryContext);
+            translator = new MapTranslator(staticContext);
         }
         if(translator == null) {
             throw new RuntimeException("Can not find translator for schemaEntry=" + schemaEntry);

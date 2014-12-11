@@ -17,41 +17,31 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.model;
+package talkeeg.bf.schema;
 
-import talkeeg.bf.StructInfo;
+import talkeeg.bf.EntryType;
+
+import java.util.EnumSet;
 
 /**
- * Created by wayerr on 21.11.14.
+ * entry which represent generic schema entry
+ * Created by wayerr on 11.12.14.
  */
-@StructInfo(id = 2)
-public class ResponseMessage extends BaseSingleMessage {
+public class GenericEntry extends Base {
 
-    public static class Builder extends BaseSingleMessage.Builder {
+    public static final class Builder extends Base.Builder {
 
-        private ResponseCode code;
-
-        public ResponseCode getCode() {
-            return code;
+        @Override
+        public GenericEntry build() {
+            return new GenericEntry(this);
         }
-
-        public void setCode(ResponseCode code) {
-            this.code = code;
-        }
-
-        public ResponseMessage build() {
-            return new ResponseMessage(this);
-        }
-    }
-
-    private final ResponseCode code;
-
-    protected ResponseMessage(Builder b) {
-        super(b);
-        this.code = b.code;
     }
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    protected GenericEntry(Builder b) {
+        super(EnumSet.allOf(EntryType.class), b);
     }
 }

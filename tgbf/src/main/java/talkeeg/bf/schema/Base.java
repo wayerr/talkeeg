@@ -75,7 +75,7 @@ public abstract class Base implements SchemaEntry {
         if(b.type == null && allowedTypes.size() == 1) {
             // most simply way to retrieve first element
             b.type = (EntryType) allowedTypes.toArray()[0];
-        } else if(!allowedTypes.contains(b.type)) {
+        } else if(b.type != null && !allowedTypes.contains(b.type)) {
             throw new RuntimeException("type of " + getClass().getName() + " must be from " + allowedTypes + ", but now type is " + b.type);
         }
         this.type = b.type;

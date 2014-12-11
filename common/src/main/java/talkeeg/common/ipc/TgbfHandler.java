@@ -28,5 +28,5 @@ import java.util.List;
  * Created by wayerr on 11.12.14.
  */
 public interface TgbfHandler {
-    void handle(SocketAddress srcAddress, List<Object> args);
+    void handle(SocketAddress srcAddress, List<?> args);
 }

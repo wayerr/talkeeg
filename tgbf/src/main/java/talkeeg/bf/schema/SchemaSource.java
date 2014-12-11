@@ -94,6 +94,7 @@ public final class SchemaSource {
     public static final String NAME_LIST = "list";
     public static final String NAME_MAP = "map";
     public static final String NAME_UNION = "union";
+    public static final String NAME_GENERIC = "generic";
     public static final String NAME_INTEGER = MetaTypes.INTEGER;
     public static final String NAME_BOOLEAN = MetaTypes.BOOLEAN;
     public static final String NAME_FLOAT = MetaTypes.FLOAT;
@@ -298,6 +299,9 @@ public final class SchemaSource {
             case NAME_STRING:
                 entry = loadPrimitive(node, String.class, EntryType.BYTES);
                 break;
+            case NAME_GENERIC:
+                entry = loadGeneric(node);
+                break;
             case NAME_LIST:
                 entry = loadList(context, node);
                 break;
@@ -319,6 +323,10 @@ public final class SchemaSource {
         }
         entry.setFieldName(getAttributeValue(node.getAttributes(), ATTR_FIELD_NAME, fieldNameRequired));
         return entry.build();
+    }
+
+    private static GenericEntry.Builder loadGeneric(Node node) {
+        return GenericEntry.builder();
     }
 
     private static UnionEntry.Builder loadUnion(LoadContext context, Node node) {

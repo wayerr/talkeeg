@@ -45,7 +45,7 @@ public class SingleMessage extends BaseSingleMessage {
         private String action;
         private BinaryData clientSign;
         private BinaryData userSign;
-        private final List<Object> data = new ArrayList<>();
+        private BinaryData data;
         private MessageCipherType cipherType;
 
         public String getAction() {
@@ -61,18 +61,12 @@ public class SingleMessage extends BaseSingleMessage {
             this.action = action;
         }
 
-        public List<Object> getData() {
+        public BinaryData getData() {
             return data;
         }
 
-        public Builder addData(Object item) {
-            this.data.add(item);
-            return this;
-        }
-
-        public void setData(List<Object> data) {
-            this.data.clear();
-            this.data.addAll(data);
+        public void setData(BinaryData data) {
+            this.data = data;
         }
 
         /**
@@ -125,14 +119,14 @@ public class SingleMessage extends BaseSingleMessage {
     private final BinaryData clientSign;
     private final BinaryData userSign;
     private final MessageCipherType cipherType;
-    private final List<Object> data;
+    private final BinaryData data;
 
     private SingleMessage(Builder b) {
         super(b);
         this.action = b.action;
         this.clientSign = b.clientSign;
         this.userSign = b.userSign;
-        this.data = ImmutableList.copyOf(b.data);
+        this.data = b.data;
         this.cipherType = b.cipherType;
     }
 
@@ -168,7 +162,7 @@ public class SingleMessage extends BaseSingleMessage {
      * message data
      * @return
      */
-    public List<Object> getData() {
+    public BinaryData getData() {
         return data;
     }
 

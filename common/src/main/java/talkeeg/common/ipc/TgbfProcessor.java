@@ -20,6 +20,8 @@
 package talkeeg.common.ipc;
 
 import com.google.common.base.Preconditions;
+import talkeeg.bf.Bf;
+import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.MessageCipherType;
@@ -32,8 +34,7 @@ import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,7 +74,7 @@ final class TgbfProcessor implements Io {
         }
         readBuffer.flip();
         //TODO check sign on decoding
-        Object message = this.manager.bf.read(readBuffer);
+        Object message = getBf().read(readBuffer);
         if(message instanceof SingleMessage) {
             consume((SingleMessage)message, remote);
         } else {
@@ -81,30 +82,40 @@ final class TgbfProcessor implements Io {
         }
     }
 
-    private void consume(SingleMessage message, SocketAddress remote) {
+    private void consume(SingleMessage message, SocketAddress remote) throws Exception {
         final Int128 dst = message.getDst();
         if(dst != null && !dst.equals(getClientId())) {
             LOG.log(Level.SEVERE, "SingleMessage.dst == " + dst + " , but expected null or clientId. It came from " + remote);
         }
         final String action = message.getAction();
+        final BinaryData data = message.getData();
+        final List<?> objects = (List<?>)getBf().read(ByteBuffer.wrap(data.getData()));
         TgbfHandler handler = this.handlers.get(action);
         if(handler == null) {
             LOG.log(Level.SEVERE, "No handler for '" + action + "'. It came from " + remote);
         } else {
-            handler.handle(remote, message.getData());
+            handler.handle(remote, objects);
         }
+    }
+
+    private Bf getBf() {
+        return this.manager.bf;
     }
 
     @Override
     public void write(Parcel parcel, DatagramChannel channel) throws Exception {
+        final Bf bf = getBf();
+
+        ByteBuffer data = bf.write(parcel.getMessages());
+
         final ClientAddress destination = parcel.getAddress();
         final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
         SingleMessage.Builder builder = SingleMessage.builder();
         buildMessage(builder);
         builder.setAction(parcel.getAction());
-        builder.setData(parcel.getMessages());
+        builder.setData(new BinaryData(data));
         //TODO reuse buffer
-        final ByteBuffer buffer = this.manager.bf.write(builder.build());
+        final ByteBuffer buffer = bf.write(builder.build());
         channel.send(buffer, socketAddress);
     }
 

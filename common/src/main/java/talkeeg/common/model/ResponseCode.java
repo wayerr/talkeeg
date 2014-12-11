@@ -19,7 +19,6 @@
 
 package talkeeg.common.model;
 
-import talkeeg.bf.StructInfo;
 import talkeeg.common.util.EnumWithValue;
 
 /**

@@ -32,13 +32,13 @@ import java.util.TreeMap;
  */
 final class TranslationContextImpl implements TranslationContext {
 
-    private final Struct message;
-    private final StructNavigator navigator;
+    private final SchemaEntry message;
+    //private final StructNavigator navigator;
     private final Bf bf;
 
-    TranslationContextImpl(Bf bf, Struct message) {
+    TranslationContextImpl(Bf bf, SchemaEntry message) {
         this.bf = bf;
         this.message = message;
-        this.navigator = new StructNavigator(this.message);
+    //    this.navigator = new StructNavigator(this.message);
     }
 }

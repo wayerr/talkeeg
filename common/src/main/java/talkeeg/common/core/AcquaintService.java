@@ -43,7 +43,7 @@ public final class AcquaintService {
     private final CurrentAddressesService currentAddresses;
     final TgbfHandler handlerHello = new TgbfHandler() {
         @Override
-        public void handle(SocketAddress srcAddress, List<Object> args) {
+        public void handle(SocketAddress srcAddress, List<?> args) {
             //see createParcel() for order of arguments
             UserIdentityCard userIdentityCard = (UserIdentityCard)args.get(0);
             ClientIdentityCard clientIdentityCard = (ClientIdentityCard)args.get(1);

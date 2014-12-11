@@ -24,6 +24,7 @@
         >
     <xs:complexType name="EntryType">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="generic" type="GenericType" />
             <xs:element name="primitive" type="PrimitiveType" />
             <xs:element name="integer" type="IntType" />
             <xs:element name="boolean" type="BooleanType" />
@@ -94,6 +95,12 @@
             <xs:enumeration value="16_BYTE" />
         </xs:restriction>
     </xs:simpleType>
+    <xs:complexType name="GenericType" >
+        <xs:complexContent>
+            <xs:restriction base="EntryType">
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
     <xs:complexType name="PrimitiveType">
         <xs:complexContent>
             <xs:extension base="EntryType">
@@ -147,7 +154,8 @@
     <xs:complexType name="ListType">
         <xs:complexContent>
             <xs:restriction base="EntryType">
-                <xs:choice minOccurs="0" maxOccurs="2">
+                <xs:choice minOccurs="1" maxOccurs="2">
+                    <xs:element name="generic" type="GenericType" />
                     <xs:element name="primitive" type="PrimitiveType" />
                     <xs:element name="integer" type="IntType" />
                     <xs:element name="boolean" type="BooleanType" />
