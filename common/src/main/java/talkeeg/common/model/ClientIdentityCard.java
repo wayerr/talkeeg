@@ -19,6 +19,7 @@
 
 package talkeeg.common.model;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
@@ -81,7 +82,9 @@ public final class ClientIdentityCard {
 
     private ClientIdentityCard(Builder b) {
         this.key = b.key;
+        Preconditions.checkNotNull(this.key, "key is null");
         this.userId = b.userId;
+        Preconditions.checkNotNull(this.userId, "userId is null");
     }
 
     public static Builder builder() {

@@ -19,6 +19,7 @@
 
 package talkeeg.common.core;
 
+import com.google.common.collect.ImmutableList;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
@@ -67,7 +68,7 @@ public final class AcquaintedClientsService {
         BinaryData clientPublicKey = cic.getKey();
         final Int128 clientId = this.cryptoService.getFingerprint(clientPublicKey);
         final PublicKey publicKey = this.keyLoader.loadPublic(clientPublicKey.getData());
-        final AcquaintedClient client = new AcquaintedClient(clientId, publicKey);
+        final AcquaintedClient client = new AcquaintedClient(cic.getUserId(), clientId, publicKey);
         final AcquaintedClient oldClient = map.putIfAbsent(clientId, client);
         if(oldClient != null) {
             return oldClient;
@@ -83,5 +84,21 @@ public final class AcquaintedClientsService {
             list.add(client.getIdentityCard());
         }
         this.fileData.write(list);
+    }
+
+    /**
+     * return immutable list of user clients
+     * @param userId
+     * @return
+     */
+    public List<AcquaintedClient> getUserClients(Int128 userId) {
+        ImmutableList.Builder<AcquaintedClient> b = ImmutableList.builder();
+        for(AcquaintedClient client: this.map.values()) {
+            ClientIdentityCard identityCard = client.getIdentityCard();
+            if(userId.equals(identityCard.getUserId())) {
+                b.add(client);
+            }
+        }
+        return b.build();
     }
 }

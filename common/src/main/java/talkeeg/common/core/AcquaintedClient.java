@@ -19,6 +19,7 @@
 
 package talkeeg.common.core;
 
+import com.google.common.base.Preconditions;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.model.ClientIdentityCard;
@@ -31,14 +32,23 @@ import java.security.PublicKey;
  * Created by wayerr on 28.11.14.
  */
 public final class AcquaintedClient {
+    private final Int128 userId;
     private final Int128 id;
     private final PublicKey publicKey;
     private final Object lock = new Object();
     private ClientIdentityCard identityCard;
 
-    AcquaintedClient(Int128 id, PublicKey publicKey) {
+    AcquaintedClient(Int128 userId, Int128 id, PublicKey publicKey) {
+        this.userId = userId;
+        Preconditions.checkNotNull(this.userId, "userId is null");
         this.id = id;
+        Preconditions.checkNotNull(this.id, "id is null");
         this.publicKey = publicKey;
+        Preconditions.checkNotNull(this.publicKey, "publicKey is null");
+    }
+
+    public Int128 getUserId() {
+        return userId;
     }
 
     public Int128 getId() {
@@ -65,7 +75,10 @@ public final class AcquaintedClient {
             ic = this.identityCard;
         }
         if(ic == null) {
-            ic = ClientIdentityCard.builder().key(getKeyData()).build();
+            ic = ClientIdentityCard.builder()
+              .userId(userId)
+              .key(getKeyData())
+              .build();
         }
         return ic;
     }

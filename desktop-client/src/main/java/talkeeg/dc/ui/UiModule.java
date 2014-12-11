@@ -22,16 +22,21 @@ package talkeeg.dc.ui;
 import dagger.Module;
 import dagger.Provides;
 import talkeeg.common.barcode.BarcodeService;
+import talkeeg.common.core.AcquaintedClientsService;
+import talkeeg.common.core.AcquaintedUsersService;
 import talkeeg.common.core.CoreModule;
 import talkeeg.common.core.HelloService;
 import talkeeg.dc.ui.barcode.BarcodeView;
+
+import javax.inject.Singleton;
 
 /**
  * Created by wayerr on 03.12.14.
  */
 @Module(
         injects = {
-                BarcodeView.class
+                BarcodeView.class,
+                ContactsModel.class
         },
         includes = {
                 CoreModule.class
@@ -42,7 +47,16 @@ import talkeeg.dc.ui.barcode.BarcodeView;
 public class UiModule {
 
     @Provides
+    @Singleton
     BarcodeView provideBarcodeView(BarcodeService service, HelloService helloService) {
         return new BarcodeView(service, helloService);
     }
+
+    @Provides
+    @Singleton
+    ContactsModel provideContactsModel(AcquaintedUsersService acquaintedUsers, AcquaintedClientsService acquaintedClients) {
+        return new ContactsModel(acquaintedUsers, acquaintedClients);
+    }
+
+
 }
