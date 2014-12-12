@@ -20,8 +20,8 @@
 package talkeeg.common.core;
 
 import talkeeg.bf.Int128;
-import talkeeg.common.ipc.IpcEntry;
 import talkeeg.common.ipc.IpcService;
+import talkeeg.common.ipc.IpcUtil;
 import talkeeg.common.ipc.Parcel;
 import talkeeg.common.ipc.TgbfHandler;
 import talkeeg.common.model.*;
@@ -35,6 +35,8 @@ import java.util.List;
  * Created by wayerr on 10.12.14.
  */
 public final class AcquaintService {
+    private static final String ACTION_ACQUAINT = "tg.acquaint";
+    private static final String ACTION_ACQUAINT_RESPONSE = "tg.acquaintResponse";
 
     private final AcquaintedUsersService acquaintedUsers;
     private final AcquaintedClientsService acquaintedClients;
@@ -42,18 +44,24 @@ public final class AcquaintService {
     private final ClientsAddressesService addresses;
     private final OwnedIdentityCardsService ownedIdentityCards;
     private final CurrentAddressesService currentAddresses;
-    final TgbfHandler handlerHello = new TgbfHandler() {
+    private final TgbfHandler handlerAcquaint = new TgbfHandler() {
         @Override
         public void handle(SocketAddress srcAddress, Command command) {
+            final String action = command.getAction();
             List<Object> args = command.getArgs();
             //see createParcel() for order of arguments
             UserIdentityCard userIdentityCard = (UserIdentityCard)args.get(0);
             ClientIdentityCard clientIdentityCard = (ClientIdentityCard)args.get(1);
             ClientAddresses clientAddresses = (ClientAddresses)args.get(2);
             acquaintedUsers.acquaint(userIdentityCard);
-            acquaintedClients.acquaint(clientIdentityCard);
+            final AcquaintedClient acquaintedClient = acquaintedClients.acquaint(clientIdentityCard);
             addresses.updateAddress(clientIdentityCard.getUserId(), clientAddresses);
-            //TODO response acquaint(new ClientAddress());
+            if(ACTION_ACQUAINT.equals(action)) {
+                //response acquaint
+                final Parcel parcel = new Parcel(acquaintedClient.getId(), IpcUtil.toClientAddress(srcAddress));
+                parcel.getMessages().add(buildAcuaintCommand(Command.builder().action(ACTION_ACQUAINT_RESPONSE)).build());
+                ipc.push(parcel);
+            }
         }
 
     };
@@ -72,7 +80,8 @@ public final class AcquaintService {
         this.ownedIdentityCards = ownedIdentityCards;
         this.currentAddresses = currentAddresses;
 
-        this.ipc.addIpcHandler(Constants.ACTION_HELLO, handlerHello);
+        this.ipc.addIpcHandler(ACTION_ACQUAINT, handlerAcquaint);
+        this.ipc.addIpcHandler(ACTION_ACQUAINT_RESPONSE, handlerAcquaint);
     }
 
     /**
@@ -85,14 +94,18 @@ public final class AcquaintService {
 
     private Parcel createParcel(Int128 dstClientId, ClientAddress address) {
         Parcel parcel = new Parcel(dstClientId, address);
-        Command command = Command.builder()
-          .action(Constants.ACTION_HELLO)
-          .addArg(this.ownedIdentityCards.getUserIdentityCard())
-          .addArg(this.ownedIdentityCards.getClientIdentityCard())
-          .addArg(this.currentAddresses.getClientAddreses())
-          .build();
-        parcel.getMessages().add(command);
+        Command.Builder builder = Command.builder()
+          .action(ACTION_ACQUAINT);
+        buildAcuaintCommand(builder);
+        parcel.getMessages().add(builder.build());
         return parcel;
+    }
+
+    private Command.Builder buildAcuaintCommand(Command.Builder builder) {
+        builder.addArg(this.ownedIdentityCards.getUserIdentityCard())
+          .addArg(this.ownedIdentityCards.getClientIdentityCard())
+          .addArg(this.currentAddresses.getClientAddreses());
+        return builder;
     }
 
     public void acquaint(Hello hello) {

@@ -19,9 +19,11 @@
 
 package talkeeg.common.ipc;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
+import com.google.common.base.Preconditions;
+import talkeeg.common.core.BasicAddressType;
+import talkeeg.common.model.ClientAddress;
+
+import java.net.*;
 
 /**
  * utilities for ipc
@@ -53,5 +55,25 @@ public final class IpcUtil {
         } catch(UnknownHostException e) {
             throw new RuntimeException(" at address: " + string, e);
         }
+    }
+
+    public static ClientAddress toClientAddress(SocketAddress address) {
+        Preconditions.checkNotNull(address, "address is null");
+        if(!(address instanceof InetSocketAddress)) {
+            throw new RuntimeException("Unsupported socket address type: " + address.getClass());
+        }
+        final InetSocketAddress inetSocketAddress = (InetSocketAddress)address;
+        final BasicAddressType type;
+        final String portString = Integer.toString(inetSocketAddress.getPort());
+        final String hostString = inetSocketAddress.getHostString();
+        final String addressString;
+        if(inetSocketAddress.getAddress() instanceof Inet4Address) {
+            type = BasicAddressType.IPV4;
+            addressString = hostString + ':' + portString;
+        } else {
+            type = BasicAddressType.IPV6;
+            addressString = "[" + hostString + "]:" + portString;
+        }
+        return new ClientAddress(type, false, addressString);
     }
 }

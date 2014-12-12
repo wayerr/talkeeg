@@ -25,6 +25,5 @@ package talkeeg.common.model;
  * Created by wayerr on 11.12.14.
  */
 public final class Constants {
-    public static final String ACTION_HELLO = "tg.hello";
     public static final String ACTION_DATA = "tg.data";
 }
