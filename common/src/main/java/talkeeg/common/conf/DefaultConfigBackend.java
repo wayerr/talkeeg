@@ -57,13 +57,12 @@ public class DefaultConfigBackend implements ConfigBackend {
     @Override
     public <T> T getValue(Config config, String name, T defaultValue) {
         synchronized(this.lock) {
-            Object value = get(name);
+            Object value = defaultValue;
             //we check that value is not configured, but not configured as null
-            if(value == null && !contains(name)) {
-                if(defaultValue == null && this.defaults != null) {
-                    return (T)this.defaults.get(name);
-                }
-                return defaultValue;
+            if(contains(name)) {
+                value = get(name);
+            } else if(this.defaults != null && this.defaults.containsKey(name)) {
+                value = this.defaults.get(name);
             }
             return (T)value;
         }
