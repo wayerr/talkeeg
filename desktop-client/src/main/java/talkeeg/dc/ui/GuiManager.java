@@ -29,6 +29,8 @@ import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,6 +46,7 @@ public final class GuiManager implements Runnable {
     private JPopupMenu popupMenu;
     private JFrame frame;
     private ViewsManager viewsManager;
+    private Image icon;
 
     public GuiManager(ObjectGraph objectGraph) {
         this.objectGraph = objectGraph;
@@ -51,10 +54,12 @@ public final class GuiManager implements Runnable {
 
     @Override
     public void run() {
+        loadIconImage();
 
         createTrayIcon();
 
         this.frame = new JFrame("Talkeeg desktop client");
+        this.frame.setIconImage(icon);
         if(trayIcon == null) {
             //if tray icon not created then we must show main window
             showMainWindow();
@@ -71,6 +76,15 @@ public final class GuiManager implements Runnable {
         rootPane.setContentPane(this.viewsManager.getComponent());
     }
 
+    protected void loadIconImage() {
+        try {
+            icon = ImageIO.read(Resources.getResource("icon_24.png"));
+        } catch(IOException | IllegalArgumentException e) {
+            //init default image, otherwise tray icon initialization will be failed
+            icon = new BufferedImage(16, 16, BufferedImage.TYPE_BYTE_BINARY);
+        }
+    }
+
     protected void showMainWindow() {
         UiUtils.setWindowBounds(this.frame);
         this.frame.setVisible(true);
@@ -84,7 +98,6 @@ public final class GuiManager implements Runnable {
             return;
         }
         try {
-            final Image icon = ImageIO.read(Resources.getResource("icon.png"));
             this.trayIcon = new TrayIcon(icon);
             this.trayIcon.setImageAutoSize(true);
 
