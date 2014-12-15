@@ -26,6 +26,8 @@ import talkeeg.common.ipc.Parcel;
 import talkeeg.common.ipc.TgbfHandler;
 import talkeeg.common.model.*;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.net.SocketAddress;
 import java.util.List;
 
@@ -34,6 +36,7 @@ import java.util.List;
  *
  * Created by wayerr on 10.12.14.
  */
+@Singleton
 public final class AcquaintService {
     private static final String ACTION_ACQUAINT = "tg.acquaint";
     private static final String ACTION_ACQUAINT_RESPONSE = "tg.acquaintResponse";
@@ -67,6 +70,7 @@ public final class AcquaintService {
     };
 
 
+    @Inject
     AcquaintService(IpcService ipcService,
                     AcquaintedUsersService acquaintedUsers,
                     AcquaintedClientsService acquaintedClients,

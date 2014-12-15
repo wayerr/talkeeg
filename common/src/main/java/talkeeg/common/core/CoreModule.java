@@ -28,9 +28,13 @@ import talkeeg.bf.schema.Schema;
 import talkeeg.bf.schema.SchemaSource;
 import talkeeg.common.barcode.BarcodeService;
 import talkeeg.common.conf.Config;
+import talkeeg.common.ipc.IpcLifecycleEvent;
 import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.*;
+import talkeeg.mb.Listener;
+import talkeeg.mb.MessageBusRegistry;
+
 import javax.inject.Singleton;
 
 /**
@@ -50,40 +54,17 @@ import javax.inject.Singleton;
         AcquaintedClientsService.class,
         AcquaintService.class,
         IpcServiceManager.class,
-        IpcService.class
+        IpcService.class,
+        MessageBusRegistry.class
     }
 )
 public final class CoreModule {
 
     @Provides
     @Singleton
-    CryptoService provideCryptoService(Config config, KeyLoader keyLoader) {
-        return new CryptoService(config, keyLoader);
-    }
-
-    @Provides
-    @Singleton
-    KeyLoader provideCryptoService() {
-        return new KeyLoader();
-    }
-
-    @Provides
-    @Singleton
-    OwnedIdentityCardsService provideOwnedIdentityCardsService(Config config, CryptoService cryptoService) {
-        return new OwnedIdentityCardsService(config, cryptoService);
-    }
-
-    @Provides
-    @Singleton
     CurrentAddressesService provideCurrentAddressesService(Config config) {
         final PublicIpService externalIpFunction = new PublicIpService(config);
         return new CurrentAddressesService(externalIpFunction);
-    }
-
-    @Provides
-    @Singleton
-    HelloService provideHelloService(Bf bf, CurrentAddressesService addressesService, OwnedIdentityCardsService identityCardsService) {
-        return new HelloService(bf, addressesService, identityCardsService);
     }
 
     @Provides
@@ -118,55 +99,20 @@ public final class CoreModule {
 
     @Provides
     @Singleton
-    BarcodeService provideBarcodeService(Config config) {
-        return new BarcodeService();
-    }
-
-    @Provides
-    @Singleton
-    AcquaintedUsersService provideAcquaintedUsersService(Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
-        return new AcquaintedUsersService(config, bf, cryptoService, keyLoader);
-    }
-
-    @Provides
-    @Singleton
-    AcquaintedClientsService provideAcquaintedClientsService(Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
-        return new AcquaintedClientsService(config, bf, cryptoService, keyLoader);
-    }
-
-    @Provides
-    @Singleton
-    ClientsAddressesService provideClientsAddressesService() {
-        return new ClientsAddressesService();
-    }
-
-    @Provides
-    @Singleton
-    AcquaintService provideAcquaintService(OwnedIdentityCardsService ownedIdentityCards,
-                                           IpcService ipc,
-                                           AcquaintedUsersService acquaintedUsers,
-                                           AcquaintedClientsService acquaintedClients,
-                                           ClientsAddressesService clientsAddresses,
-                                           CurrentAddressesService currentAddressesService) {
-        return new AcquaintService(ipc,
-                                  acquaintedUsers,
-                                  acquaintedClients,
-                                  clientsAddresses,
-                                  ownedIdentityCards,
-                                  currentAddressesService);
-    }
-
-    @Provides
-    @Singleton
     IpcService provideIpcService(IpcServiceManager ipcServiceManager) {
         return ipcServiceManager.getIpc();
     }
 
     @Provides
     @Singleton
-    IpcServiceManager provideIpcServiceManager(Config config,
-                                               Bf bf,
-                                               OwnedIdentityCardsService ownedIdentityCardsService) {
-        return new IpcServiceManager(config, bf, ownedIdentityCardsService);
+    MessageBusRegistry provideMessageBusRegistry() {
+        MessageBusRegistry registry = new MessageBusRegistry();
+        registry.getOrCreateBus(IpcServiceManager.MB_SERVICE_LIFECYCLE).register(new Listener<IpcLifecycleEvent>() {
+            @Override
+            public void listen(IpcLifecycleEvent event) throws Exception {
+
+            }
+        });
+        return registry;
     }
 }

@@ -23,6 +23,8 @@ import talkeeg.bf.BinaryData;
 import talkeeg.common.conf.Config;
 import talkeeg.bf.Int128;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.security.*;
 import java.util.logging.Logger;
 
@@ -32,13 +34,15 @@ import java.util.logging.Logger;
  *
  * Created by wayerr on 27.11.14.
  */
+@Singleton
 public final class CryptoService {
     private static final Logger LOG = Logger.getLogger(CryptoService.class.getName());
     private final OwnedKeysManager ownedKeysManager;
     private final Config config;
     private static final String ALG_SIGN = CryptoConstants.ALG_HASH + "with" + CryptoConstants.ALG_ASYMMETRIC;
 
-    public CryptoService(Config config, KeyLoader keyLoader) {
+    @Inject
+    CryptoService(Config config, KeyLoader keyLoader) {
         this.config = config;
         this.ownedKeysManager = new OwnedKeysManager(config, keyLoader, new KeyPairGen());
     }

@@ -23,23 +23,33 @@ import com.google.common.base.Preconditions;
 import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 import talkeeg.common.core.OwnedIdentityCardsService;
+import talkeeg.mb.MessageBusKey;
+import talkeeg.mb.MessageBusRegistry;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * IPC service lifecycle manager
  *
  * Created by wayerr on 26.11.14.
  */
+@Singleton
 public final class IpcServiceManager {
+    public static final MessageBusKey<IpcLifecycleEvent> MB_SERVICE_LIFECYCLE = MessageBusKey.create("tg.IpcService.lifecycle", IpcLifecycleEvent.class);
     private final Thread serviceThread;
     private final IpcServiceImpl service;
+    final MessageBusRegistry messageBusregistry;
     final OwnedIdentityCardsService ownedIdentityCards;
     final Bf bf;
     final Config config;
     final TgbfProcessor processor;
 
-    public IpcServiceManager(Config config, Bf bf, OwnedIdentityCardsService ownedIdentityCards) {
+    @Inject
+    IpcServiceManager(Config config, MessageBusRegistry messageBusRegistry, Bf bf, OwnedIdentityCardsService ownedIdentityCards) {
         this.config = config;
         this.bf = bf;
+        this.messageBusregistry = messageBusRegistry;
         Preconditions.checkNotNull(this.bf, "bf is null");
         this.ownedIdentityCards = ownedIdentityCards;
         Preconditions.checkNotNull(this.ownedIdentityCards, "ownedIdentityCards is null");
@@ -49,14 +59,16 @@ public final class IpcServiceManager {
     }
 
     public void start() {
-        serviceThread.start();
+        this.serviceThread.start();
+        this.messageBusregistry.getOrCreateBus(MB_SERVICE_LIFECYCLE).listen(new IpcLifecycleEvent(IpcLifecycleEvent.Type.START, this.service));
     }
 
     public void stop() {
-        serviceThread.interrupt();
+        this.messageBusregistry.getOrCreateBus(MB_SERVICE_LIFECYCLE).listen(new IpcLifecycleEvent(IpcLifecycleEvent.Type.STOP, this.service));
+        this.serviceThread.interrupt();
     }
 
     public IpcService getIpc() {
-        return service;
+        return this.service;
     }
 }

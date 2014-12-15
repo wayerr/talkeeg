@@ -29,6 +29,8 @@ import talkeeg.common.model.UserIdentityCard;
 import talkeeg.common.util.Callback;
 import talkeeg.common.util.FileData;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -41,12 +43,14 @@ import java.util.concurrent.ConcurrentMap;
  *
  * Created by wayerr on 28.11.14.
  */
+@Singleton
 public final class AcquaintedUsersService {
     private final CryptoService cryptoService;
     private final ConcurrentMap<Int128, AcquaintedUser> users = new ConcurrentHashMap<>();
     private final KeyLoader keyLoader;
     private final FileData fileData;
 
+    @Inject
     AcquaintedUsersService(Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
         this.cryptoService = cryptoService;
         this.keyLoader = keyLoader;

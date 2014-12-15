@@ -29,11 +29,11 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class MessageBusRegistry {
     private static final String CLASS_NAME = MessageBusRegistry.class.getName();
-    public static final MessageBusKey<UncaughtExceptionEvent> BUS_CAUGHT_EXCEPTION =
+    public static final MessageBusKey<UncaughtExceptionEvent> BUS_UNCAUGHT_EXCEPTION =
       MessageBusKey.create(CLASS_NAME + ".uncaughtExceptionBus", UncaughtExceptionEvent.class);
 
     private final ConcurrentMap<MessageBusKey<?>, MessageBus<?>> busesMap = new ConcurrentHashMap<>();
-    private final MessageBus<UncaughtExceptionEvent> uncaughtExceptionBus = new MessageBusImpl<>(BUS_CAUGHT_EXCEPTION, null);
+    private final MessageBus<UncaughtExceptionEvent> uncaughtExceptionBus = new MessageBusImpl<>(BUS_UNCAUGHT_EXCEPTION, null);
 
     public MessageBusRegistry() {
         this.busesMap.put(this.uncaughtExceptionBus.getKey(), this.uncaughtExceptionBus);

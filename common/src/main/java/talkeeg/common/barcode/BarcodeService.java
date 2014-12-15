@@ -26,15 +26,24 @@ import com.google.zxing.multi.qrcode.QRCodeMultiReader;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import talkeeg.bf.BinaryData;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * service which encode and decode barcodes
  * Created by wayerr on 03.12.14.
  */
+@Singleton
 public final class BarcodeService {
     private static final String DEFAULT_BYTE_MODE_ENCODING = "ISO-8859-1";
+
+    @Inject
+    BarcodeService() {
+    }
 
     public BitMatrix encode(BinaryData data) {
         final QRCodeWriter writer = new QRCodeWriter();

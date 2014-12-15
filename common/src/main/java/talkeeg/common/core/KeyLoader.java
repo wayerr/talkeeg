@@ -19,8 +19,8 @@
 
 package talkeeg.common.core;
 
-import com.google.common.io.Files;
-
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -35,10 +35,12 @@ import java.security.spec.X509EncodedKeySpec;
  *
  * Created by wayerr on 08.12.14.
  */
+@Singleton
 final class KeyLoader {
 
     private final KeyFactory keyFactory;
 
+    @Inject
     KeyLoader() {
         try {
             this.keyFactory = KeyFactory.getInstance(CryptoConstants.ALG_ASYMMETRIC);

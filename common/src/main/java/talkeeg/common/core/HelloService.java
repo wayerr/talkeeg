@@ -24,6 +24,8 @@ import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.model.*;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 /**
@@ -31,12 +33,14 @@ import java.nio.ByteBuffer;
  *
  * Created by wayerr on 03.12.14.
  */
+@Singleton
 public final class HelloService {
 
     private final CurrentAddressesService addressesService;
     private final OwnedIdentityCardsService identityCardsService;
     private final Bf bf;
 
+    @Inject
     HelloService(Bf bf, CurrentAddressesService addressesService, OwnedIdentityCardsService identityCardsService) {
         this.bf = bf;
         this.addressesService = addressesService;

@@ -27,6 +27,9 @@ import talkeeg.common.conf.Config;
 import talkeeg.common.model.ClientIdentityCard;
 import talkeeg.common.util.Callback;
 import talkeeg.common.util.FileData;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -39,6 +42,7 @@ import java.util.concurrent.ConcurrentMap;
  *
  * Created by wayerr on 10.12.14.
  */
+@Singleton
 public final class AcquaintedClientsService {
 
     private final ConcurrentMap<Int128, AcquaintedClient> map = new ConcurrentHashMap<>();
@@ -46,6 +50,7 @@ public final class AcquaintedClientsService {
     private final KeyLoader keyLoader;
     private final FileData fileData;
 
+    @Inject
     AcquaintedClientsService(Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
         this.cryptoService = cryptoService;
         this.keyLoader = keyLoader;

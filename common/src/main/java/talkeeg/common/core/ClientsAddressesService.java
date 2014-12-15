@@ -22,16 +22,25 @@ package talkeeg.common.core;
 import talkeeg.bf.Int128;
 import talkeeg.common.model.ClientAddresses;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * service which provide addresses of clients (not only acquainted) <p/>
  * in future this service must load addresses from server
  * Created by wayerr on 10.12.14.
  */
+@Singleton
 public final class ClientsAddressesService {
-    private final Map<Int128, ClientAddresses> map = new HashMap<>();
+    private final ConcurrentMap<Int128, ClientAddresses> map = new ConcurrentHashMap<>();
+
+    @Inject
+    ClientsAddressesService() {
+    }
 
     public void updateAddress(Int128 clientId, ClientAddresses addresses) {
         this.map.put(clientId, addresses);

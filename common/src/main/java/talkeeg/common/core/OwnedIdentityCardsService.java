@@ -25,12 +25,15 @@ import talkeeg.common.model.ClientIdentityCard;
 import talkeeg.common.model.UserIdentityCard;
 import talkeeg.bf.BinaryData;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 
 /**
  *
  * Created by wayerr on 28.11.14.
  */
+@Singleton
 public final class OwnedIdentityCardsService {
     private final File icdir;
     private final Object lock = new Object();
@@ -40,7 +43,8 @@ public final class OwnedIdentityCardsService {
     private UserIdentityCard user;
     private ClientIdentityCard client;
 
-    public OwnedIdentityCardsService(Config config, CryptoService cryptoService) {
+    @Inject
+    OwnedIdentityCardsService(Config config, CryptoService cryptoService) {
         this.cryptoService = cryptoService;
         this.icdir = new File(config.getConfigDir(), "idcards");
         this.icdir.mkdirs();//create dirs if need
