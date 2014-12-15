@@ -58,10 +58,11 @@ public final class AcquaintService {
             ClientAddresses clientAddresses = (ClientAddresses)args.get(2);
             acquaintedUsers.acquaint(userIdentityCard);
             final AcquaintedClient acquaintedClient = acquaintedClients.acquaint(clientIdentityCard);
-            addresses.updateAddress(clientIdentityCard.getUserId(), clientAddresses);
+            final Int128 clientId = acquaintedClient.getId();
+            addresses.updateAddress(clientId, clientAddresses);
             if(ACTION_ACQUAINT.equals(action)) {
                 //response acquaint
-                final Parcel parcel = new Parcel(acquaintedClient.getId(), IpcUtil.toClientAddress(srcAddress));
+                final Parcel parcel = new Parcel(clientId, IpcUtil.toClientAddress(srcAddress));
                 parcel.getMessages().add(buildAcuaintCommand(Command.builder().action(ACTION_ACQUAINT_RESPONSE)).build());
                 ipc.push(parcel);
             }
