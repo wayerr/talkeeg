@@ -24,6 +24,7 @@ import talkeeg.common.conf.Config;
 import talkeeg.common.model.ClientIdentityCard;
 import talkeeg.common.model.UserIdentityCard;
 import talkeeg.bf.BinaryData;
+import talkeeg.common.util.OS;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,9 +36,10 @@ import java.io.File;
  */
 @Singleton
 public final class OwnedIdentityCardsService {
-    private final File icdir;
+    //private final File icdir;
     private final Object lock = new Object();
     private final CryptoService cryptoService;
+    private final Config config;
     private Int128 clientId;
     private Int128 userId;
     private UserIdentityCard user;
@@ -45,9 +47,10 @@ public final class OwnedIdentityCardsService {
 
     @Inject
     OwnedIdentityCardsService(Config config, CryptoService cryptoService) {
+        this.config = config;
         this.cryptoService = cryptoService;
-        this.icdir = new File(config.getConfigDir(), "idcards");
-        this.icdir.mkdirs();//create dirs if need
+        //this.icdir = new File(config.getConfigDir(), "idcards");
+        //this.icdir.mkdirs();//create dirs if need
     }
 
     /**
@@ -69,7 +72,15 @@ public final class OwnedIdentityCardsService {
     }
 
     private void load(UserIdentityCard.Builder builder) {
-        //TODO load attributes and client list from confiuration file
+        //TODO load attributes and client list from configuration file
+        Object nick = this.config.getValue("user.nick", null);
+        if(nick != null) {
+            builder.putAttr(UserIdentityCard.ATTR_NICK, nick);
+        }
+    }
+
+    private void load(ClientIdentityCard.Builder builder) {
+        builder.putAttr(ClientIdentityCard.ATTR_NAME, OS.getIntance().getHostName());
     }
 
     /**
@@ -80,6 +91,7 @@ public final class OwnedIdentityCardsService {
         synchronized(lock) {
             if(this.client == null) {
                 ClientIdentityCard.Builder builder = ClientIdentityCard.builder();
+                load(builder);
                 builder.setUserId(getUserId());
                 //load public key in CIC
                 final OwnedKeysManager keysManager = cryptoService.getOwnedKeysManager();

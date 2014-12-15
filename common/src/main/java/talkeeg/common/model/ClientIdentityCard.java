@@ -25,6 +25,11 @@ import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
+import talkeeg.common.util.Printable;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * client identity card
@@ -32,7 +37,7 @@ import talkeeg.bf.StructureBuilder;
  * Created by wayerr on 10.12.14.
  */
 @StructInfo(id = 15)
-public final class ClientIdentityCard {
+public final class ClientIdentityCard implements Printable {
     public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
         @Override
         public StructureBuilder  get() {
@@ -40,9 +45,16 @@ public final class ClientIdentityCard {
         }
     };
 
+
+    /**
+     * displayable name of client (i.e. hostname of PC )
+     */
+    public static final String ATTR_NAME = "name";
+
     public static final class Builder implements BuilderInterface {
 
         private Int128 userId;
+        private final Map<String, Object> attrs = new HashMap<>();
         private BinaryData key;
 
         public Int128 getUserId() {
@@ -71,6 +83,20 @@ public final class ClientIdentityCard {
             this.key = key;
         }
 
+        public Map<String, Object> getAttrs() {
+            return attrs;
+        }
+
+        public Builder putAttr(String name, Object value) {
+            this.attrs.put(name, value);
+            return this;
+        }
+
+        public void setAttrs(Map<String, Object> attrs) {
+            this.attrs.clear();
+            this.attrs.putAll(attrs);
+        }
+
         @Override
         public ClientIdentityCard build() {
             return new ClientIdentityCard(this);
@@ -79,12 +105,14 @@ public final class ClientIdentityCard {
 
     private final BinaryData key;
     private final Int128 userId;
+    private final Map<String, Object> attrs;
 
     private ClientIdentityCard(Builder b) {
         this.key = b.key;
         Preconditions.checkNotNull(this.key, "key is null");
         this.userId = b.userId;
         Preconditions.checkNotNull(this.userId, "userId is null");
+        this.attrs = Collections.unmodifiableMap(new HashMap<>(b.attrs));
     }
 
     public static Builder builder() {
@@ -108,15 +136,35 @@ public final class ClientIdentityCard {
         return key;
     }
 
+    /**
+     * unmodifiable map of attributes
+     * @see #ATTR_NAME
+     * @return
+     */
+    public Map<String, Object> getAttrs() {
+        return attrs;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if(this == o) return true;
-        if(!(o instanceof ClientIdentityCard)) return false;
+        if(this == o) {
+            return true;
+        }
+        if(!(o instanceof ClientIdentityCard)) {
+            return false;
+        }
 
         ClientIdentityCard that = (ClientIdentityCard)o;
 
-        if(key != null? !key.equals(that.key) : that.key != null) return false;
-        if(userId != null? !userId.equals(that.userId) : that.userId != null) return false;
+        if(attrs != null? !attrs.equals(that.attrs) : that.attrs != null) {
+            return false;
+        }
+        if(key != null? !key.equals(that.key) : that.key != null) {
+            return false;
+        }
+        if(userId != null? !userId.equals(that.userId) : that.userId != null) {
+            return false;
+        }
 
         return true;
     }
@@ -125,6 +173,16 @@ public final class ClientIdentityCard {
     public int hashCode() {
         int result = key != null? key.hashCode() : 0;
         result = 31 * result + (userId != null? userId.hashCode() : 0);
+        result = 31 * result + (attrs != null? attrs.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public void print(StringBuilder sb) {
+        sb.append("key: ").append(talkeeg.bf.Arrays.toHexString(this.key.getData())).append("\n");
+        for(Map.Entry<String, Object> attr: this.attrs.entrySet()) {
+            sb.append(attr.getKey()).append('=')
+              .append(attr.getValue()).append('\n');
+        }
     }
 }

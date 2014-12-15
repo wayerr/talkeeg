@@ -14,6 +14,11 @@
     <struct name="ClientIdentityCard" structId="15">
         <id fieldName="userId" />
         <blob fieldName="key"/>
+        <!-- map of custom client attrs, like name -->
+        <map fieldName="attrs">
+            <string />
+            <string />
+        </map>
     </struct>
     <struct name="ClientAddress" structId="13">
         <integer fieldName="type" storeAs="01_BYTE"/>

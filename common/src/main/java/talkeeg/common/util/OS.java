@@ -19,6 +19,10 @@
 
 package talkeeg.common.util;
 
+import java.net.InetAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * utility for OS specific things
  *
@@ -75,6 +79,31 @@ public final class OS {
      */
     public String getUserHome() {
         return userHome;
+    }
+
+    /**
+     * hostname of current machine
+     * @return
+     */
+    public String getHostName() {
+        String name = null;
+        try {
+            name = InetAddress.getLocalHost().getHostName();
+        } catch(Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "", e);
+        }
+        if(name == null) {
+            if(family == Family.WINDOWS) {
+                name = System.getenv("COMPUTERNAME");
+            } else if(family == Family.LINUX) {
+                name = System.getenv("HOSTNAME");
+                if(name == null) {
+                    name = System.getenv("HOST");
+                }
+
+            }
+        }
+        return name;
     }
 
     /**

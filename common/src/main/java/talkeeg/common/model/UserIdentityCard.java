@@ -175,7 +175,6 @@ public final class UserIdentityCard implements Printable {
 
     @Override
     public void print(StringBuilder sb) {
-        sb.append("user identity card:\n");
         sb.append("key: ").append(talkeeg.bf.Arrays.toHexString(this.key.getData())).append("\n");
         for(Map.Entry<String, Object> attr: this.attrs.entrySet()) {
             sb.append(attr.getKey()).append('=')
