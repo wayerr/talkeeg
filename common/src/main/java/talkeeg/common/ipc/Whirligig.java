@@ -19,6 +19,7 @@
 
 package talkeeg.common.ipc;
 
+import com.google.common.base.Preconditions;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.Node;
 
@@ -51,8 +52,6 @@ final class Whirligig implements Runnable {
 
         private State() throws Exception {
             this.selector = Selector.open();
-            this.channel4 = DatagramChannel.open(StandardProtocolFamily.INET);
-            this.channel6 = DatagramChannel.open(StandardProtocolFamily.INET6);
 
             final Node net = config.getRoot().getNode("net");
 
@@ -60,6 +59,7 @@ final class Whirligig implements Runnable {
 
             InetSocketAddress socketAddress6 = getInetSocketAddress(port, net.<String>getValue("listenIp6", null));
             if(socketAddress6 != null) {
+                this.channel6 = DatagramChannel.open(StandardProtocolFamily.INET6);
                 // check that it ipv6 address
                 if(!(socketAddress6.getAddress() instanceof Inet6Address)) {
                     throw new RuntimeException(socketAddress6 + " must be an IPv6 address");
@@ -70,6 +70,7 @@ final class Whirligig implements Runnable {
             if(socketAddress6 == null) {
                 InetSocketAddress socketAddress4 = getInetSocketAddress(port, net.getValue("listenIp4", "0.0.0.0"));
                 if(socketAddress4 != null) {
+                    this.channel4 = DatagramChannel.open(StandardProtocolFamily.INET);
                     // check that it ipv4 address
                     if(!(socketAddress4.getAddress() instanceof Inet4Address)) {
                         throw new RuntimeException(socketAddress4 + " must be an IPv4 address");
@@ -82,6 +83,7 @@ final class Whirligig implements Runnable {
 
         private void configureChannel(final DatagramChannel channel, InetSocketAddress socketAddress) throws Exception {
             channel.configureBlocking(false);
+            Preconditions.checkNotNull(socketAddress, "socketAddress is null");
             channel.bind(socketAddress);
             channel.register(this.selector, SelectionKey.OP_READ);
         }

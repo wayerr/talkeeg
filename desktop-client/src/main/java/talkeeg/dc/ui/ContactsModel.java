@@ -75,9 +75,14 @@ final class ContactsModel implements TreeModel {
         this.registry = registry;
         this.acquaintedUsers = acquaintedUsers;
         this.acquaintedClients = acquaintedClients;
-        this.registry.getOrCreateBus(AcquaintedUsersService.MB_KEY).register(event -> root.reload());
-        this.registry.getOrCreateBus(AcquaintedClientsService.MB_KEY).register(event -> root.reload());
+        this.registry.getOrCreateBus(AcquaintedUsersService.MB_KEY).register(event -> reloadTree());
+        this.registry.getOrCreateBus(AcquaintedClientsService.MB_KEY).register(event -> reloadTree());
+        reloadTree();
+    }
+
+    protected void reloadTree() {
         root.reload();
+        fireStructureChanged(new TreeModelEvent(this, new Object[]{this.root}));
     }
 
     @Override
