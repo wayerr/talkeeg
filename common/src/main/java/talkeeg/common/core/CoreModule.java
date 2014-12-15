@@ -21,6 +21,7 @@ package talkeeg.common.core;
 
 import com.google.common.base.Function;
 import dagger.Module;
+import dagger.ObjectGraph;
 import dagger.Provides;
 import talkeeg.bf.*;
 import talkeeg.bf.schema.PrimitiveEntry;
@@ -32,7 +33,7 @@ import talkeeg.common.ipc.IpcLifecycleEvent;
 import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.*;
-import talkeeg.mb.Listener;
+import talkeeg.common.util.WakeUpAtEvent;
 import talkeeg.mb.MessageBusRegistry;
 
 import javax.inject.Singleton;
@@ -106,13 +107,16 @@ public final class CoreModule {
     @Provides
     @Singleton
     MessageBusRegistry provideMessageBusRegistry() {
-        MessageBusRegistry registry = new MessageBusRegistry();
-        registry.getOrCreateBus(IpcServiceManager.MB_SERVICE_LIFECYCLE).register(new Listener<IpcLifecycleEvent>() {
-            @Override
-            public void listen(IpcLifecycleEvent event) throws Exception {
+        return new MessageBusRegistry();
+    }
 
-            }
-        });
-        return registry;
+    /**
+     * an ugly workaround for binding some wakeup-r on event buses <p/>
+     * in future we must bind services on remote events instead of lifecycle event (for example, by using {@link dagger.Lazy})
+     * @param objectGraph
+     */
+    public static void init(ObjectGraph objectGraph) {
+        final MessageBusRegistry registry = objectGraph.get(MessageBusRegistry.class);
+        registry.getOrCreateBus(IpcServiceManager.MB_SERVICE_LIFECYCLE).register(new WakeUpAtEvent<>(objectGraph, AcquaintService.class));
     }
 }

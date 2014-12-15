@@ -20,6 +20,7 @@
 package talkeeg.dc;
 
 import dagger.ObjectGraph;
+import talkeeg.common.core.CoreModule;
 import talkeeg.common.core.CryptoService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.dc.ui.GuiManager;
@@ -50,6 +51,7 @@ public final class App {
     }
 
     void start() {
+        CoreModule.init(this.graph);
         serviceManager.start();
         cryptoService.init();
         EventQueue.invokeLater(this.guiManager);
