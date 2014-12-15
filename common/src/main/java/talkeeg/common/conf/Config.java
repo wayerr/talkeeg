@@ -19,6 +19,9 @@
 
 package talkeeg.common.conf;
 
+import talkeeg.mb.MessageBus;
+import talkeeg.mb.MessageBusKey;
+
 import java.io.File;
 
 /**
@@ -28,6 +31,11 @@ import java.io.File;
  */
 public interface Config {
     /**
+     * key for bus of configuration events
+     */
+    public static final MessageBusKey<ConfigEvent> MB_KEY = MessageBusKey.create("tg.config", ConfigEvent.class);
+
+    /**
      * application specific name in [a-z.-_] letters <p/>
      * usualy used as prefix for files, tmp dir names and etc.
      * @return
@@ -35,10 +43,18 @@ public interface Config {
     String getApplicationName();
 
     /**
-     * retrieve specfied value from configuretion, if value is not configured then return defaultValue
+     * retrieve specified value from configuration, if value is not configured then return defaultValue
      * @return
      */
     <T> T getValue(String name, T defaultValue);
+
+    /**
+     * set configuration value, change event will be posted into {@link #MB_KEY bus specified by key}
+     * @param name
+     * @param value
+     * @param <T>
+     */
+    <T> void setValue(String name, T value);
 
     /**
      * root configuration node, it`s tree like mapping (by interpreting '.' as node-delimiter) for plain values
@@ -52,4 +68,9 @@ public interface Config {
      * @return
      */
     File getConfigDir();
+
+    /**
+     * do writing config data into persistent storage
+     */
+    void save();
 }

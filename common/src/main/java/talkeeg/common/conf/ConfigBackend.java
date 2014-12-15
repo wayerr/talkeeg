@@ -20,12 +20,20 @@
 package talkeeg.common.conf;
 
 /**
- * interface for configuration node <p/>
+ * backend which responsible for storing and loading config data
  *
- * Created by wayerr on 26.11.14.
+ * Created by wayerr on 15.12.14.
  */
-public interface Node {
-    Node getNode(String name);
+public interface ConfigBackend {
+    /**
+     * load properties
+     */
+    public void load(Config config);
+
+    /**
+     * save properties
+     */
+    public void save(Config config);
 
     /**
      * retrieve specified value from configuration, if value is not configured then return defaultValue
@@ -34,13 +42,13 @@ public interface Node {
      * @param <T>
      * @return
      */
-    <T> T getValue(String name, T defaultValue);
+    <T> T getValue(Config config, String name, T defaultValue);
 
     /**
-     * set configuration value, change event will be posted into {@link Config#MB_KEY bus specified by key}
+     * set configuration value, change event will be posted into {@link talkeeg.common.conf.Config#MB_KEY bus specified by key}
      * @param name
      * @param value
      * @param <T>
      */
-    <T> void setValue(String name, T value);
+    <T> void setValue(Config config, String name, T value);
 }

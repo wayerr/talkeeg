@@ -74,6 +74,12 @@ final class NodeImpl implements Node {
         return config.getValue(enclosedName, defaultValue);
     }
 
+    @Override
+    public <T> void setValue(String name, T value) {
+        final String enclosedName = getEnclosedName(name);
+        config.setValue(enclosedName, value);
+    }
+
     private String getEnclosedName(String name) {
         if(this.prefix == null) {
             return name;

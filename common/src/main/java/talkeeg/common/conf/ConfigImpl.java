@@ -20,13 +20,8 @@
 package talkeeg.common.conf;
 
 import com.google.common.base.Function;
-import talkeeg.common.util.OS;
-
+import com.google.common.base.Preconditions;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * {@link Config} impelmentation
@@ -38,7 +33,7 @@ public final class ConfigImpl implements Config {
         private String applicationName;
         private Function<String, File> configDirFunction = DefaultConfigDirFunction.INSTANCE;
         private Function<String, File> cacheDirFunction;
-        private final Map<String, Object> map = new HashMap<>();
+        private ConfigBackend backend;
 
         /**
          * application specific name in [a-z.-_] letters <p/>
@@ -69,18 +64,17 @@ public final class ConfigImpl implements Config {
             this.applicationName = applicationName;
         }
 
-        public Map<String, Object> getMap() {
-            return map;
+        public ConfigBackend getBackend() {
+            return backend;
         }
 
-        public Builder putMap(String key, Object value) {
-            map.put(key, value);
+        public Builder backend(ConfigBackend backend) {
+            setBackend(backend);
             return this;
         }
 
-        public void getMap(Map<String, Object> map) {
-            this.map.clear();
-            this.map.putAll(map);
+        public void setBackend(ConfigBackend backend) {
+            this.backend = backend;
         }
 
         /**
@@ -129,7 +123,7 @@ public final class ConfigImpl implements Config {
     }
 
     private final String applicationName;
-    private final Map<String, Object> map = new HashMap<>();
+    private final ConfigBackend backend;
     private final NodeImpl root;
     private final Function<String, File> configDirFunction;
     private final Function<String, File> cacheDirFunction;
@@ -139,8 +133,11 @@ public final class ConfigImpl implements Config {
         this.applicationName = b.applicationName;
         this.configDirFunction = b.configDirFunction;
         this.cacheDirFunction = b.cacheDirFunction;
-        this.map.putAll(b.map);
+        this.backend = b.backend;
+        Preconditions.checkNotNull(this.backend, "backend is null");
         this.root = new NodeImpl(this);
+
+        this.backend.load(this);
     }
 
     public static Builder builder() {
@@ -160,12 +157,12 @@ public final class ConfigImpl implements Config {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getValue(String name, T defaultValue) {
-        Object value = map.get(name);
-        //we check that value is not configured, but not configured as null
-        if(value == null && !map.containsKey(name)) {
-            return defaultValue;
-        }
-        return (T)value;
+        return this.backend.getValue(this, name, defaultValue);
+    }
+
+    @Override
+    public <T> void setValue(String name, T value) {
+        this.backend.setValue(this, name, value);
     }
 
     @Override
@@ -179,5 +176,10 @@ public final class ConfigImpl implements Config {
             _configDir = this.configDirFunction.apply(applicationName);
         }
         return _configDir;
+    }
+
+    @Override
+    public void save() {
+        this.backend.save(this);
     }
 }

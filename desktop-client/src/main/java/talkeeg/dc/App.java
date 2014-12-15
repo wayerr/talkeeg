@@ -20,6 +20,7 @@
 package talkeeg.dc;
 
 import dagger.ObjectGraph;
+import talkeeg.common.conf.Config;
 import talkeeg.common.core.CoreModule;
 import talkeeg.common.core.CryptoService;
 import talkeeg.common.ipc.IpcServiceManager;
@@ -38,11 +39,13 @@ public final class App {
     private final IpcServiceManager serviceManager;
     private final GuiManager guiManager;
     private final CryptoService cryptoService;
+    private final Config config;
 
     private App() {
         this.graph = ObjectGraph.create(new MainModule());
         this.serviceManager = this.graph.get(IpcServiceManager.class);
         this.cryptoService = this.graph.get(CryptoService.class);
+        this.config = this.graph.get(Config.class);
         this.guiManager = new GuiManager(this.graph);
     }
 
@@ -59,6 +62,7 @@ public final class App {
 
     void stop() {
         serviceManager.stop();
+        this.config.save();
     }
 
     public static <T> T get(Class<T> clazz) {

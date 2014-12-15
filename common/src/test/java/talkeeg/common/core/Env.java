@@ -20,11 +20,15 @@
 package talkeeg.common.core;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
+import talkeeg.common.conf.DefaultConfigBackend;
+import talkeeg.common.conf.DefaultConfiguration;
 import talkeeg.common.util.DefaultTempDirProvider;
 import talkeeg.common.util.Fs;
+import talkeeg.mb.MessageBusRegistry;
 
 import java.io.File;
 
@@ -39,20 +43,20 @@ public final class Env implements AutoCloseable {
     private final Config config;
     private final Bf bf;
     private final CacheDirsService cacheDirsService;
+    private final MessageBusRegistry registry = new MessageBusRegistry();
 
     public Env() {
         CoreModule coreModule = new CoreModule();
         this.config = ConfigImpl.builder()
-            .applicationName("talkeeg-test")
-            .configDirFunction(new Function<String, File>() {
-                @Override
-                public File apply(String appName) {
-                    return new File(System.getProperty("java.io.tmpdir"), appName);
-                }
-            })
-            .putMap("net.port", 11661)
-            .putMap("net.publicIpServices", "http://checkip.amazonaws.com http://curlmyip.com http://www.trackip.net/ip http://whatismyip.akamai.com http://ifconfig.me/ip http://ipv4.icanhazip.com http://shtuff.it/myip/text http://cydev.ru/ip")
-            .build();
+          .applicationName("talkeeg-test")
+          .configDirFunction(new Function<String, File>() {
+              @Override
+              public File apply(String appName) {
+                  return new File(System.getProperty("java.io.tmpdir"), appName);
+              }
+          })
+          .backend(new DefaultConfigBackend(registry, DefaultConfiguration.get()))
+          .build();
 
         this.bf = coreModule.provideBf();
         CacheDirsService.DirectoryProvider provider = new DefaultTempDirProvider(this.config);

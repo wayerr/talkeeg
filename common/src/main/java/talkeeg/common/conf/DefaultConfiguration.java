@@ -17,41 +17,24 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.dc;
+package talkeeg.common.conf;
 
-import dagger.Module;
-import dagger.Provides;
-import talkeeg.common.conf.Config;
-import talkeeg.common.conf.ConfigImpl;
-import talkeeg.common.conf.DefaultConfiguration;
-import talkeeg.common.core.CoreModule;
-import talkeeg.dc.ui.UiModule;
-import talkeeg.mb.MessageBusRegistry;
+import com.google.common.collect.ImmutableMap;
 
-import javax.inject.Singleton;
+import java.util.Map;
 
 /**
- * IoC container configuration module
- * <p/>
- * Created by wayerr on 26.11.14.
+ * provider of default configureation <p/>
+ * in future we may load default configuration from jar-resource
+ *
+ * Created by wayerr on 15.12.14.
  */
-@Module(
-  injects = {
-    Config.class
-  },
-  includes = {
-    CoreModule.class,
-    UiModule.class
-  }
-)
-final class MainModule {
+public final class DefaultConfiguration {
 
-    @Provides
-    @Singleton
-    Config provideConfg(MessageBusRegistry registry) {
-        return ConfigImpl.builder()
-          .applicationName("talkeeg-dc")
-          .backend(new ConfigBackendBasedOnProperties(registry, DefaultConfiguration.get()))
+    public static Map<String, Object> get() {
+        return ImmutableMap.<String, Object>builder()
+          .put("net.port", 11661)
+          .put("net.publicIpServices", "http://checkip.amazonaws.com http://curlmyip.com http://www.trackip.net/ip http://whatismyip.akamai.com http://ifconfig.me/ip http://ipv4.icanhazip.com http://shtuff.it/myip/text http://cydev.ru/ip")
           .build();
     }
 }

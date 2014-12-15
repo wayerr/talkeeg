@@ -19,7 +19,10 @@
 
 package talkeeg.common.conf;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
+import talkeeg.mb.MessageBusRegistry;
+
 import static org.junit.Assert.*;
 
 /**
@@ -44,7 +47,9 @@ public class ConfigImplTest {
 
     protected ConfigImpl getConfig() {
         return ConfigImpl.builder()
-                .putMap("test.value", 9876)
-                .build();
+          .backend(new DefaultConfigBackend(new MessageBusRegistry(), ImmutableMap.<String, Object>builder()
+            .put("test.value", 9876)
+            .build()))
+          .build();
     }
 }
