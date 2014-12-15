@@ -46,6 +46,8 @@ final class ContactsView implements View {
             infoPane = new JTextPane();
             contactsModel = App.get(ContactsModel.class);
             tree = new JTree(contactsModel);
+            tree.setRootVisible(false);
+            tree.setShowsRootHandles(true);
             JScrollPane treeScrollPane = new JScrollPane(tree);
 
             GroupLayout gl = new GroupLayout(panel);

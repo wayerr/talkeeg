@@ -23,7 +23,9 @@ import talkeeg.common.core.AcquaintedClient;
 import talkeeg.common.core.AcquaintedClientsService;
 import talkeeg.common.core.AcquaintedUser;
 import talkeeg.common.core.AcquaintedUsersService;
+import talkeeg.mb.MessageBusRegistry;
 
+import javax.inject.Inject;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -57,6 +59,7 @@ final class ContactsModel implements TreeModel {
     private final List<TreeModelListener> listeners = new ArrayList<>();
     private final AcquaintedUsersService acquaintedUsers;
     private final AcquaintedClientsService acquaintedClients;
+    private final MessageBusRegistry registry;
     private final ListNode root = new ListNode<Object>(null, new NodeLoader<Object>() {
         @Override
         public void load(Node<Object> parent, List<Node<Object>> value) {
@@ -67,9 +70,13 @@ final class ContactsModel implements TreeModel {
         }
     });
 
-    public ContactsModel(AcquaintedUsersService acquaintedUsers, AcquaintedClientsService acquaintedClients) {
+    @Inject
+    public ContactsModel(MessageBusRegistry registry, AcquaintedUsersService acquaintedUsers, AcquaintedClientsService acquaintedClients) {
+        this.registry = registry;
         this.acquaintedUsers = acquaintedUsers;
         this.acquaintedClients = acquaintedClients;
+        this.registry.getOrCreateBus(AcquaintedUsersService.MB_KEY).register(event -> root.reload());
+        this.registry.getOrCreateBus(AcquaintedClientsService.MB_KEY).register(event -> root.reload());
         root.reload();
     }
 

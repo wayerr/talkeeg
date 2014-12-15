@@ -39,8 +39,9 @@ public final class MessageBusKey<T> implements Serializable {
         this.type = type;
     }
 
-    public static <T> MessageBusKey<T> create(String id, Class<T> type) {
-        return new MessageBusKey<>(id, type);
+    @SuppressWarnings("unchecked")
+    public static <T> MessageBusKey<T> create(String id, Class<? super T> type) {
+        return new MessageBusKey<>(id, (Class<T>)type);
     }
 
     public String getId() {

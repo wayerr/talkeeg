@@ -51,12 +51,4 @@ public class UiModule {
     BarcodeView provideBarcodeView(BarcodeService service, HelloService helloService) {
         return new BarcodeView(service, helloService);
     }
-
-    @Provides
-    @Singleton
-    ContactsModel provideContactsModel(AcquaintedUsersService acquaintedUsers, AcquaintedClientsService acquaintedClients) {
-        return new ContactsModel(acquaintedUsers, acquaintedClients);
-    }
-
-
 }

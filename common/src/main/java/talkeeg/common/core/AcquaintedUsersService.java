@@ -27,7 +27,11 @@ import talkeeg.bf.Int128;
 import talkeeg.common.conf.Config;
 import talkeeg.common.model.UserIdentityCard;
 import talkeeg.common.util.Callback;
+import talkeeg.common.util.ChangeItemEvent;
 import talkeeg.common.util.FileData;
+import talkeeg.common.util.Modification;
+import talkeeg.mb.MessageBusKey;
+import talkeeg.mb.MessageBusRegistry;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,13 +49,18 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Singleton
 public final class AcquaintedUsersService {
+
+    public static final MessageBusKey<ChangeItemEvent<AcquaintedUsersService, AcquaintedUser>> MB_KEY =
+      MessageBusKey.create("tg.AcquaintedUsersService", ChangeItemEvent.class);
+    private final MessageBusRegistry registry;
     private final CryptoService cryptoService;
     private final ConcurrentMap<Int128, AcquaintedUser> users = new ConcurrentHashMap<>();
     private final KeyLoader keyLoader;
     private final FileData fileData;
 
     @Inject
-    AcquaintedUsersService(Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
+    AcquaintedUsersService(MessageBusRegistry registry, Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
+        this.registry = registry;
         this.cryptoService = cryptoService;
         this.keyLoader = keyLoader;
         final File file = new File(config.getConfigDir(), "acquainted_users.tgbf");
@@ -98,6 +107,7 @@ public final class AcquaintedUsersService {
         } else {
             //acquainted users changed, we need save it
             save();
+            registry.getOrCreateBus(MB_KEY).listen(new ChangeItemEvent<>(this, Modification.CREATE, user));
         }
         return user;
     }

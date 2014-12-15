@@ -26,7 +26,11 @@ import talkeeg.bf.Int128;
 import talkeeg.common.conf.Config;
 import talkeeg.common.model.ClientIdentityCard;
 import talkeeg.common.util.Callback;
+import talkeeg.common.util.ChangeItemEvent;
 import talkeeg.common.util.FileData;
+import talkeeg.common.util.Modification;
+import talkeeg.mb.MessageBusKey;
+import talkeeg.mb.MessageBusRegistry;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -44,14 +48,17 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Singleton
 public final class AcquaintedClientsService {
-
+    public static final MessageBusKey<ChangeItemEvent<AcquaintedClientsService, AcquaintedClient>> MB_KEY =
+      MessageBusKey.create("tg.AcquaintedClientsService", ChangeItemEvent.class);
     private final ConcurrentMap<Int128, AcquaintedClient> map = new ConcurrentHashMap<>();
     private final CryptoService cryptoService;
     private final KeyLoader keyLoader;
     private final FileData fileData;
+    private final MessageBusRegistry registry;
 
     @Inject
-    AcquaintedClientsService(Config config, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
+    AcquaintedClientsService(Config config, MessageBusRegistry registry, Bf bf, CryptoService cryptoService, KeyLoader keyLoader) {
+        this.registry = registry;
         this.cryptoService = cryptoService;
         this.keyLoader = keyLoader;
 
@@ -79,6 +86,7 @@ public final class AcquaintedClientsService {
             return oldClient;
         } else {
             save();
+            registry.getOrCreateBus(MB_KEY).listen(new ChangeItemEvent<>(this, Modification.CREATE, client));
         }
         return client;
     }
