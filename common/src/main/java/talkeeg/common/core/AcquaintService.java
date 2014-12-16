@@ -53,13 +53,12 @@ public final class AcquaintService {
             final String action = command.getAction();
             List<Object> args = command.getArgs();
             //see createParcel() for order of arguments
-            UserIdentityCard userIdentityCard = (UserIdentityCard)args.get(0);
-            ClientIdentityCard clientIdentityCard = (ClientIdentityCard)args.get(1);
-            ClientAddresses clientAddresses = (ClientAddresses)args.get(2);
-            acquaintedUsers.acquaint(userIdentityCard);
+            final UserIdentityCard userIdentityCard = (UserIdentityCard)args.get(0);
+            final ClientIdentityCard clientIdentityCard = (ClientIdentityCard)args.get(1);
+            final ClientAddresses clientAddresses = (ClientAddresses)args.get(2);
             final AcquaintedClient acquaintedClient = acquaintedClients.acquaint(clientIdentityCard);
             final Int128 clientId = acquaintedClient.getId();
-            addresses.updateAddress(clientId, clientAddresses);
+            acquiantProcess(userIdentityCard, clientAddresses, clientId);
             if(ACTION_ACQUAINT.equals(action)) {
                 //response acquaint
                 final Parcel parcel = new Parcel(clientId, IpcUtil.toClientAddress(srcAddress));
@@ -69,7 +68,6 @@ public final class AcquaintService {
         }
 
     };
-
 
     @Inject
     AcquaintService(IpcService ipcService,
@@ -117,11 +115,15 @@ public final class AcquaintService {
         final UserIdentityCard identityCard = hello.getIdentityCard();
         final ClientAddresses clientAddresses = hello.getAddresses();
         final Int128 clientId = hello.getClientId();
-        this.acquaintedUsers.acquaint(identityCard);
-        this.addresses.updateAddress(clientId, clientAddresses);
+        acquiantProcess(identityCard, clientAddresses, clientId);
         for(ClientAddress address: clientAddresses.getAddresses()) {
             Parcel parcel = createParcel(clientId, address);
             ipc.push(parcel);
         }
+    }
+
+    protected void acquiantProcess(UserIdentityCard userIdentityCard, ClientAddresses clientAddresses, Int128 clientId) {
+        acquaintedUsers.acquaint(userIdentityCard);
+        addresses.setAddresses(clientId, clientAddresses.getAddresses());
     }
 }

@@ -19,12 +19,16 @@
 
 package talkeeg.common.core;
 
+import com.google.common.collect.ImmutableList;
 import talkeeg.bf.Int128;
+import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.ClientAddresses;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -36,14 +40,40 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Singleton
 public final class ClientsAddressesService {
-    private final ConcurrentMap<Int128, ClientAddresses> map = new ConcurrentHashMap<>();
+    private static class Entry {
+        private final Int128 clientId;
+        private final List<ClientAddress> addresses = new ArrayList<>();
+
+        private Entry(Int128 clientId) {
+            this.clientId = clientId;
+        }
+
+        private void setAddresses(List<ClientAddress> addresses) {
+            synchronized(this.addresses) {
+                this.addresses.clear();
+                this.addresses.addAll(addresses);
+            }
+        }
+
+        private List<ClientAddress> getAddresses() {
+            synchronized(this.addresses) {
+                return ImmutableList.copyOf(addresses);
+            }
+        }
+    }
+    private final ConcurrentMap<Int128, Entry> map = new ConcurrentHashMap<>();
 
     @Inject
     ClientsAddressesService() {
     }
 
-    public void updateAddress(Int128 clientId, ClientAddresses addresses) {
-        this.map.put(clientId, addresses);
+    public void setAddresses(Int128 clientId, List<ClientAddress> addresses) {
+        Entry entry = new Entry(clientId);
+        Entry oldEntry = this.map.putIfAbsent(clientId, entry);
+        if(oldEntry != null) {
+            entry = oldEntry;
+        }
+        entry.setAddresses(addresses);
     }
 
     /**
@@ -51,7 +81,18 @@ public final class ClientsAddressesService {
      * @param clientId
      * @return
      */
-    public ClientAddresses getAddresses(Int128 clientId) {
-        return map.get(clientId);
+    public List<ClientAddress> getAddresses(Int128 clientId) {
+        Entry entry = map.get(clientId);
+        return entry.getAddresses();
+    }
+
+    /**
+     * most suitable address of client <p/>
+     * suitability resolved by analyzing current client ip and history
+     * @param clientId
+     * @return
+     */
+    public ClientAddress getSuitableAddress(Int128 clientId) {
+        return null;
     }
 }

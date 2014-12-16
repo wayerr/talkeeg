@@ -34,6 +34,15 @@
         <struct fieldName="identityCard" structId="11" />
         <struct fieldName="addresses" structId="12" />
     </struct>
+    <struct name="Data" structId="18">
+        <string fieldName="action"/>
+        <!-- map of custom data attrs, like filename or mime-->
+        <map fieldName="attrs">
+            <string/>
+            <string/>
+        </map>
+        <blob fieldName="data"/>
+    </struct>
     <struct name="Command" structId="16">
         <!-- command id must be unique for each client -->
         <integer fieldName="id" storeAs="04_BYTE"/>

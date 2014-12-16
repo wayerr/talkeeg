@@ -56,7 +56,8 @@ import javax.inject.Singleton;
         AcquaintService.class,
         IpcServiceManager.class,
         IpcService.class,
-        MessageBusRegistry.class
+        MessageBusRegistry.class,
+        DataService.class
     }
 )
 public final class CoreModule {
@@ -95,6 +96,7 @@ public final class CoreModule {
             .putType(ClientAddresses.class, ClientAddresses.STRUCT_BUILDER_FACTORY)
             .putType(ClientAddress.class, ClientAddress.STRUCT_BUILDER_FACTORY)
             .putType(Hello.class, Hello.STRUCT_BUILDER_FACTORY)
+            .putType(Data.class, Data.STRUCT_BUILDER_FACTORY)
             .build();
     }
 

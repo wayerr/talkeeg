@@ -29,7 +29,6 @@ import talkeeg.common.util.HandlersRegistry;
 final class IpcServiceImpl implements IpcService {
     private final Whirligig whirligig;
     private final IpcServiceManager sm;
-    private final HandlersRegistry<IpcCallback> handlers = new HandlersRegistry<>();
 
     IpcServiceImpl(IpcServiceManager serviceManager) {
         this.sm = serviceManager;
@@ -39,11 +38,6 @@ final class IpcServiceImpl implements IpcService {
     @Override
     public void push(Parcel parcel) {
         this.whirligig.push(parcel);
-    }
-
-    @Override
-    public Closeable addDataHandler(final String action, final IpcCallback handler) {
-        return handlers.register(action, handler);
     }
 
     @Override

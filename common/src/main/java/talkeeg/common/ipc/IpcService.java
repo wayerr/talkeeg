@@ -36,13 +36,6 @@ public interface IpcService {
     void push(Parcel parcel);
 
     /**
-     * register handler for specific data layer action
-     * @param action
-     * @param handler a closeable instance which used for cancelling registration
-     */
-    Closeable addDataHandler(String action, IpcCallback handler);
-
-    /**
      * register handler for specific IPC layer action
      * @param action
      * @param handler
