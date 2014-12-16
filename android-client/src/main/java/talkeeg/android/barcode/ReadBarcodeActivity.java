@@ -35,6 +35,7 @@ import talkeeg.android.*;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
+import talkeeg.common.core.AcquaintService;
 import talkeeg.common.core.AcquaintedUsersService;
 import talkeeg.common.core.CacheDirsService;
 import talkeeg.common.model.Hello;
@@ -97,10 +98,9 @@ public final class ReadBarcodeActivity extends Activity {
                     }
 
                     if(message instanceof Hello) {
-                        final AcquaintedUsersService usersService = App.get(AcquaintedUsersService.class);
+                        final AcquaintService usersService = App.get(AcquaintService.class);
                         final Hello hello = (Hello)message;
-                        UserIdentityCard identityCard = hello.getIdentityCard();
-                        usersService.acquaint(identityCard);
+                        usersService.acquaint(hello);
                     }
                 }
                 return null;
