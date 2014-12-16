@@ -26,10 +26,7 @@ import com.google.common.cache.LoadingCache;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.ClientAddresses;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -76,10 +73,10 @@ public final class CurrentAddressesService {
                     // ignore loopback iface
                     continue;
                 }
-                final Enumeration<InetAddress> ifaceAddresses = iface.getInetAddresses();
-                while(ifaceAddresses.hasMoreElements()) {
-                    final InetAddress address = ifaceAddresses.nextElement();
-                    addAddress(addresses, address);
+                List<InterfaceAddress> interfaceAddresses = iface.getInterfaceAddresses();
+                for(InterfaceAddress interfaceAddress: interfaceAddresses) {
+                    final InetAddress address = interfaceAddress.getAddress();
+                    addAddress(addresses, address, interfaceAddress.getNetworkPrefixLength());
                 }
             }
         } catch(Exception e) {
@@ -88,12 +85,13 @@ public final class CurrentAddressesService {
         return addresses;
     }
 
-    protected void addAddress(Collection<ClientAddress> addresses, InetAddress address) {
+    protected void addAddress(Collection<ClientAddress> addresses, InetAddress address, int netPrefixLen) {
         addresses.add(new ClientAddress(getAddressType(address), false, address.getHostAddress()));
         try {
             final InetAddress externalAddress = cache.get(address);
             if(externalAddress != null && !address.equals(externalAddress)) {
-                addresses.add(new ClientAddress(getAddressType(externalAddress), true, externalAddress.getHostAddress()));
+                final String hostAddress = externalAddress.getHostAddress() + "/" + netPrefixLen;
+                addresses.add(new ClientAddress(getAddressType(externalAddress), true, hostAddress));
             }
         } catch(Exception e) {
             LOG.log(Level.SEVERE, "can not retrieve external ip for " + address, e);

@@ -26,8 +26,10 @@ import talkeeg.common.core.BasicAddressType;
 import com.google.common.base.Supplier;
 
 /**
- * a representation for client network address
- *
+ * a representation for client network address <p/>
+ * address was specified as string, like: <p/>
+ * <code>xxx.xxx.xxx.xxx:port/net-prefix-len</code> for ipv4, and <p/>
+ * <code>[XX:XX...XX]:port/net-prefix-len</code> for ipv6
  * Created by wayerr on 01.12.14.
  */
 @StructInfo(id = 13)
