@@ -28,8 +28,9 @@ import com.google.common.base.Supplier;
 /**
  * a representation for client network address <p/>
  * address was specified as string, like: <p/>
- * <code>xxx.xxx.xxx.xxx:port/net-prefix-len</code> for ipv4, and <p/>
- * <code>[XX:XX...XX]:port/net-prefix-len</code> for ipv6
+ * <code>tg:[a.b.c.d/net-prefix-len]:port</code> for ipv4, and <p/>
+ * <code>tg:[XX:XX...XX/net-prefix-len]:port</code> for ipv6 <p/>
+ * <p/>
  * Created by wayerr on 01.12.14.
  */
 @StructInfo(id = 13)
