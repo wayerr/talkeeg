@@ -39,6 +39,7 @@ import java.io.File;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -80,36 +81,10 @@ public final class AcquaintedUsersService {
     private void save() {
         List<UserIdentityCard> userIdentityCards = new ArrayList<>();
         for(AcquaintedUser user: this.users.values()) {
-            UserIdentityCard identityCard = user.getIdentityCard();
-            if(identityCard == null) {
-                identityCard = UserIdentityCard.builder()
-                        .key(user.getKeyData())
-                        .build();
-            }
+            UserIdentityCard identityCard = user.getOrCreateIdentityCard();
             userIdentityCards.add(identityCard);
         }
         this.fileData.write(userIdentityCards);
-    }
-
-    /**
-     * acquaint with user by his public key
-     * @param userPublicKey
-     * @return
-     */
-    public AcquaintedUser acquaint(BinaryData userPublicKey) {
-        Preconditions.checkNotNull(userPublicKey, "userPublicKey is null");
-        final Int128 id = this.cryptoService.getFingerprint(userPublicKey);
-        final PublicKey publicKey = this.keyLoader.loadPublic(userPublicKey.getData());
-        final AcquaintedUser user = new AcquaintedUser(id, publicKey);
-        final AcquaintedUser oldUser = users.putIfAbsent(user.getId(), user);
-        if(oldUser != null) {
-            return oldUser;
-        } else {
-            //acquainted users changed, we need save it
-            save();
-            registry.getOrCreateBus(MB_KEY).listen(new ChangeItemEvent<>(this, Modification.CREATE, user));
-        }
-        return user;
     }
 
     /**
@@ -118,9 +93,22 @@ public final class AcquaintedUsersService {
      * @return
      */
     public AcquaintedUser acquaint(UserIdentityCard identityCard) {
-        final AcquaintedUser acquaint = acquaint(identityCard.getKey());
-        acquaint.setIdentityCard(identityCard);
-        return acquaint;
+        Preconditions.checkNotNull(identityCard, "identityCard is null");
+        final BinaryData userPublicKey = identityCard.getKey();
+        final Int128 id = this.cryptoService.getFingerprint(userPublicKey);
+        final PublicKey publicKey = this.keyLoader.loadPublic(userPublicKey.getData());
+        AcquaintedUser user = new AcquaintedUser(id, publicKey);
+        final AcquaintedUser oldUser = users.putIfAbsent(user.getId(), user);
+        if(oldUser != null) {
+            user = oldUser;
+        }
+        if(oldUser != user || !Objects.equals(user.getIdentityCard(), identityCard)) {
+            user.setIdentityCard(identityCard);
+            //acquainted users changed, we need save it
+            save();
+            registry.getOrCreateBus(MB_KEY).listen(new ChangeItemEvent<>(this, Modification.CREATE, user));
+        }
+        return user;
     }
 
     /**

@@ -38,6 +38,7 @@ import java.io.File;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -80,11 +81,13 @@ public final class AcquaintedClientsService {
         BinaryData clientPublicKey = cic.getKey();
         final Int128 clientId = this.cryptoService.getFingerprint(clientPublicKey);
         final PublicKey publicKey = this.keyLoader.loadPublic(clientPublicKey.getData());
-        final AcquaintedClient client = new AcquaintedClient(cic.getUserId(), clientId, publicKey);
+        AcquaintedClient client = new AcquaintedClient(cic.getUserId(), clientId, publicKey);
         final AcquaintedClient oldClient = map.putIfAbsent(clientId, client);
         if(oldClient != null) {
-            return oldClient;
-        } else {
+            client = oldClient;
+        }
+        if(client != oldClient || !Objects.equals(client.getIdentityCard(), cic)) {
+            client.setIdentityCard(cic);
             save();
             registry.getOrCreateBus(MB_KEY).listen(new ChangeItemEvent<>(this, Modification.CREATE, client));
         }
@@ -94,7 +97,8 @@ public final class AcquaintedClientsService {
     private void save() {
         List<ClientIdentityCard> list = new ArrayList<>();
         for(AcquaintedClient client: this.map.values()) {
-            list.add(client.getIdentityCard());
+            ClientIdentityCard identityCard = client.getOrCreateIdentityCard();
+            list.add(identityCard);
         }
         this.fileData.write(list);
     }
@@ -107,8 +111,7 @@ public final class AcquaintedClientsService {
     public List<AcquaintedClient> getUserClients(Int128 userId) {
         ImmutableList.Builder<AcquaintedClient> b = ImmutableList.builder();
         for(AcquaintedClient client: this.map.values()) {
-            ClientIdentityCard identityCard = client.getIdentityCard();
-            if(userId.equals(identityCard.getUserId())) {
+            if(userId.equals(client.getUserId())) {
                 b.add(client);
             }
         }

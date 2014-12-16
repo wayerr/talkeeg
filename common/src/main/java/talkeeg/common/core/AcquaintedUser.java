@@ -78,6 +78,20 @@ public final class AcquaintedUser {
         }
     }
 
+    /**
+     * get UserIdentityCard or create it temporary instance and return it
+     * @return
+     */
+    public UserIdentityCard getOrCreateIdentityCard() {
+        UserIdentityCard uic = getIdentityCard();
+        if(uic == null) {
+            uic = UserIdentityCard.builder()
+              .key(getKeyData())
+              .build();
+        }
+        return uic;
+    }
+
     public void setIdentityCard(UserIdentityCard identityCard) {
         synchronized(lock) {
             if(Objects.equals(this.identityCard, identityCard)) {

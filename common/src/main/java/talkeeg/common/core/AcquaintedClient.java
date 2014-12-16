@@ -67,20 +67,25 @@ public final class AcquaintedClient {
 
     /**
      * get identity card of current client
-     * @return
+     * @return CIC or null
      */
     public ClientIdentityCard getIdentityCard() {
         ClientIdentityCard ic;
         synchronized(lock) {
             ic = this.identityCard;
         }
-        if(ic == null) {
-            ic = ClientIdentityCard.builder()
-              .userId(userId)
+        return ic;
+    }
+
+    public ClientIdentityCard getOrCreateIdentityCard() {
+        ClientIdentityCard cic = getIdentityCard();
+        if(identityCard == null) {
+            identityCard = ClientIdentityCard.builder()
+              .userId(getUserId())
               .key(getKeyData())
               .build();
         }
-        return ic;
+        return cic;
     }
 
     /**
