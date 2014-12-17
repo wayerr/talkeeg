@@ -238,6 +238,7 @@ final class ContactsModel implements TreeModel {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         void reload() {
             this.list.clear();
             this.loader.load(this, this.list);
