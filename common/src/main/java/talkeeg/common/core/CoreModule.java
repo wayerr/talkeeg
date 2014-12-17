@@ -20,6 +20,7 @@
 package talkeeg.common.core;
 
 import com.google.common.base.Function;
+import com.google.common.base.Supplier;
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
@@ -64,9 +65,14 @@ public final class CoreModule {
 
     @Provides
     @Singleton
-    CurrentAddressesService provideCurrentAddressesService(Config config) {
+    CurrentAddressesService provideCurrentAddressesService(Config config, final IpcServiceManager ipc) {
         final PublicIpService externalIpFunction = new PublicIpService(config);
-        return new CurrentAddressesService(externalIpFunction);
+        return new CurrentAddressesService(new Supplier<Integer>() {
+            @Override
+            public Integer get() {
+                return ipc.getPort();
+            }
+        }, externalIpFunction);
     }
 
     @Provides

@@ -45,7 +45,6 @@ public class Test {
         UserIdentityCard uic = SampleMessages.USER_2_UIC;
         ClientAddresses addresses = ClientAddresses.builder()
                 .addAddress(ClientAddress.builder()
-                  .type(BasicAddressType.IPV6)
                   .external(true)
                   .value("fc71:0:0:0:131:1ace:a61:4aa0%eth0")
                   .build())

@@ -19,9 +19,11 @@
 
 package talkeeg.common.core;
 
+import com.google.common.base.Suppliers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import talkeeg.common.ipc.IpcServiceManager;
 
 /**
  *
@@ -42,7 +44,7 @@ public class CurrentAddressesServiceTest {
     @Test
     public void test() {
         System.out.println("test");
-        CurrentAddressesService service = new CurrentAddressesService(new PublicIpService(Env.getInstance().getConfig()));
+        CurrentAddressesService service = new CurrentAddressesService(Suppliers.ofInstance(10), new PublicIpService(Env.getInstance().getConfig()));
         System.out.println(service.getAddreses());
     }
 }

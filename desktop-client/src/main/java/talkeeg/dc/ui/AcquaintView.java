@@ -21,7 +21,6 @@ package talkeeg.dc.ui;
 
 import com.google.common.base.Strings;
 import talkeeg.common.core.AcquaintService;
-import talkeeg.common.core.BasicAddressType;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.dc.App;
 
@@ -74,8 +73,7 @@ final class AcquaintView implements View {
         if(Strings.isNullOrEmpty(addressString)) {
             return;
         }
-        BasicAddressType addressType = addressString.indexOf('.') >= 0? BasicAddressType.IPV4 : BasicAddressType.IPV6;
-        ClientAddress address = new ClientAddress(addressType, false, addressString);
+        ClientAddress address = new ClientAddress(false, addressString);
         AcquaintService service = App.get(AcquaintService.class);
         service.acquaint(address);
     }

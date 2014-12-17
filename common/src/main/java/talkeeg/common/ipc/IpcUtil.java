@@ -21,8 +21,6 @@ package talkeeg.common.ipc;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.net.InetAddresses;
-import talkeeg.common.core.BasicAddressType;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.util.TgAddress;
 
@@ -92,7 +90,6 @@ public final class IpcUtil {
             throw new RuntimeException("Unsupported socket address type: " + address.getClass());
         }
         final InetSocketAddress inetSocketAddress = (InetSocketAddress)address;
-        final BasicAddressType type = inetSocketAddress.getAddress() instanceof Inet4Address? BasicAddressType.IPV4 : BasicAddressType.IPV6;
-        return new ClientAddress(type, false, TgAddress.to(inetSocketAddress.getHostString(), inetSocketAddress.getPort()));
+        return new ClientAddress(false, TgAddress.to(inetSocketAddress.getHostString(), inetSocketAddress.getPort()));
     }
 }

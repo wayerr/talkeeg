@@ -21,7 +21,6 @@
         </map>
     </struct>
     <struct name="ClientAddress" structId="13">
-        <integer fieldName="type" storeAs="01_BYTE"/>
         <string fieldName="value" />
         <boolean fieldName="external" />
     </struct>

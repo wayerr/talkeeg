@@ -28,9 +28,7 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Iterator;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,6 +41,8 @@ final class Whirligig implements Runnable {
     private static final Logger LOG = Logger.getLogger(Whirligig.class.getName());
     private final Config config;
     private final Io io;
+    private final Node configNode;
+    private final int port;
     private volatile State state;
 
     private class State {
@@ -53,11 +53,9 @@ final class Whirligig implements Runnable {
         private State() throws Exception {
             this.selector = Selector.open();
 
-            final Node net = config.getRoot().getNode("net");
 
-            final int port = net.getValue("port", 11662);
 
-            InetSocketAddress socketAddress6 = getInetSocketAddress(port, net.<String>getValue("listenIp6", null));
+            InetSocketAddress socketAddress6 = getInetSocketAddress(port, configNode.<String>getValue("listenIp6", null));
             if(socketAddress6 != null) {
                 this.channel6 = DatagramChannel.open(StandardProtocolFamily.INET6);
                 // check that it ipv6 address
@@ -68,7 +66,7 @@ final class Whirligig implements Runnable {
             }
             // we can not bind on both protocols
             if(socketAddress6 == null) {
-                InetSocketAddress socketAddress4 = getInetSocketAddress(port, net.getValue("listenIp4", "0.0.0.0"));
+                InetSocketAddress socketAddress4 = getInetSocketAddress(port, configNode.getValue("listenIp4", "0.0.0.0"));
                 if(socketAddress4 != null) {
                     this.channel4 = DatagramChannel.open(StandardProtocolFamily.INET);
                     // check that it ipv4 address
@@ -92,6 +90,10 @@ final class Whirligig implements Runnable {
     Whirligig(Config config, Io io) {
         this.config = config;
         this.io = io;
+
+        this.configNode = config.getRoot().getNode("net");
+
+        this.port = configNode.getValue("port", 11662);
     }
 
     private InetSocketAddress getInetSocketAddress(int port, String stringAddr) throws Exception {
@@ -152,5 +154,9 @@ final class Whirligig implements Runnable {
         } catch(Exception e) {
             throw new RuntimeException("at parcel " + parcel, e);
         }
+    }
+
+    int getPort() {
+        return port;
     }
 }

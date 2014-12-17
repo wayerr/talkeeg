@@ -112,9 +112,8 @@ public final class ClientAddresses implements Printable {
     public void print(StringBuilder sb) {
         sb.append("addresses:\n");
         for(ClientAddress clientAddress: this.addresses) {
-            sb.append(clientAddress.getType()).append(' ')
-                    .append(clientAddress.getValue()).append(' ')
-                    .append(clientAddress.isExternal() ? "external" : "internal").append('\n');
+            sb.append(clientAddress.getValue()).append(' ')
+               .append(clientAddress.isExternal() ? "external" : "internal").append('\n');
         }
     }
 }

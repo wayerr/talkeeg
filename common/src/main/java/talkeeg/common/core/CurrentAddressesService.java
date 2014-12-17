@@ -20,12 +20,18 @@
 package talkeeg.common.core;
 
 import com.google.common.base.Function;
+import com.google.common.base.Supplier;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import talkeeg.common.ipc.IpcService;
+import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.ClientAddresses;
+import talkeeg.common.util.TgAddress;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -42,16 +48,18 @@ public final class CurrentAddressesService {
     private static final Logger LOG = Logger.getLogger(CurrentAddressesService.class.getName());
     private final Function<InetAddress, InetAddress> externalIpFunction;
     private final LoadingCache<InetAddress, InetAddress> cache;
+    private final Supplier<Integer> currentPortSupplier;
 
     /**
      * construct current addresses service
      * @param externalIpFunction function which return external ip or argument, function <b>must<b/> not return null
      */
-    CurrentAddressesService(Function<InetAddress, InetAddress> externalIpFunction) {
+    CurrentAddressesService(Supplier<Integer> currentPortSupplier, Function<InetAddress, InetAddress> externalIpFunction) {
         this.externalIpFunction = externalIpFunction;
         if(this.externalIpFunction == null) {
             throw new IllegalArgumentException("ExternalIpFunction is null");
         }
+        this.currentPortSupplier = currentPortSupplier;
         this.cache = CacheBuilder.newBuilder()
                 .expireAfterWrite(1, TimeUnit.HOURS)
                 .build(CacheLoader.from(this.externalIpFunction));
@@ -86,27 +94,15 @@ public final class CurrentAddressesService {
     }
 
     protected void addAddress(Collection<ClientAddress> addresses, InetAddress address, int netPrefixLen) {
-        addresses.add(new ClientAddress(getAddressType(address), false, address.getHostAddress()));
+        final int port = this.currentPortSupplier.get();
+        addresses.add(new ClientAddress(false, TgAddress.to(address.getHostAddress(), netPrefixLen, port)));
         try {
             final InetAddress externalAddress = cache.get(address);
             if(externalAddress != null && !address.equals(externalAddress)) {
-                final String hostAddress = externalAddress.getHostAddress() + "/" + netPrefixLen;
-                addresses.add(new ClientAddress(getAddressType(externalAddress), true, hostAddress));
+                addresses.add(new ClientAddress(true, TgAddress.to(externalAddress.getHostAddress(), netPrefixLen, port)));
             }
         } catch(Exception e) {
             LOG.log(Level.SEVERE, "can not retrieve external ip for " + address, e);
         }
-    }
-
-    private static BasicAddressType getAddressType(InetAddress address) {
-        BasicAddressType type;
-        if(address instanceof Inet6Address) {
-            type = BasicAddressType.IPV6;
-        } else if(address instanceof Inet4Address) {
-            type = BasicAddressType.IPV4;
-        } else {
-            throw new RuntimeException("unsupported address type");
-        }
-        return type;
     }
 }

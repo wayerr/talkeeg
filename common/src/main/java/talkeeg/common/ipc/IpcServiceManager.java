@@ -71,4 +71,12 @@ public final class IpcServiceManager {
     public IpcService getIpc() {
         return this.service;
     }
+
+    /**
+     * configured local port for ipc
+     * @return
+     */
+    public int getPort() {
+        return this.service.getWhirligig().getPort();
+    }
 }

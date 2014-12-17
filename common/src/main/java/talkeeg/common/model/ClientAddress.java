@@ -21,8 +21,6 @@ package talkeeg.common.model;
 
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
-import talkeeg.common.core.BasicAddressType;
-
 import com.google.common.base.Supplier;
 
 /**
@@ -44,22 +42,8 @@ public final class ClientAddress {
     };
 
     public static final class Builder implements BuilderInterface {
-        private BasicAddressType type;
         private boolean external;
         private String value;
-
-        public BasicAddressType getType() {
-            return type;
-        }
-
-        public Builder type(BasicAddressType type) {
-            setType(type);
-            return this;
-        }
-
-        public void setType(BasicAddressType type) {
-            this.type = type;
-        }
 
         public boolean isExternal() {
             return external;
@@ -89,32 +73,25 @@ public final class ClientAddress {
 
         @Override
         public ClientAddress build() {
-            return new ClientAddress(type, external, value);
+            return new ClientAddress(external, value);
         }
     }
 
-    private final BasicAddressType type;
     private final boolean external;
     private final String value;
 
     /**
      * a representation for client network address
-     * @param type type of address like ipv4
      * @param external flag for addresses which not directly owned by client
      * @param value string representation of address
      */
-    public ClientAddress(BasicAddressType type, boolean external, String value) {
-        this.type = type;
+    public ClientAddress(boolean external, String value) {
         this.external = external;
         this.value = value;
     }
 
     public static Builder builder() {
         return new Builder();
-    }
-
-    public BasicAddressType getType() {
-        return type;
     }
 
     public boolean isExternal() {
@@ -139,9 +116,6 @@ public final class ClientAddress {
         if(external != that.external) {
             return false;
         }
-        if(type != null ? !type.equals(that.type) : that.type != null) {
-            return false;
-        }
         if(value != null ? !value.equals(that.value) : that.value != null) {
             return false;
         }
@@ -151,18 +125,8 @@ public final class ClientAddress {
 
     @Override
     public int hashCode() {
-        int result = type != null ? type.hashCode() : 0;
-        result = 31 * result + (external ? 1 : 0);
-        result = 31 * result + (value != null ? value.hashCode() : 0);
+        int result = (external? 1 : 0);
+        result = 31 * result + (value != null? value.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ClientAddress{" +
-                "type=" + type +
-                ", external=" + external +
-                ", value='" + value + '\'' +
-                '}';
     }
 }
