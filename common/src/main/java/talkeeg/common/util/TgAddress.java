@@ -19,10 +19,6 @@
 
 package talkeeg.common.util;
 
-import talkeeg.common.core.BasicAddressType;
-
-import java.net.Inet4Address;
-
 /**
  * utility for working with `tg:` address format
  * Created by wayerr on 16.12.14.
@@ -128,7 +124,7 @@ public final class TgAddress {
      */
     public static String to(String host, int networkPrefix, int port) {
         final String portString = Integer.toString(port);
-        final String addressString = "[" + host + (networkPrefix == NO_NETWORK_PREFIX? "" : "/" + networkPrefix) + "]" + portString;
+        final String addressString = SCHEMA + "[" + host + (networkPrefix == NO_NETWORK_PREFIX? "" : "/" + networkPrefix) + "]" + portString;
         return addressString;
     }
 }
