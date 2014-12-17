@@ -24,6 +24,7 @@ import com.google.common.base.Supplier;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.net.InetAddresses;
 import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.ClientAddress;
@@ -95,11 +96,11 @@ public final class CurrentAddressesService {
 
     protected void addAddress(Collection<ClientAddress> addresses, InetAddress address, int netPrefixLen) {
         final int port = this.currentPortSupplier.get();
-        addresses.add(new ClientAddress(false, TgAddress.to(address.getHostAddress(), netPrefixLen, port)));
+        addresses.add(new ClientAddress(false, TgAddress.to(InetAddresses.toAddrString(address), netPrefixLen, port)));
         try {
             final InetAddress externalAddress = cache.get(address);
             if(externalAddress != null && !address.equals(externalAddress)) {
-                addresses.add(new ClientAddress(true, TgAddress.to(externalAddress.getHostAddress(), netPrefixLen, port)));
+                addresses.add(new ClientAddress(true, TgAddress.to(InetAddresses.toAddrString(externalAddress), TgAddress.NO_NETWORK_PREFIX, port)));
             }
         } catch(Exception e) {
             LOG.log(Level.SEVERE, "can not retrieve external ip for " + address, e);
