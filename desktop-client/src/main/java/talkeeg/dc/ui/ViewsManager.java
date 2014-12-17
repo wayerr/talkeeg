@@ -42,6 +42,7 @@ class ViewsManager implements ComponentOwner {
         views.add(objectGraph.get(BarcodeView.class));
         views.add(new AcquaintView());
         views.add(new ContactsView());
+        views.add(objectGraph.get(MessagesView.class));
         this.panel = new JPanel(new BorderLayout());
     }
 

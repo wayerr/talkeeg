@@ -25,5 +25,16 @@ package talkeeg.common.model;
  * Created by wayerr on 11.12.14.
  */
 public final class Constants {
-    public static final String ACTION_DATA = "tg.data";
+    /**
+     * chat action, message will be placed into embedded chat
+     */
+    public static final String DATA_ACTION_CHAT = "chat";
+    /**
+     * save action, message data will be saved into default directory
+     */
+    public static final String DATA_ACTION_SAVE = "save";
+    /**
+     * display action, message data will be opened in appropriate program
+     */
+    public static final String DATA_ACTION_SHOW = "show";
 }

@@ -36,7 +36,8 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 BarcodeView.class,
-                ContactsModel.class
+                ContactsModel.class,
+                MessagesView.class
         },
         includes = {
                 CoreModule.class

@@ -30,9 +30,8 @@ import javax.swing.*;
 final class ContactsView implements View {
 
     private JPanel panel;
-    private JTree tree;
     private JTextPane infoPane;
-    private ContactsModel contactsModel;
+    private ContactsComponent contacts;
 
     @Override
     public String getTitle() {
@@ -44,18 +43,16 @@ final class ContactsView implements View {
         if(panel == null) {
             panel = new JPanel();
             infoPane = new JTextPane();
-            contactsModel = App.get(ContactsModel.class);
-            tree = new JTree(contactsModel);
-            tree.setRootVisible(false);
-            tree.setShowsRootHandles(true);
-            JScrollPane treeScrollPane = new JScrollPane(tree);
+            this.contacts = new ContactsComponent();
 
             GroupLayout gl = new GroupLayout(panel);
             panel.setLayout(gl);
 
+            final JComponent contactsComponent = this.contacts.getComponent();
+
             gl.setVerticalGroup(gl.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(treeScrollPane)
+                .addComponent(contactsComponent)
                 .addGap(UiUtils.GAP)
                 .addComponent(infoPane, 0, GroupLayout.DEFAULT_SIZE, 100)
                 .addContainerGap()
@@ -64,7 +61,7 @@ final class ContactsView implements View {
             gl.setHorizontalGroup(gl.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(gl.createParallelGroup()
-                    .addComponent(treeScrollPane)
+                    .addComponent(contactsComponent)
                     .addComponent(infoPane)
                 )
                 .addContainerGap()

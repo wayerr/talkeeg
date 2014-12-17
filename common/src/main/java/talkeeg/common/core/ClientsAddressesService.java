@@ -61,23 +61,23 @@ public final class ClientsAddressesService {
         public List<ClientAddress> getSuitableAddress(Set<ClientAddress> currentAddresses) {
             final List<ClientAddress> addresses = getAddresses();
             final Set<String> networks = new HashSet<>();
-            final List<ClientAddress> suitableAddreses = new ArrayList<>();
+            final List<ClientAddress> suitableAddresses = new ArrayList<>();
             for(ClientAddress currentAddress: currentAddresses) {
                 final String networkAddress = IpcUtil.getNetworkAddress(currentAddress.getValue());
                 networks.add(networkAddress);
             }
             for(ClientAddress address: addresses) {
                 if(address.isExternal()) {
-                    suitableAddreses.add(address);
+                    suitableAddresses.add(address);
                 } else {
                     final String networkAddress = IpcUtil.getNetworkAddress(address.getValue());
                     if(networkAddress != null && networks.contains(networkAddress)) {
-                        suitableAddreses.add(address);
+                        suitableAddresses.add(address);
                     }
                 }
             }
 
-            return suitableAddreses;
+            return suitableAddresses;
         }
     }
 
@@ -105,6 +105,9 @@ public final class ClientsAddressesService {
      */
     public List<ClientAddress> getAddresses(Int128 clientId) {
         Entry entry = map.get(clientId);
+        if(entry == null) {
+            return Collections.emptyList();
+        }
         return entry.getAddresses();
     }
 
@@ -116,6 +119,9 @@ public final class ClientsAddressesService {
      */
     public List<ClientAddress> getSuitableAddress(Int128 clientId) {
         Entry entry = map.get(clientId);
+        if(entry == null) {
+            return Collections.emptyList();
+        }
         Set<ClientAddress> currentAddresses = this.currentAddresses.getAddreses();
         return entry.getSuitableAddress(currentAddresses);
     }

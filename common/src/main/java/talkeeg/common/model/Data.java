@@ -104,6 +104,10 @@ public final class Data {
         this.data = b.data;
     }
 
+    public static Builder buidler() {
+        return new Builder();
+    }
+
     public String getAction() {
         return action;
     }

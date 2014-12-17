@@ -184,11 +184,11 @@ final class ContactsModel implements TreeModel {
         }
     }
 
-    private class Node<T> {
+    public class Node<T> {
         private final T value;
         private final Function<T, String> stringifier;
 
-        public Node(T value, Function<T, String> stringifier) {
+        private Node(T value, Function<T, String> stringifier) {
             this.value = value;
             this.stringifier = stringifier;
         }
