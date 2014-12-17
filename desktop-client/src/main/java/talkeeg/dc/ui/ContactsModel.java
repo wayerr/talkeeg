@@ -24,6 +24,7 @@ import com.google.common.base.Functions;
 import talkeeg.bf.Arrays;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.*;
+import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.ClientAddresses;
 import talkeeg.common.model.ClientIdentityCard;
 import talkeeg.common.model.UserIdentityCard;
@@ -104,7 +105,7 @@ final class ContactsModel implements TreeModel {
     private String clientStringifier(AcquaintedClient client) {
         final Int128 id = client.getId();
         String result = null;
-        final ClientAddresses addresses = this.clientsAddresses.getAddresses(id);
+        final List<ClientAddress> addresses = this.clientsAddresses.getAddresses(id);
         if(addresses != null) {
             result = StringUtils.print(addresses);
         }

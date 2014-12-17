@@ -21,6 +21,7 @@ package talkeeg.common.ipc;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.net.InetAddresses;
 import talkeeg.common.core.BasicAddressType;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.util.TgAddress;
@@ -45,19 +46,33 @@ public final class IpcUtil {
         if(tgAddress == null) {
             return null;
         }
-        int prefixLen = tgAddress.getNetworkPrefixLength();
-        if(prefixLen == TgAddress.NO_NETWORK_PREFIX) {
+        final int prefixLen = tgAddress.getNetworkPrefixLength();
+        if(prefixLen == TgAddress.NO_NETWORK_PREFIX || prefixLen == 0) {
             return null;
         }
         String host = tgAddress.getHost();
         try {
             final InetAddress inetAddress = InetAddress.getByName(host);
             final byte[] value = inetAddress.getAddress();
-            //TODO create network address
+            final int addressLenInBits = value.length * 8;
+            if(addressLenInBits < prefixLen) {
+                throw new RuntimeException("network prefix length " + prefixLen + "bits greater than address " + addressLenInBits + "bits");
+            }
+            //create network address from host address
+            final int lastNetByte = prefixLen / 8;
+            final int lastNetworkByteBits = prefixLen % 8;
+            if(lastNetworkByteBits != 0) {
+                value[lastNetByte] = (byte)(value[lastNetByte] & (0xff << (8 - lastNetworkByteBits)));
+            } else {
+                value[lastNetByte] = 0;
+            }
+            for(int i = lastNetByte + 1; i < value.length; ++i) {
+                value[i] = 0;
+            }
+            return InetAddress.getByAddress(value).getHostAddress();
         } catch(UnknownHostException e) {
             throw new RuntimeException(" at address: " + address, e);
         }
-        return null;
     }
 
     public static InetSocketAddress toAddress(String string) {

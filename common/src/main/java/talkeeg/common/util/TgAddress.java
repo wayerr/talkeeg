@@ -30,6 +30,7 @@ import java.net.Inet4Address;
 public final class TgAddress {
 
     public static final int NO_NETWORK_PREFIX = -1;
+    public static final String SCHEMA = "tg:";
 
     private final int port;
     private final String host;
@@ -66,29 +67,37 @@ public final class TgAddress {
 
     /**
      * parse address
-     * @param string
+     * @param uri
      * @return
      */
-    public static TgAddress from(String string) {
-        final int portIndex = string.lastIndexOf(':');
-        if(portIndex < 0) {
-            throw new RuntimeException("address: '" + string + "' must contains port number");
+    public static TgAddress from(String uri) {
+        if(!uri.startsWith(SCHEMA)) {
+            throw new RuntimeException("'" + uri + "' must start with " + SCHEMA);
         }
-        final int indexOfColon = string.indexOf(':');
-        int networkprefixlen = NO_NETWORK_PREFIX;
+        final int addressStart = SCHEMA.length();
+        if(uri.charAt(addressStart) != '[') {
+            throw new RuntimeException("in '" + uri + "' at " + addressStart + " expect '['");
+        }
+        final int addressEnd = uri.lastIndexOf(']');
+        if(addressEnd < 0) {
+            throw new RuntimeException("ipv6 address: '" + uri + "' must look like  'tg:['address']'port");
+        }
+        final int networkPrefixBegin = uri.indexOf('/', addressStart);
+        final int netPrefLen;
         final String hostString;
-        if(indexOfColon != portIndex) {//it`s ipv6 address, in this address part must look as '['address']:'port
-            if(string.charAt(0) != '[' || string.charAt(portIndex - 1) != ']') {
-                throw new RuntimeException("ipv6 address: '" + string + "' must look like  '['address']:'port");
-            }
-            //we must skip '[' and ']'
-            hostString = string.substring(1, portIndex - 1);
+        if(networkPrefixBegin > 0) {
+            hostString = uri.substring(addressStart + 1, networkPrefixBegin);
+            String netPrefString = uri.substring(networkPrefixBegin + 1, addressEnd);
+            netPrefLen = Integer.parseInt(netPrefString);
         } else {
-            hostString = string.substring(0, portIndex);
+            netPrefLen = NO_NETWORK_PREFIX;
+            hostString = uri.substring(addressStart + 1, addressEnd);
         }
-        final String portString = string.substring(portIndex + 1);
-        final int port= Integer.parseInt(portString);
-        return new TgAddress(hostString, networkprefixlen, port);
+        //address part must look as '['address']:'port
+        //we must skip '[' and ']'
+        final String portString = uri.substring(addressEnd + 1);
+        final int port = Integer.parseInt(portString);
+        return new TgAddress(hostString, netPrefLen, port);
     }
 
     /**
@@ -119,7 +128,7 @@ public final class TgAddress {
      */
     public static String to(String host, int networkPrefix, int port) {
         final String portString = Integer.toString(port);
-        final String addressString = "[" + host + "]:" + portString;
+        final String addressString = "[" + host + (networkPrefix == NO_NETWORK_PREFIX? "" : "/" + networkPrefix) + "]" + portString;
         return addressString;
     }
 }

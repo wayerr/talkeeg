@@ -66,12 +66,14 @@ public final class DataService {
     }
 
     public void push(Int128 clientId, Data data) {
-        ClientAddress address = this.clientsAddresses.getSuitableAddress(clientId);
-        if(address == null) {
+        List<ClientAddress> addresses = this.clientsAddresses.getSuitableAddress(clientId);
+        if(addresses.isEmpty()) {
             LOG.severe("no addresses for client: " + clientId);
             return;
         }
-        Parcel parcel = new Parcel(clientId, address);
-        this.ipc.push(parcel);
+        for(ClientAddress address: addresses) {
+            Parcel parcel = new Parcel(clientId, address);
+            this.ipc.push(parcel);
+        }
     }
 }
