@@ -22,14 +22,18 @@ package talkeeg.dc.ui;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.AcquaintedClient;
+import talkeeg.common.core.DataMessage;
 import talkeeg.common.core.DataService;
 import talkeeg.common.model.Constants;
 import talkeeg.common.model.Data;
+import talkeeg.common.util.Callback;
+import talkeeg.common.util.DateUtils;
 
 import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 /**
  * view of data messages
@@ -43,6 +47,7 @@ final class MessagesView implements View {
     private JTextArea history;
     private ContactsComponent contacts;
     private final DataService dataService;
+    private final Callback<DataMessage> dataMessageCallback = this::dataMessageChanged;
 
     @Inject
     public MessagesView(DataService dataService) {
@@ -116,14 +121,22 @@ final class MessagesView implements View {
           .action(Constants.DATA_ACTION_CHAT)
           .data(stringData)
           .build();
-        this.dataService.push(clientId, data);
+        DataMessage message = this.dataService.push(clientId, data);
+        message.addCallback(this.dataMessageCallback);
+    }
+
+    private void dataMessageChanged(DataMessage dataMessage) {
+        DataMessage.State state = dataMessage.getState();
+        if(state != DataMessage.State.INITIAL) {
+            dataMessage.removeCallback(this.dataMessageCallback);
+        }
+        receiveMessage(dataMessage.getData());
     }
 
     private void receiveMessage(Data data) {
         getComponent();//init UI
         BinaryData binaryData = data.getData();
         String str = new String(binaryData.getData(), StandardCharsets.UTF_8);
-        this.history.append(str);
-        this.history.append("\n");
+        this.history.append(DateUtils.toString(System.currentTimeMillis()) + "| " + str + "\n");
     }
 }

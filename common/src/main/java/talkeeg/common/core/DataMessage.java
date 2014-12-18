@@ -24,14 +24,16 @@ import talkeeg.common.ipc.Parcel;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.Command;
 import talkeeg.common.model.Data;
-
+import talkeeg.common.util.Callback;
+import talkeeg.common.util.CallbacksContainer;
 import java.util.List;
 
 /**
-* Created by wayerr on 18.12.14.
-*/
-final class DataMessage {
-    enum State {
+ * representation of sent data message and it status
+ * Created by wayerr on 18.12.14.
+ */
+public final class DataMessage {
+    public enum State {
         INITIAL, FAIL, SUCCESS
     }
 
@@ -40,8 +42,10 @@ final class DataMessage {
     private final List<ClientAddress> addresses;
     private final Command command;
     private final DataService dataService;
+    private final Object lock = new Object();
     private int addressNumber = 0;
     private int sendCounter = 0;
+    private final CallbacksContainer<DataMessage> callbacks = new CallbacksContainer<>();
     private State state = State.INITIAL;
 
     DataMessage(DataService dataService, Int128 clientId, List<ClientAddress> addresses, Data data) {
@@ -57,35 +61,63 @@ final class DataMessage {
     }
 
     /**
-     * di asynchronous sending of command, can be invoked repeatedly <p/>
+     * do asynchronous sending of command, can be invoked repeatedly <p/>
      * after calling you will need check {@link #getState() }
      */
-    synchronized void send() {
-        if(this.state != State.INITIAL) {
-            return;
+    void send() {
+        synchronized(this.lock) {
+            if(this.state != State.INITIAL) {
+                return;
+            }
+            this.sendCounter++;
+            if(sendCounter > DataService.MAX_SEND_ON_ONE_ADDR) {
+                this.addressNumber++;
+            }
+            if(this.addresses.size() >= this.addressNumber) {
+                this.setState(State.FAIL);
+            }
+            ClientAddress address = this.addresses.get(this.addressNumber);
+            Parcel parcel = new Parcel(clientId, address);
+            parcel.getMessages().add(this.command);
+            this.dataService.ipc.push(parcel);
         }
-        this.sendCounter++;
-        if(sendCounter > DataService.MAX_SEND_ON_ONE_ADDR) {
-            this.addressNumber++;
-        }
-        if(this.addresses.size() >= this.addressNumber) {
-            this.state = State.FAIL;
-        }
-        ClientAddress address = this.addresses.get(this.addressNumber);
-        Parcel parcel = new Parcel(clientId, address);
-        parcel.getMessages().add(this.command);
-        this.dataService.ipc.push(parcel);
     }
 
-    synchronized State getState() {
-        return state;
+    /**
+     * state of message
+     * @return
+     */
+    public State getState() {
+        synchronized(this.lock) {
+            return state;
+        }
     }
 
-    synchronized void success() {
-        this.state = State.SUCCESS;
+    void success() {
+        setState(State.SUCCESS);
     }
 
     Integer getId() {
         return this.command.getId();
+    }
+
+    public Data getData() {
+        return data;
+    }
+
+
+    private void setState(State state) {
+        synchronized(this.lock) {
+            this.state = state;
+        }
+        this.callbacks.call(this);
+    }
+
+    public void addCallback(Callback<DataMessage> callback) {
+        this.callbacks.add(callback);
+    }
+
+    public void removeCallback(Callback<DataMessage> callback) {
+        this.callbacks.remove(callback);
     }
 }

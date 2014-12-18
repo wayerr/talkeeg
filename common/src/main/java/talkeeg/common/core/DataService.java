@@ -110,14 +110,20 @@ public final class DataService {
         return this.registry.register(key, callback);
     }
 
-    public void push(Int128 clientId, Data data) {
+    /**
+     * send message into specified client
+     * @param clientId
+     * @param data
+     * @return message management object
+     */
+    public DataMessage push(Int128 clientId, Data data) {
         List<ClientAddress> addresses = this.clientsAddresses.getSuitableAddress(clientId);
         if(addresses.isEmpty()) {
-            LOG.severe("no addresses for client: " + clientId);
-            return;
+            throw new RuntimeException("no addresses for client: " + clientId);
         }
         final DataMessage message = new DataMessage(this, clientId, addresses, data);
         this.sended.put(message.getId(), message);
         message.send();
+        return message;
     }
 }
