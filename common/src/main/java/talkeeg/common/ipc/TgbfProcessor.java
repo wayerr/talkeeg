@@ -90,7 +90,7 @@ final class TgbfProcessor implements Io {
         final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(message.getSrc(), remoteClientAddress);
         final List<?> objects = (List<?>)getBf().read(ByteBuffer.wrap(data.getData()));
         for(Object obj: objects) {
-            if(obj instanceof IpcEntry) {
+            if(!(obj instanceof IpcEntry)) {
                 LOG.log(Level.SEVERE, "unsupported IpcEntry type '" + obj.getClass() + "'. It came from " + remote);
                 continue;
             }
