@@ -20,7 +20,6 @@
 package talkeeg.common.ipc;
 
 import talkeeg.common.util.Closeable;
-import talkeeg.common.util.HandlersRegistry;
 
 /**
  * ipc service implementation
@@ -41,7 +40,7 @@ final class IpcServiceImpl implements IpcService {
     }
 
     @Override
-    public Closeable addIpcHandler(String action, TgbfHandler handler) {
+    public Closeable addIpcHandler(String action, IpcEntryHandler handler) {
         return this.sm.processor.addHandler(action, handler);
     }
 

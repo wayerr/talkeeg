@@ -25,7 +25,6 @@ import talkeeg.common.model.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.net.SocketAddress;
 import java.util.List;
 
 /**
@@ -44,9 +43,9 @@ public final class AcquaintService {
     private final ClientsAddressesService addresses;
     private final OwnedIdentityCardsService ownedIdentityCards;
     private final CurrentAddressesService currentAddresses;
-    private final TgbfHandler handlerAcquaint = new TgbfHandler() {
+    private final IpcEntryHandler handlerAcquaint = new IpcEntryHandler() {
         @Override
-        public void handle(SocketAddress srcAddress, IpcEntry entry) {
+        public void handle(IpcEntryHandlerContext context, IpcEntry entry) {
             Command command = (Command)entry;
             final String action = command.getAction();
             List<Object> args = command.getArgs();
@@ -59,7 +58,7 @@ public final class AcquaintService {
             acquiantProcess(userIdentityCard, clientAddresses, clientId);
             if(ACTION_ACQUAINT.equals(action)) {
                 //response acquaint
-                final Parcel parcel = new Parcel(clientId, IpcUtil.toClientAddress(srcAddress));
+                final Parcel parcel = new Parcel(clientId, context.getSrcClientAddress());
                 parcel.getMessages().add(buildAcuaintCommand(Command.builder().action(ACTION_ACQUAINT_RESPONSE)).build());
                 ipc.push(parcel);
             }

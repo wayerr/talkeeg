@@ -19,27 +19,28 @@
 
 package talkeeg.common.ipc;
 
-
-import talkeeg.common.util.Closeable;
+import talkeeg.bf.Int128;
+import talkeeg.common.model.ClientAddress;
 
 /**
- * service for inter process communication over tgbf protocol
+ * context for IpcEntryHandler
  *
- * Created by wayerr on 26.11.14.
+ * Created by wayerr on 18.12.14.
  */
-public interface IpcService {
+public final class IpcEntryHandlerContext {
+    private final Int128 srcClientId;
+    private final ClientAddress srcClientAddress;
 
-    /**
-     * pushes parcel to queue for delivering to client
-     * @param parcel
-     */
-    void push(Parcel parcel);
+    IpcEntryHandlerContext(Int128 srcClientId, ClientAddress srcClientAddress) {
+        this.srcClientId = srcClientId;
+        this.srcClientAddress = srcClientAddress;
+    }
 
-    /**
-     * register handler for specific IPC layer action
-     * @param action
-     * @param handler
-     * @return a closeable instance which used for cancelling registration
-     */
-    Closeable addIpcHandler(String action, IpcEntryHandler handler);
+    public Int128 getSrcClientId() {
+        return srcClientId;
+    }
+
+    public ClientAddress getSrcClientAddress() {
+        return srcClientAddress;
+    }
 }

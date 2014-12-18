@@ -63,7 +63,7 @@ public class Command implements IpcEntry {
 
         /**
          * action on which is registered handler
-         * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.TgbfHandler)
+         * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
          * @return
          */
         public String getAction() {
@@ -72,7 +72,7 @@ public class Command implements IpcEntry {
 
         /**
          * action on which is registered handler
-         * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.TgbfHandler)
+         * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
          * @param action
          */
         public Builder action(String action) {
@@ -82,7 +82,7 @@ public class Command implements IpcEntry {
 
         /**
          * action on which is registered handler
-         * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.TgbfHandler)
+         * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
          * @param action
          */
         public void setAction(String action) {
@@ -131,7 +131,7 @@ public class Command implements IpcEntry {
 
     /**
      * action on which is registered handler
-     * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.TgbfHandler)
+     * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
      * @return
      */
     public String getAction() {

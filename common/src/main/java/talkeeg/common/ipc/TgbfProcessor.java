@@ -30,8 +30,6 @@ import talkeeg.common.model.SingleMessage;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.HandlersRegistry;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
@@ -49,7 +47,7 @@ import java.util.logging.Logger;
 final class TgbfProcessor implements Io {
 
     private static final Logger LOG = Logger.getLogger(TgbfProcessor.class.getName());
-    private final HandlersRegistry<TgbfHandler> handlers = new HandlersRegistry<>();
+    private final HandlersRegistry<IpcEntryHandler> handlers = new HandlersRegistry<>();
     private final IpcServiceManager manager;
 
     TgbfProcessor(IpcServiceManager manager) {
@@ -63,7 +61,7 @@ final class TgbfProcessor implements Io {
      * @param handler
      * @return closeable instance which can unregister handler from this processor
      */
-    public Closeable addHandler(String action, TgbfHandler handler) {
+    public Closeable addHandler(String action, IpcEntryHandler handler) {
         return this.handlers.register(action, handler);
     }
 
@@ -91,16 +89,18 @@ final class TgbfProcessor implements Io {
             LOG.log(Level.SEVERE, "SingleMessage.dst == " + dst + " , but expected null or clientId. It came from " + remote);
         }
         final BinaryData data = message.getData();
+        final ClientAddress remoteClientAddress = IpcUtil.toClientAddress(remote);
+        final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(message.getSrc(), remoteClientAddress);
         final List<?> objects = (List<?>)getBf().read(ByteBuffer.wrap(data.getData()));
         for(Object obj: objects) {
             if(obj instanceof Command) {
                 Command command = (Command)obj;
                 final String action = command.getAction();
-                TgbfHandler handler = this.handlers.get(action);
+                IpcEntryHandler handler = this.handlers.get(action);
                 if(handler == null) {
                     LOG.log(Level.SEVERE, "No handler for '" + action + "'. It came from " + remote);
                 } else {
-                    handler.handle(remote, command);
+                    handler.handle(ipcEntryHandlerContext, command);
                 }
             } else {
                 LOG.log(Level.SEVERE, "unsupported IpcEntry type '" + obj.getClass() + "'. It came from " + remote);

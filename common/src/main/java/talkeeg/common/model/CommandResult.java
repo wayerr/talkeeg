@@ -47,6 +47,11 @@ public class CommandResult implements IpcEntry {
             return id;
         }
 
+        public Builder id(int id) {
+            setId(id);
+            return this;
+        }
+
         public void setId(int id) {
             this.id = id;
         }
@@ -80,6 +85,10 @@ public class CommandResult implements IpcEntry {
         this.id = b.id;
         this.code = b.code;
         this.value = b.value;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Override

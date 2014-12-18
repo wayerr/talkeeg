@@ -20,24 +20,19 @@
 package talkeeg.common.core;
 
 import talkeeg.bf.Int128;
-import talkeeg.common.ipc.IpcEntry;
-import talkeeg.common.ipc.IpcService;
-import talkeeg.common.ipc.Parcel;
-import talkeeg.common.ipc.TgbfHandler;
-import talkeeg.common.model.ClientAddress;
-import talkeeg.common.model.Command;
-import talkeeg.common.model.CommandResult;
-import talkeeg.common.model.Data;
+import talkeeg.common.ipc.*;
+import talkeeg.common.model.*;
 import talkeeg.common.util.Callback;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.HandlersRegistry;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.net.SocketAddress;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -46,75 +41,27 @@ import java.util.logging.Logger;
  */
 @Singleton
 public final class DataService {
-    private enum MessageState {
-        INITIAL, FAIL, SUCCESS
-    }
-
-    private final class DataMessage {
-        private final Data data;
-        private final Int128 clientId;
-        private final List<ClientAddress> addresses;
-        private final Command command;
-        private int addressNumber = 0;
-        private int sendCounter = 0;
-        private MessageState state = MessageState.INITIAL;
-
-        private DataMessage(Int128 clientId, List<ClientAddress> addresses, Data data) {
-            this.data = data;
-            this.clientId = clientId;
-            this.addresses = addresses;
-            this.command = Command.builder()
-              .id(commandIdGenerator.getAndIncrement())
-              .action(ACTION_DATA)
-              .addArg(this.data)
-              .build();
-        }
-
-        synchronized void send() {
-            if(this.state != MessageState.INITIAL) {
-                return;
-            }
-            this.sendCounter++;
-            if(sendCounter > MAX_SEND_ON_ONE_ADDR) {
-                this.addressNumber++;
-            }
-            if(this.addresses.size() >= this.addressNumber) {
-                this.state = MessageState.FAIL;
-            }
-            ClientAddress address = this.addresses.get(this.addressNumber);
-            Parcel parcel = new Parcel(clientId, address);
-            parcel.getMessages().add(this.command);
-            ipc.push(parcel);
-        }
-
-        synchronized MessageState getState() {
-            return state;
-        }
-
-        synchronized void success() {
-            this.state = MessageState.SUCCESS;
-        }
-    }
 
     private static final Logger LOG = Logger.getLogger(DataService.class.getName());
-    private static final int MAX_SEND_ON_ONE_ADDR = 3;
+    static final int MAX_SEND_ON_ONE_ADDR = 3;
     public static final String ACTION_DATA = "tg.data";
-    private final IpcService ipc;
+    final IpcService ipc;
     private final HandlersRegistry<Callback<Data>> registry = new HandlersRegistry<>();
     private final ClientsAddressesService clientsAddresses;
-    private final List<DataMessage> sended = new ArrayList<>();
+    private final ConcurrentMap<Integer, DataMessage> sended = new ConcurrentHashMap<>();
     private final AtomicInteger commandIdGenerator = new AtomicInteger();
+
     @Inject
     DataService(IpcService ipc, ClientsAddressesService clientsAddresses) {
         this.ipc = ipc;
         this.clientsAddresses = clientsAddresses;
-        this.ipc.addIpcHandler(ACTION_DATA, new TgbfHandler() {
+        this.ipc.addIpcHandler(ACTION_DATA, new IpcEntryHandler() {
             @Override
-            public void handle(SocketAddress srcAddress, IpcEntry entry) {
+            public void handle(IpcEntryHandlerContext context, IpcEntry entry) {
                 if(entry instanceof CommandResult) {
                     processCommandResult((CommandResult)entry);
                 } else if(entry instanceof Command) {
-                    processCommand((Command)entry);
+                    processCommand(context, (Command)entry);
                 } else {
                     throw new RuntimeException("Unsupported IpcEntry type: " + entry);
                 }
@@ -122,27 +69,39 @@ public final class DataService {
         });
     }
 
+    int getNextId() {
+        return this.commandIdGenerator.getAndIncrement();
+    }
+
     private void processCommandResult(CommandResult commandResult) {
         DataMessage message = this.sended.get(commandResult.getId());
         message.success();
     }
 
-    private void processCommand(Command command) {
-        List<Object> args = command.getArgs();
-        for(Object arg: args) {
-            if(!(arg instanceof Data)) {
-                LOG.warning("Expected Data argument, but receive: " + arg);
-                continue;
-            }
-            final Data data = (Data)arg;
-            final String action = data.getAction();
-            final Callback<Data> callback = registry.get(action);
-            if(callback == null) {
-                LOG.warning("no callback for action: " + action);
-                continue;
-            }
-            callback.call(data);
+    private void processCommand(IpcEntryHandlerContext context, Command command) {
+        CommandResult.Builder builder = CommandResult.builder().id(command.getId());
+        final List<Object> args = command.getArgs();
+        final Object arg = args.get(0);
+        final Data data = (Data)arg;
+        final String action = data.getAction();
+        final Callback<Data> callback = registry.get(action);
+        if(callback == null) {
+            LOG.warning("no callback for action: " + action);
+            builder.setCode(ResponseCode.ERROR);
         }
+        if(callback != null) {
+            try {
+                callback.call(data);
+            } catch(Exception e) {
+                LOG.log(Level.SEVERE, "fail callback", e);
+                builder.setCode(ResponseCode.ERROR);
+            }
+        }
+
+        //send response
+        Parcel parcel = new Parcel(context.getSrcClientId(), context.getSrcClientAddress());
+        parcel.getMessages().add(builder.build());
+        this.ipc.push(parcel);
     }
 
     public Closeable addHandler(String key, Callback<Data> callback) {
@@ -155,8 +114,8 @@ public final class DataService {
             LOG.severe("no addresses for client: " + clientId);
             return;
         }
-        final DataMessage message = new DataMessage(clientId, addresses, data);
-        this.sended.add(message);
+        final DataMessage message = new DataMessage(this, clientId, addresses, data);
+        this.sended.put(message.getId(), message);
         message.send();
     }
 }
