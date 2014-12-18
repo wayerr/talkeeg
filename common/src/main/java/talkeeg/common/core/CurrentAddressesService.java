@@ -25,14 +25,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.net.InetAddresses;
-import talkeeg.common.ipc.IpcService;
-import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.ClientAddresses;
 import talkeeg.common.util.TgAddress;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -66,13 +62,13 @@ public final class CurrentAddressesService {
                 .build(CacheLoader.from(this.externalIpFunction));
     }
 
-    public ClientAddresses getClientAddreses() {
+    public ClientAddresses getClientAddresses() {
         return ClientAddresses.builder()
-            .addresses(getAddreses())
+            .addresses(getAddresses())
             .build();
     }
 
-    Set<ClientAddress> getAddreses() {
+    public Set<ClientAddress> getAddresses() {
         final Set<ClientAddress> addresses = new HashSet<>();
         try {
             final Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();

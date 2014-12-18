@@ -23,8 +23,6 @@ import com.google.common.collect.ImmutableList;
 import talkeeg.bf.Int128;
 import talkeeg.common.ipc.IpcUtil;
 import talkeeg.common.model.ClientAddress;
-import talkeeg.common.model.ClientAddresses;
-import talkeeg.common.util.TgAddress;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -122,7 +120,7 @@ public final class ClientsAddressesService {
         if(entry == null) {
             return Collections.emptyList();
         }
-        Set<ClientAddress> currentAddresses = this.currentAddresses.getAddreses();
+        Set<ClientAddress> currentAddresses = this.currentAddresses.getAddresses();
         return entry.getSuitableAddress(currentAddresses);
     }
 }

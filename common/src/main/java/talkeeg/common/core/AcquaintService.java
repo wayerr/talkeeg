@@ -107,7 +107,7 @@ public final class AcquaintService {
     private Command.Builder buildAcuaintCommand(Command.Builder builder) {
         builder.addArg(this.ownedIdentityCards.getUserIdentityCard())
           .addArg(this.ownedIdentityCards.getClientIdentityCard())
-          .addArg(this.currentAddresses.getClientAddreses());
+          .addArg(this.currentAddresses.getClientAddresses());
         return builder;
     }
 

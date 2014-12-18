@@ -55,7 +55,7 @@ public final class HelloService {
         Hello.Builder builder = new Hello.Builder();
         builder.setClientId(this.identityCardsService.getClientId());
         builder.setIdentityCard(this.identityCardsService.getUserIdentityCard());
-        builder.setAddresses(this.addressesService.getClientAddreses());
+        builder.setAddresses(this.addressesService.getClientAddresses());
         return builder.build();
     }
 
