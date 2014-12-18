@@ -55,6 +55,8 @@
     <struct name="CommandResult" structId="17">
         <!-- command id must be unique for each client -->
         <integer fieldName="id" storeAs="04_BYTE"/>
+        <!-- action of IPC which handle this message -->
+        <string fieldName="action" />
         <integer fieldName="code" storeAs="01_BYTE"/>
         <generic fieldName="value"/>
     </struct>
