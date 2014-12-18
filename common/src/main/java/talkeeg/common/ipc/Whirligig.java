@@ -159,4 +159,9 @@ final class Whirligig implements Runnable {
     int getPort() {
         return port;
     }
+
+    boolean isIpv6Supported() {
+        State state = this.state;
+        return state != null && state.channel6 != null;
+    }
 }

@@ -20,9 +20,12 @@
 package talkeeg.common.ipc;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 import talkeeg.common.core.OwnedIdentityCardsService;
+import talkeeg.common.model.ClientAddress;
+import talkeeg.common.util.TgAddress;
 import talkeeg.mb.MessageBusKey;
 import talkeeg.mb.MessageBusRegistry;
 
@@ -37,6 +40,22 @@ import javax.inject.Singleton;
 @Singleton
 public final class IpcServiceManager {
     public static final MessageBusKey<IpcLifecycleEvent> MB_SERVICE_LIFECYCLE = MessageBusKey.create("tg.IpcService.lifecycle", IpcLifecycleEvent.class);
+    private final Predicate<ClientAddress> filter = new Predicate<ClientAddress>() {
+        @Override
+        public boolean apply(ClientAddress input) {
+            String value = input.getValue();
+            //actually we support any 'tg:' addresses
+            TgAddress tgAddress = TgAddress.from(value);
+            if(tgAddress == null) {
+                return false;
+            }
+            if(service.getWhirligig().isIpv6Supported()) {
+                return true;
+            }
+            // horrible test for ipv6 address
+            return !tgAddress.getHost().contains(":");
+        }
+    };
     private final Thread serviceThread;
     private final IpcServiceImpl service;
     final MessageBusRegistry messageBusregistry;
@@ -78,5 +97,13 @@ public final class IpcServiceManager {
      */
     public int getPort() {
         return this.service.getWhirligig().getPort();
+    }
+
+    /**
+     * function which return true on supported addresses
+     * @return
+     */
+    public Predicate<ClientAddress> getSupportedAddressFilter() {
+        return filter;
     }
 }

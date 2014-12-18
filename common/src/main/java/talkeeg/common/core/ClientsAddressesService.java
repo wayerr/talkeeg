@@ -19,8 +19,10 @@
 
 package talkeeg.common.core;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import talkeeg.bf.Int128;
+import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.ipc.IpcUtil;
 import talkeeg.common.model.ClientAddress;
 
@@ -37,7 +39,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Singleton
 public final class ClientsAddressesService {
-    private static class Entry {
+    private final class Entry {
         private final Int128 clientId;
         private List<ClientAddress> addresses;
 
@@ -56,15 +58,27 @@ public final class ClientsAddressesService {
             return addresses;
         }
 
-        public List<ClientAddress> getSuitableAddress(Set<ClientAddress> currentAddresses) {
-            final List<ClientAddress> addresses = getAddresses();
+        public List<ClientAddress> getSuitableAddress() {
+
+            final List<ClientAddress> clientAddresses = getAddresses();
             final Set<String> networks = new HashSet<>();
             final List<ClientAddress> suitableAddresses = new ArrayList<>();
-            for(ClientAddress currentAddress: currentAddresses) {
+
+            final Predicate<ClientAddress> filter = serviceManager.getSupportedAddressFilter();
+
+            final Set<ClientAddress> currentAddressesSet = currentAddresses.getAddresses();
+            for(ClientAddress currentAddress: currentAddressesSet) {
+                if(!filter.apply(currentAddress)) {
+                    continue;
+                }
                 final String networkAddress = IpcUtil.getNetworkAddress(currentAddress.getValue());
                 networks.add(networkAddress);
             }
-            for(ClientAddress address: addresses) {
+
+            for(ClientAddress address: clientAddresses) {
+                if(!filter.apply(address)) {
+                    continue;
+                }
                 if(address.isExternal()) {
                     suitableAddresses.add(address);
                 } else {
@@ -81,10 +95,12 @@ public final class ClientsAddressesService {
 
     private final ConcurrentMap<Int128, Entry> map = new ConcurrentHashMap<>();
     private final CurrentAddressesService currentAddresses;
+    private final IpcServiceManager serviceManager;
 
     @Inject
-    ClientsAddressesService(CurrentAddressesService currentAddresses) {
+    ClientsAddressesService(CurrentAddressesService currentAddresses, IpcServiceManager serviceManager) {
         this.currentAddresses = currentAddresses;
+        this.serviceManager = serviceManager;
     }
 
     public void setAddresses(Int128 clientId, List<ClientAddress> addresses) {
@@ -120,7 +136,6 @@ public final class ClientsAddressesService {
         if(entry == null) {
             return Collections.emptyList();
         }
-        Set<ClientAddress> currentAddresses = this.currentAddresses.getAddresses();
-        return entry.getSuitableAddress(currentAddresses);
+        return entry.getSuitableAddress();
     }
 }
