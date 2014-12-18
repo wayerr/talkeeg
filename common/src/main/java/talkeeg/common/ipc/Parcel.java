@@ -62,4 +62,13 @@ public final class Parcel {
     public List<IpcEntry> getMessages() {
         return messages;
     }
+
+    @Override
+    public String toString() {
+        return "Parcel{" +
+          "destinationId=" + destinationId +
+          ", address=" + address +
+          ", messages.size=" + messages.size() +
+          '}';
+    }
 }

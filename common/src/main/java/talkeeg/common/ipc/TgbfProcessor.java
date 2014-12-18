@@ -30,6 +30,8 @@ import talkeeg.common.model.SingleMessage;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.HandlersRegistry;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
@@ -118,12 +120,37 @@ final class TgbfProcessor implements Io {
 
         final ClientAddress destination = parcel.getAddress();
         final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
+        if(badProtocolFamily(channel, socketAddress)) {
+            return;
+        }
+
         SingleMessage.Builder builder = SingleMessage.builder();
         buildMessage(builder);
         builder.setData(new BinaryData(data));
         //TODO reuse buffer
         final ByteBuffer buffer = bf.write(builder.build());
         channel.send(buffer, socketAddress);
+    }
+
+    /**
+     * check that address family of channel and specified address are equal <p/>
+     * without this checking a channel will be thrown `java.net.SocketException: Address family not supported by protocol`
+     * @param channel
+     * @param socketAddress
+     * @return
+     * @throws IOException
+     */
+    protected boolean badProtocolFamily(DatagramChannel channel, InetSocketAddress socketAddress) throws IOException {
+        final InetAddress address = socketAddress.getAddress();
+        final InetSocketAddress channelSocketAddress = (InetSocketAddress)channel.getLocalAddress();
+        final InetAddress channelAddress = channelSocketAddress.getAddress();
+        final Class<?> specifiedType = address.getClass();
+        final Class<?> channelType = channelAddress.getClass();
+        if(!specifiedType.equals(channelType)) {
+            LOG.log(Level.SEVERE, "unsupported address family channel: " + channelType + " and specified: " + specifiedType);
+            return true;
+        }
+        return false;
     }
 
     protected void buildMessage(SingleMessage.Builder builder) {
