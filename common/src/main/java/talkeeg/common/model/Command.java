@@ -52,6 +52,11 @@ public class Command implements IpcEntry {
             return id;
         }
 
+        public Builder id(int id) {
+            setId(id);
+            return this;
+        }
+
         public void setId(int id) {
             this.id = id;
         }

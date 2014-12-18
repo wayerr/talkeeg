@@ -29,5 +29,5 @@ import java.net.SocketAddress;
  * Created by wayerr on 11.12.14.
  */
 public interface TgbfHandler {
-    void handle(SocketAddress srcAddress, Command command);
+    void handle(SocketAddress srcAddress, IpcEntry command);
 }

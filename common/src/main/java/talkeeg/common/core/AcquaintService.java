@@ -20,10 +20,7 @@
 package talkeeg.common.core;
 
 import talkeeg.bf.Int128;
-import talkeeg.common.ipc.IpcService;
-import talkeeg.common.ipc.IpcUtil;
-import talkeeg.common.ipc.Parcel;
-import talkeeg.common.ipc.TgbfHandler;
+import talkeeg.common.ipc.*;
 import talkeeg.common.model.*;
 
 import javax.inject.Inject;
@@ -49,7 +46,8 @@ public final class AcquaintService {
     private final CurrentAddressesService currentAddresses;
     private final TgbfHandler handlerAcquaint = new TgbfHandler() {
         @Override
-        public void handle(SocketAddress srcAddress, Command command) {
+        public void handle(SocketAddress srcAddress, IpcEntry entry) {
+            Command command = (Command)entry;
             final String action = command.getAction();
             List<Object> args = command.getArgs();
             //see createParcel() for order of arguments
