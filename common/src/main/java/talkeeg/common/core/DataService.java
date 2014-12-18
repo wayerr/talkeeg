@@ -57,6 +57,20 @@ public final class DataService {
             @Override
             public void handle(SocketAddress srcAddress, Command command) {
                 List<Object> args = command.getArgs();
+                for(Object arg: args) {
+                    if(!(arg instanceof Data)) {
+                        LOG.warning("Expected Data argument, but receive: " + arg);
+                        continue;
+                    }
+                    final Data data = (Data)arg;
+                    final String action = data.getAction();
+                    final Callback<Data> callback = registry.get(action);
+                    if(callback == null) {
+                        LOG.warning("no callback for action: " + action);
+                        continue;
+                    }
+                    callback.call(data);
+                }
             }
         });
     }
@@ -73,6 +87,10 @@ public final class DataService {
         }
         for(ClientAddress address: addresses) {
             Parcel parcel = new Parcel(clientId, address);
+            parcel.getMessages().add(Command.builder()
+              .action(ACTION_DATA)
+              .addArg(data)
+              .build());
             this.ipc.push(parcel);
         }
     }
