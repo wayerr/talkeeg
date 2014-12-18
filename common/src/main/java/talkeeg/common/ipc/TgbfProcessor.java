@@ -23,10 +23,7 @@ import com.google.common.base.Preconditions;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
-import talkeeg.common.model.ClientAddress;
-import talkeeg.common.model.Command;
-import talkeeg.common.model.MessageCipherType;
-import talkeeg.common.model.SingleMessage;
+import talkeeg.common.model.*;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.HandlersRegistry;
 
@@ -93,17 +90,17 @@ final class TgbfProcessor implements Io {
         final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(message.getSrc(), remoteClientAddress);
         final List<?> objects = (List<?>)getBf().read(ByteBuffer.wrap(data.getData()));
         for(Object obj: objects) {
-            if(obj instanceof Command) {
-                Command command = (Command)obj;
-                final String action = command.getAction();
-                IpcEntryHandler handler = this.handlers.get(action);
-                if(handler == null) {
-                    LOG.log(Level.SEVERE, "No handler for '" + action + "'. It came from " + remote);
-                } else {
-                    handler.handle(ipcEntryHandlerContext, command);
-                }
-            } else {
+            if(obj instanceof IpcEntry) {
                 LOG.log(Level.SEVERE, "unsupported IpcEntry type '" + obj.getClass() + "'. It came from " + remote);
+                continue;
+            }
+            IpcEntry entry = (IpcEntry)obj;
+            final String action = entry.getAction();
+            IpcEntryHandler handler = this.handlers.get(action);
+            if(handler == null) {
+                LOG.log(Level.SEVERE, "No handler for '" + action + "'. It came from " + remote);
+            } else {
+                handler.handle(ipcEntryHandlerContext, entry);
             }
         }
     }

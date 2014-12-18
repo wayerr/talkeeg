@@ -30,4 +30,11 @@ public interface IpcEntry {
      * @return id of entry
      */
     int getId();
+
+    /**
+     * action on which is registered handler
+     * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
+     * @return
+     */
+    String getAction();
 }

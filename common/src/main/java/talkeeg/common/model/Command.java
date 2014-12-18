@@ -134,6 +134,7 @@ public class Command implements IpcEntry {
      * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
      * @return
      */
+    @Override
     public String getAction() {
         return action;
     }

@@ -22,7 +22,7 @@ package talkeeg.common.model;
 import talkeeg.common.util.EnumWithValue;
 
 /**
- * Code for {@link talkeeg.common.model.ResponseMessage }
+ * Code for {@link talkeeg.common.model.Command }
  * Created by wayerr on 21.11.14.
  */
 public enum ResponseCode implements EnumWithValue<Byte> {

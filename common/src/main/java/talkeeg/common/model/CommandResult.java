@@ -40,6 +40,7 @@ public class CommandResult implements IpcEntry {
 
     public static class Builder implements BuilderInterface {
         private int id;
+        private String action;
         private ResponseCode code;
         private Object value;
 
@@ -64,6 +65,34 @@ public class CommandResult implements IpcEntry {
             this.code = code;
         }
 
+        /**
+         * action on which is registered handler
+         * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
+         * @return
+         */
+        public String getAction() {
+            return action;
+        }
+
+        /**
+         * action on which is registered handler
+         * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
+         * @param action
+         */
+        public Builder action(String action) {
+            setAction(action);
+            return this;
+        }
+
+        /**
+         * action on which is registered handler
+         * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
+         * @param action
+         */
+        public void setAction(String action) {
+            this.action = action;
+        }
+
         public Object getValue() {
             return value;
         }
@@ -78,6 +107,7 @@ public class CommandResult implements IpcEntry {
     }
 
     private final int id;
+    private final String action;
     private final ResponseCode code;
     private final Object value;
 
@@ -85,6 +115,7 @@ public class CommandResult implements IpcEntry {
         this.id = b.id;
         this.code = b.code;
         this.value = b.value;
+        this.action = b.action;
     }
 
     public static Builder builder() {
@@ -94,6 +125,11 @@ public class CommandResult implements IpcEntry {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String getAction() {
+        return action;
     }
 
     public ResponseCode getCode() {
