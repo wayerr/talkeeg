@@ -79,7 +79,9 @@ public final class DataService {
     }
 
     private void processCommand(IpcEntryHandlerContext context, Command command) {
-        CommandResult.Builder builder = CommandResult.builder().id(command.getId());
+        CommandResult.Builder builder = CommandResult.builder()
+          .id(command.getId())
+          .action(command.getAction());
         final List<Object> args = command.getArgs();
         final Object arg = args.get(0);
         final Data data = (Data)arg;
