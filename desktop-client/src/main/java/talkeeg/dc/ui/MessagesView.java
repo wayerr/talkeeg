@@ -120,6 +120,7 @@ final class MessagesView implements View {
     }
 
     private void receiveMessage(Data data) {
+        getComponent();//init UI
         BinaryData binaryData = data.getData();
         String str = new String(binaryData.getData(), StandardCharsets.UTF_8);
         this.history.append(str);
