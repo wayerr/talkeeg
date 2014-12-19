@@ -19,18 +19,14 @@
 
 package talkeeg.common.ipc;
 
-import com.google.common.base.Preconditions;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
-import talkeeg.common.core.AcquaintedClient;
 import talkeeg.common.core.CryptoService;
 import talkeeg.common.core.OwnedIdentityCardsService;
-import talkeeg.common.core.OwnedKeyType;
 import talkeeg.common.model.*;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.HandlersRegistry;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.InetSocketAddress;
@@ -38,8 +34,6 @@ import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.security.Signature;
-import java.security.SignatureException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,7 +48,7 @@ final class TgbfProcessor implements Io {
 
     private static final Logger LOG = Logger.getLogger(TgbfProcessor.class.getName());
     private final HandlersRegistry<IpcEntryHandler> handlers = new HandlersRegistry<>();
-    private final MessageVerifier<SingleMessage> singleMessageVerifier;
+    private final SingleMessageVerifier singleMessageVerifier;
     private final OwnedIdentityCardsService ownedIdentityCards;
     private final Bf bf;
     private final CryptoService cryptoService;
@@ -141,22 +135,12 @@ final class TgbfProcessor implements Io {
         channel.send(buffer, socketAddress);
     }
 
-    protected void buildMessage(SingleMessage.Builder builder, Parcel parcel, ByteBuffer data) throws SignatureException {
+    protected void buildMessage(SingleMessage.Builder builder, Parcel parcel, ByteBuffer data) throws Exception {
         builder.setSrc(getClientId());
         builder.setId((short)0);
         builder.setCipherType(MessageCipherType.NONE);
         builder.setData(new BinaryData(data));
-        builder.setClientSign(createSign(data.duplicate(), OwnedKeyType.CLIENT));
-        if(parcel.isUserSigned()) {
-            builder.setUserSign(createSign(data.duplicate(), OwnedKeyType.USER));
-        }
-    }
-
-    private BinaryData createSign(ByteBuffer data, OwnedKeyType keyType) throws SignatureException {
-        final Signature clientSignService = this.cryptoService.getSignService(keyType);
-        clientSignService.update(data);
-        byte[] clientSign = clientSignService.sign();
-        return new BinaryData(clientSign);
+        this.singleMessageVerifier.sign(parcel, builder);
     }
 
     private Int128 getClientId() {

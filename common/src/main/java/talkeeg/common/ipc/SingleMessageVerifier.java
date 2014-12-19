@@ -27,7 +27,6 @@ import talkeeg.common.model.ClientIdentityCard;
 import talkeeg.common.model.MessageCipherType;
 import talkeeg.common.model.SingleMessage;
 import talkeeg.common.model.UserIdentityCard;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
@@ -130,4 +129,19 @@ final class SingleMessageVerifier implements MessageVerifier<SingleMessage> {
         }
     }
 
+    public void sign(Parcel parcel, SingleMessage.Builder builder) throws Exception {
+        byte data[] = builder.getData().getData();
+        builder.setClientSign(createSign(data, OwnedKeyType.CLIENT));
+        if(parcel.isUserSigned()) {
+            builder.setUserSign(createSign(data, OwnedKeyType.USER));
+        }
+    }
+
+
+    private BinaryData createSign(byte[] data, OwnedKeyType keyType) throws SignatureException {
+        final Signature clientSignService = this.cryptoService.getSignService(keyType);
+        clientSignService.update(data);
+        byte[] clientSign = clientSignService.sign();
+        return new BinaryData(clientSign);
+    }
 }
