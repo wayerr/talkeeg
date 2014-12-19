@@ -21,6 +21,7 @@ package talkeeg.common.core;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.Booleans;
 import talkeeg.bf.Int128;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.ipc.IpcUtil;
@@ -39,6 +40,13 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Singleton
 public final class ClientsAddressesService {
+    private static final Comparator<? super ClientAddress> ADDRESS_COMPARATOR = new Comparator<ClientAddress>() {
+        @Override
+        public int compare(ClientAddress lhs, ClientAddress rhs) {
+            //internal addresses is must be higher than external
+            return Booleans.compare(lhs.isExternal(), rhs.isExternal());
+        }
+    };
     private final class Entry {
         private final Int128 clientId;
         private List<ClientAddress> addresses;
@@ -88,7 +96,7 @@ public final class ClientsAddressesService {
                     }
                 }
             }
-
+            Collections.sort(suitableAddresses, ADDRESS_COMPARATOR);
             return suitableAddresses;
         }
     }
