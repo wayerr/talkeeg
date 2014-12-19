@@ -113,7 +113,10 @@ final class Whirligig implements Runnable {
             final Selector selector = state.selector;
             while(!currentThread.isInterrupted()) {
                 final int select = selector.select();
-                System.out.println("selected " + select);
+                if(select == 0) {
+                    //it`s possible error or whirligig was interrupted
+                    System.out.println("select zero keys");
+                }
                 final Set<SelectionKey> keys = selector.selectedKeys();
                 final Iterator<SelectionKey> iterator = keys.iterator();
                 while(iterator.hasNext()) {
@@ -125,7 +128,7 @@ final class Whirligig implements Runnable {
         } catch(InterruptedException e) {
             LOG.log(Level.INFO, "exiting by interruption", e);
         } catch(Exception e) {
-            LOG.log(Level.SEVERE, "", e);
+            LOG.log(Level.SEVERE, "whirligig is killed by error: ", e);
         }
     }
 
@@ -135,11 +138,14 @@ final class Whirligig implements Runnable {
      * @param key
      * @throws Exception
      */
-    private void processKey(State state, SelectionKey key) throws Exception {
-        System.out.println("key " + key);
+    private void processKey(State state, SelectionKey key) {
         DatagramChannel channel = (DatagramChannel)key.channel();
         if(key.isReadable()) {
-            io.read(channel);
+            try {
+                io.read(channel);
+            } catch(Exception e) {
+                LOG.log(Level.SEVERE, "error on key " + key, e);
+            }
         }
     }
 
