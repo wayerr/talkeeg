@@ -82,25 +82,25 @@ final class TgbfProcessor implements Io {
         if(remote == null) {
             return;
         }
+        final ClientAddress address = IpcUtil.toClientAddress(remote);
         readBuffer.flip();
         Object message = this.bf.read(readBuffer);
         if(message instanceof SingleMessage) {
-            consume((SingleMessage)message, remote);
+            consume((SingleMessage)message, address);
         } else {
-            LOG.log(Level.SEVERE, "unsupported message type " + message.getClass() + " from " + remote);
+            logConsumeError(address, "unsupported message type " + message.getClass());
         }
     }
 
-    private void consume(SingleMessage message, SocketAddress remote) throws Exception {
+    private void consume(SingleMessage message, ClientAddress address) throws Exception {
         final Int128 dst = message.getDst();
         if(dst != null && !dst.equals(getClientId())) {
-            LOG.log(Level.SEVERE, "SingleMessage.dst == " + dst + " , but expected null or clientId. It came from " + remote);
+            logConsumeError(address, "SingleMessage.dst == " + dst + " , but expected null or clientId.");
         }
-        final ClientAddress remoteClientAddress = IpcUtil.toClientAddress(remote);
-        final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(message, remoteClientAddress);
+        final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(message, address);
         final VerifyResult<SingleMessage> verifyResult = this.singleMessageSupport.verify(ipcEntryHandlerContext, message);
         if(!verifyResult.isVerified()) {
-            LOG.log(Level.SEVERE, "SingleMessage came from " + remote + ", has errors:" + verifyResult.getErrors());
+            logConsumeError(address, "SingleMessage has errors:" + verifyResult.getErrors());
             return;
         }
 
@@ -108,18 +108,22 @@ final class TgbfProcessor implements Io {
         final List<?> objects = (List<?>)this.bf.read(ByteBuffer.wrap(data.getData()));
         for(Object obj: objects) {
             if(!(obj instanceof IpcEntry)) {
-                LOG.log(Level.SEVERE, "unsupported IpcEntry type '" + obj.getClass() + "'. It came from " + remote);
+                logConsumeError(address, "unsupported IpcEntry type '" + obj.getClass() + "'.");
                 continue;
             }
             IpcEntry entry = (IpcEntry)obj;
             final String action = entry.getAction();
             IpcEntryHandler handler = this.handlers.get(action);
             if(handler == null) {
-                LOG.log(Level.SEVERE, "No handler for '" + action + "'. It came from " + remote);
+                logConsumeError(address, "No handler for '" + action + "'.");
             } else {
                 handler.handle(ipcEntryHandlerContext, entry);
             }
         }
+    }
+
+    private void logConsumeError(ClientAddress remoteClientAddress, String message) {
+        LOG.log(Level.SEVERE, "Message from " + remoteClientAddress.getValue() + ".\n" + message);
     }
 
     @Override
