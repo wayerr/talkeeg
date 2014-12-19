@@ -33,7 +33,6 @@ import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 /**
  * view of data messages
@@ -127,16 +126,21 @@ final class MessagesView implements View {
 
     private void dataMessageChanged(DataMessage dataMessage) {
         DataMessage.State state = dataMessage.getState();
-        if(state != DataMessage.State.INITIAL) {
-            dataMessage.removeCallback(this.dataMessageCallback);
+        if(state == DataMessage.State.INITIAL) {
+            return;
         }
-        receiveMessage(dataMessage.getData());
+        dataMessage.removeCallback(this.dataMessageCallback);
+        addMessageToHistory(dataMessage.getData(), state);
     }
 
     private void receiveMessage(Data data) {
+        addMessageToHistory(data, null);
+    }
+
+    private void addMessageToHistory(Data data, DataMessage.State state) {
         getComponent();//init UI
         BinaryData binaryData = data.getData();
         String str = new String(binaryData.getData(), StandardCharsets.UTF_8);
-        this.history.append(DateUtils.toString(System.currentTimeMillis()) + "| " + str + "\n");
+        this.history.append(DateUtils.toString(System.currentTimeMillis()) + "\t " +(state == null? "" : state)+ " | " + str + "\n");
     }
 }

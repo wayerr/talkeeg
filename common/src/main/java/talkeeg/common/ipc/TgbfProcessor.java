@@ -48,7 +48,7 @@ final class TgbfProcessor implements Io {
 
     private static final Logger LOG = Logger.getLogger(TgbfProcessor.class.getName());
     private final HandlersRegistry<IpcEntryHandler> handlers = new HandlersRegistry<>();
-    private final SingleMessageVerifier singleMessageVerifier;
+    private final SingleMessageSupport singleMessageSupport;
     private final OwnedIdentityCardsService ownedIdentityCards;
     private final Bf bf;
     private final CryptoService cryptoService;
@@ -57,11 +57,11 @@ final class TgbfProcessor implements Io {
     TgbfProcessor(Bf bf,
                   CryptoService cryptoService,
                   OwnedIdentityCardsService ownedIdentityCards,
-                  SingleMessageVerifier singleMessageVerifier) {
+                  SingleMessageSupport singleMessageSupport) {
         this.bf = bf;
         this.cryptoService = cryptoService;
         this.ownedIdentityCards = ownedIdentityCards;
-        this.singleMessageVerifier = singleMessageVerifier;
+        this.singleMessageSupport = singleMessageSupport;
     }
 
     /**
@@ -98,7 +98,7 @@ final class TgbfProcessor implements Io {
         }
         final ClientAddress remoteClientAddress = IpcUtil.toClientAddress(remote);
         final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(message, remoteClientAddress);
-        final VerifyResult<SingleMessage> verifyResult = this.singleMessageVerifier.verify(ipcEntryHandlerContext, message);
+        final VerifyResult<SingleMessage> verifyResult = this.singleMessageSupport.verify(ipcEntryHandlerContext, message);
         if(!verifyResult.isVerified()) {
             LOG.log(Level.SEVERE, "SingleMessage came from " + remote + ", has errors:" + verifyResult.getErrors());
             return;
@@ -124,23 +124,13 @@ final class TgbfProcessor implements Io {
 
     @Override
     public void write(Parcel parcel, DatagramChannel channel) throws Exception {
-        ByteBuffer data = this.bf.write(parcel.getMessages());
 
         final ClientAddress destination = parcel.getAddress();
         final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
-        SingleMessage.Builder builder = SingleMessage.builder();
-        buildMessage(builder, parcel, data);
+        SingleMessage singleMessage = this.singleMessageSupport.build(parcel);
         //TODO reuse buffer
-        final ByteBuffer buffer = this.bf.write(builder.build());
+        final ByteBuffer buffer = this.bf.write(singleMessage);
         channel.send(buffer, socketAddress);
-    }
-
-    protected void buildMessage(SingleMessage.Builder builder, Parcel parcel, ByteBuffer data) throws Exception {
-        builder.setSrc(getClientId());
-        builder.setId((short)0);
-        builder.setCipherType(MessageCipherType.NONE);
-        builder.setData(new BinaryData(data));
-        this.singleMessageVerifier.sign(parcel, builder);
     }
 
     private Int128 getClientId() {

@@ -17,30 +17,19 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.core;
+package talkeeg.common.ipc;
 
-import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.RSAKeyGenParameterSpec;
+import java.nio.ByteBuffer;
 
 /**
- * constants for crypto services
- *
- * Created by wayerr on 28.11.14.
+ * implement message building process
+ * Created by wayerr on 19.12.14.
  */
-final class CryptoConstants {
+public interface MessageBuilder<T> {
     /**
-     * default algorithm for key asymmetric ciphering
+     * build message
+     * @param parcel
+     * @return
      */
-    public static final String ALG_ASYMMETRIC = "RSA";
-    /**
-     * https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature
-     */
-    public static final String ALG_HASH = "SHA1";
-
-    /**
-     * https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#MessageDigest
-     */
-    public static final String ALG_MESSAGE_DIGEST = "SHA-1";
-
-    public static final String CIPHER_ASYMMETRIC = ALG_ASYMMETRIC + "/ECB/PKCS1Padding";
+    T build(Parcel parcel) throws Exception;
 }

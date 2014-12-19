@@ -22,7 +22,7 @@ package talkeeg.common.core;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.conf.Config;
 import talkeeg.bf.Int128;
-
+import javax.crypto.Cipher;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.security.*;
@@ -62,13 +62,8 @@ public final class CryptoService {
     }
 
     public Signature getVerifyService(OwnedKeyType keyType) {
-        try {
-            Signature signature = Signature.getInstance(ALG_SIGN);
-            signature.initVerify(ownedKeysManager.getPublicKey(keyType));
-            return signature;
-        } catch(InvalidKeyException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        final PublicKey publicKey = this.ownedKeysManager.getPublicKey(keyType);
+        return getVerifyService(publicKey);
     }
 
     public Signature getVerifyService(PublicKey publickKey) {
@@ -77,6 +72,20 @@ public final class CryptoService {
             signature.initVerify(publickKey);
             return signature;
         } catch(InvalidKeyException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * return configure cipher service for asymmetric ciphering
+     * @return
+     */
+    public Cipher getCipherAsymmetricService(PublicKey key) {
+        try {
+            Cipher cipher = Cipher.getInstance(CryptoConstants.CIPHER_ASYMMETRIC);
+            cipher.init(Cipher.PUBLIC_KEY, key);
+            return cipher;
+        } catch(GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
     }

@@ -37,6 +37,8 @@ public final class Parcel {
     private final ClientAddress address;
     private final List<IpcEntry> messages = new ArrayList<>();
     private boolean userSigned;
+    private boolean ciphered;
+
     /**
      * create instance of parcel
      * @param destinationId id of target client, maybe null
@@ -53,6 +55,22 @@ public final class Parcel {
 
     public void setUserSigned(boolean userSigned) {
         this.userSigned = userSigned;
+    }
+
+    /**
+     * ciphered flag for this parcel
+     * @return
+     */
+    public boolean isCiphered() {
+        return ciphered;
+    }
+
+    /**
+     * change ciphered flag for this parcel
+     * @param ciphered
+     */
+    public void setCiphered(boolean ciphered) {
+        this.ciphered = ciphered;
     }
 
     /**

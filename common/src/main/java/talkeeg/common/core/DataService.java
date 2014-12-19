@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 @Singleton
 public final class DataService {
 
-    private static final Logger LOG = Logger.getLogger(DataService.class.getName());
+    static final Logger LOG = Logger.getLogger(DataService.class.getName());
     static final int MAX_SEND_ON_ONE_ADDR = 3;
     public static final String ACTION_DATA = "tg.data";
     final IpcService ipc;

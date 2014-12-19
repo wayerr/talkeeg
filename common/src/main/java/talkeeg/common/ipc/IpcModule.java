@@ -32,7 +32,7 @@ import javax.inject.Singleton;
     IpcServiceManager.class,
     IpcService.class,
     TgbfProcessor.class,
-    SingleMessageVerifier.class
+    SingleMessageSupport.class
   }
 )
 public class IpcModule {

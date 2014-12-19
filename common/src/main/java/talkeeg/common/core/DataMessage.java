@@ -27,6 +27,7 @@ import talkeeg.common.model.Data;
 import talkeeg.common.util.Callback;
 import talkeeg.common.util.CallbacksContainer;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * representation of sent data message and it status
@@ -73,11 +74,13 @@ public final class DataMessage {
             if(sendCounter > DataService.MAX_SEND_ON_ONE_ADDR) {
                 this.addressNumber++;
             }
-            if(this.addresses.size() >= this.addressNumber) {
+            if(this.addresses.size() <= this.addressNumber) {
+                DataService.LOG.log(Level.SEVERE, "Fail to send message in " + this.sendCounter + " attempts.");
                 this.setState(State.FAIL);
             }
             ClientAddress address = this.addresses.get(this.addressNumber);
             Parcel parcel = new Parcel(clientId, address);
+            parcel.setCiphered(true);
             parcel.getMessages().add(this.command);
             this.dataService.ipc.push(parcel);
         }
@@ -115,6 +118,7 @@ public final class DataMessage {
 
     public void addCallback(Callback<DataMessage> callback) {
         this.callbacks.add(callback);
+        callback.call(this);
     }
 
     public void removeCallback(Callback<DataMessage> callback) {
