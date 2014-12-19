@@ -55,8 +55,6 @@ import javax.inject.Singleton;
         AcquaintedUsersService.class,
         AcquaintedClientsService.class,
         AcquaintService.class,
-        IpcServiceManager.class,
-        IpcService.class,
         MessageBusRegistry.class,
         DataService.class
     }
@@ -104,12 +102,6 @@ public final class CoreModule {
             .putType(Hello.class, Hello.STRUCT_BUILDER_FACTORY)
             .putType(Data.class, Data.STRUCT_BUILDER_FACTORY)
             .build();
-    }
-
-    @Provides
-    @Singleton
-    IpcService provideIpcService(IpcServiceManager ipcServiceManager) {
-        return ipcServiceManager.getIpc();
     }
 
     @Provides

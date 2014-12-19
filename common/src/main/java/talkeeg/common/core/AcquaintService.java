@@ -37,6 +37,41 @@ public final class AcquaintService {
     private static final String ACTION_ACQUAINT = "tg.acquaint";
     private static final String ACTION_ACQUAINT_RESPONSE = "tg.acquaintResponse";
 
+    /**
+     * structure for represent acquaint command data
+     */
+    public static final class AcquaintData {
+        private final UserIdentityCard userIdentityCard;
+        private final ClientIdentityCard clientIdentityCard;
+        private final ClientAddresses clientAddresses;
+        private final Command command;
+
+        private AcquaintData(Command entry) {
+            this.command = entry;
+            List<Object> args = command.getArgs();
+            //see buildAcquaintCommand() for order of arguments
+            this.userIdentityCard = (UserIdentityCard)args.get(0);
+            this.clientIdentityCard = (ClientIdentityCard)args.get(1);
+            this.clientAddresses = (ClientAddresses)args.get(2);
+        }
+
+        public ClientAddresses getClientAddresses() {
+            return clientAddresses;
+        }
+
+        public ClientIdentityCard getClientIdentityCard() {
+            return clientIdentityCard;
+        }
+
+        public UserIdentityCard getUserIdentityCard() {
+            return userIdentityCard;
+        }
+
+        String getAction() {
+            return this.command.getAction();
+        }
+    }
+
     private final AcquaintedUsersService acquaintedUsers;
     private final AcquaintedClientsService acquaintedClients;
     private final IpcService ipc;
@@ -46,20 +81,15 @@ public final class AcquaintService {
     private final IpcEntryHandler handlerAcquaint = new IpcEntryHandler() {
         @Override
         public void handle(IpcEntryHandlerContext context, IpcEntry entry) {
-            Command command = (Command)entry;
-            final String action = command.getAction();
-            List<Object> args = command.getArgs();
-            //see createParcel() for order of arguments
-            final UserIdentityCard userIdentityCard = (UserIdentityCard)args.get(0);
-            final ClientIdentityCard clientIdentityCard = (ClientIdentityCard)args.get(1);
-            final ClientAddresses clientAddresses = (ClientAddresses)args.get(2);
-            final AcquaintedClient acquaintedClient = acquaintedClients.acquaint(clientIdentityCard);
+            final AcquaintData acquaintData = toAcquaintData(entry);
+            final AcquaintedClient acquaintedClient = acquaintedClients.acquaint(acquaintData.getClientIdentityCard());
             final Int128 clientId = acquaintedClient.getId();
-            acquiantProcess(userIdentityCard, clientAddresses, clientId);
-            if(ACTION_ACQUAINT.equals(action)) {
+            acquaintProcess(acquaintData.getUserIdentityCard(), acquaintData.getClientAddresses(), clientId);
+            //TODO move sender address up in acquainted client addresses
+            if(ACTION_ACQUAINT.equals(acquaintData.getAction())) {
                 //response acquaint
                 final Parcel parcel = new Parcel(clientId, context.getSrcClientAddress());
-                parcel.getMessages().add(buildAcuaintCommand(Command.builder().action(ACTION_ACQUAINT_RESPONSE)).build());
+                parcel.getMessages().add(buildAcquaintCommand(Command.builder().action(ACTION_ACQUAINT_RESPONSE)).build());
                 ipc.push(parcel);
             }
         }
@@ -92,16 +122,29 @@ public final class AcquaintService {
         ipc.push(createParcel(null, address));
     }
 
+    /**
+     * extract acquaint data from IpcEntry <p/>
+     * @param entry
+     * @return acquaint data or null if entry is not command
+     */
+    public static AcquaintData toAcquaintData(IpcEntry entry) {
+        if(!(entry instanceof Command)) {
+            return null;
+        }
+        return new AcquaintData((Command)entry);
+    }
+
     private Parcel createParcel(Int128 dstClientId, ClientAddress address) {
         Parcel parcel = new Parcel(dstClientId, address);
         Command.Builder builder = Command.builder()
           .action(ACTION_ACQUAINT);
-        buildAcuaintCommand(builder);
+        buildAcquaintCommand(builder);
         parcel.getMessages().add(builder.build());
+        parcel.setUserSigned(true);
         return parcel;
     }
 
-    private Command.Builder buildAcuaintCommand(Command.Builder builder) {
+    private Command.Builder buildAcquaintCommand(Command.Builder builder) {
         builder.addArg(this.ownedIdentityCards.getUserIdentityCard())
           .addArg(this.ownedIdentityCards.getClientIdentityCard())
           .addArg(this.currentAddresses.getClientAddresses());
@@ -112,14 +155,14 @@ public final class AcquaintService {
         final UserIdentityCard identityCard = hello.getIdentityCard();
         final ClientAddresses clientAddresses = hello.getAddresses();
         final Int128 clientId = hello.getClientId();
-        acquiantProcess(identityCard, clientAddresses, clientId);
+        acquaintProcess(identityCard, clientAddresses, clientId);
         for(ClientAddress address: clientAddresses.getAddresses()) {
             Parcel parcel = createParcel(clientId, address);
             ipc.push(parcel);
         }
     }
 
-    protected void acquiantProcess(UserIdentityCard userIdentityCard, ClientAddresses clientAddresses, Int128 clientId) {
+    private void acquaintProcess(UserIdentityCard userIdentityCard, ClientAddresses clientAddresses, Int128 clientId) {
         acquaintedUsers.acquaint(userIdentityCard);
         addresses.setAddresses(clientId, clientAddresses.getAddresses());
     }

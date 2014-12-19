@@ -36,7 +36,7 @@ import java.security.spec.X509EncodedKeySpec;
  * Created by wayerr on 08.12.14.
  */
 @Singleton
-final class KeyLoader {
+public final class KeyLoader {
 
     private final KeyFactory keyFactory;
 
@@ -50,6 +50,11 @@ final class KeyLoader {
 
     }
 
+    /**
+     * create private key from it byte PKCS8 representation
+     * @param bytes
+     * @return
+     */
     PrivateKey loadPrivate(byte[] bytes) {
         final KeySpec privateKeySpec = new PKCS8EncodedKeySpec(bytes);
         try {
@@ -59,7 +64,12 @@ final class KeyLoader {
         }
     }
 
-    PublicKey loadPublic(byte[] bytes) {
+    /**
+     * create public key from it byte X509 representation
+     * @param bytes
+     * @return
+     */
+    public PublicKey loadPublic(byte[] bytes) {
         final KeySpec publicKeySpec = new X509EncodedKeySpec(bytes);
         try {
             return keyFactory.generatePublic(publicKeySpec);

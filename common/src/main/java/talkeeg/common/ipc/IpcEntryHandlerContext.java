@@ -21,6 +21,8 @@ package talkeeg.common.ipc;
 
 import talkeeg.bf.Int128;
 import talkeeg.common.model.ClientAddress;
+import talkeeg.common.model.MessageCipherType;
+import talkeeg.common.model.SingleMessage;
 
 /**
  * context for IpcEntryHandler
@@ -28,16 +30,28 @@ import talkeeg.common.model.ClientAddress;
  * Created by wayerr on 18.12.14.
  */
 public final class IpcEntryHandlerContext {
-    private final Int128 srcClientId;
+    private final SingleMessage message;
     private final ClientAddress srcClientAddress;
 
-    IpcEntryHandlerContext(Int128 srcClientId, ClientAddress srcClientAddress) {
-        this.srcClientId = srcClientId;
+    IpcEntryHandlerContext(SingleMessage message, ClientAddress srcClientAddress) {
+        this.message = message;
         this.srcClientAddress = srcClientAddress;
     }
 
     public Int128 getSrcClientId() {
-        return srcClientId;
+        return this.message.getSrc();
+    }
+
+    public MessageCipherType getCipherType() {
+        return this.message.getCipherType();
+    }
+
+    public boolean hasClientSign() {
+        return this.message.getClientSign() != null;
+    }
+
+    public boolean hasUserSign() {
+        return this.message.getUserSign() != null;
     }
 
     public ClientAddress getSrcClientAddress() {

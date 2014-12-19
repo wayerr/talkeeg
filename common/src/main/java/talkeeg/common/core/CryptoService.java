@@ -71,6 +71,16 @@ public final class CryptoService {
         }
     }
 
+    public Signature getVerifyService(PublicKey publickKey) {
+        try {
+            Signature signature = Signature.getInstance(ALG_SIGN);
+            signature.initVerify(publickKey);
+            return signature;
+        } catch(InvalidKeyException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     Int128 getFingerprint(Key key) {
         return getFingerprint(key.getEncoded());
     }

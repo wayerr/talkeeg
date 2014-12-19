@@ -117,4 +117,13 @@ public final class AcquaintedClientsService {
         }
         return b.build();
     }
+
+    /**
+     * get acquainted client by it id
+     * @param clientId
+     * @return
+     */
+    public AcquaintedClient getClient(Int128 clientId) {
+        return this.map.get(clientId);
+    }
 }

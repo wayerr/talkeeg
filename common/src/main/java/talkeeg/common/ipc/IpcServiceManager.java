@@ -19,11 +19,8 @@
 
 package talkeeg.common.ipc;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
-import talkeeg.common.core.OwnedIdentityCardsService;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.util.TgAddress;
 import talkeeg.mb.MessageBusKey;
@@ -59,20 +56,16 @@ public final class IpcServiceManager {
     private final Thread serviceThread;
     private final IpcServiceImpl service;
     final MessageBusRegistry messageBusregistry;
-    final OwnedIdentityCardsService ownedIdentityCards;
-    final Bf bf;
     final Config config;
     final TgbfProcessor processor;
 
     @Inject
-    IpcServiceManager(Config config, MessageBusRegistry messageBusRegistry, Bf bf, OwnedIdentityCardsService ownedIdentityCards) {
+    IpcServiceManager(Config config,
+                      MessageBusRegistry messageBusRegistry,
+                      TgbfProcessor tgbfProcessor) {
         this.config = config;
-        this.bf = bf;
         this.messageBusregistry = messageBusRegistry;
-        Preconditions.checkNotNull(this.bf, "bf is null");
-        this.ownedIdentityCards = ownedIdentityCards;
-        Preconditions.checkNotNull(this.ownedIdentityCards, "ownedIdentityCards is null");
-        this.processor = new TgbfProcessor(this);
+        this.processor = tgbfProcessor;
         this.service = new IpcServiceImpl(this);
         this.serviceThread = new Thread(service.getWhirligig(), config.getApplicationName() + "-ipc-service-thread");
     }

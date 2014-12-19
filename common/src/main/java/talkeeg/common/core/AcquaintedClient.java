@@ -95,4 +95,8 @@ public final class AcquaintedClient {
     public BinaryData getKeyData() {
         return new BinaryData(publicKey.getEncoded());
     }
+
+    public PublicKey getKey() {
+        return this.publicKey;
+    }
 }

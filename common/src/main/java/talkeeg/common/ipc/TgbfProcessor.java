@@ -23,15 +23,23 @@ import com.google.common.base.Preconditions;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
+import talkeeg.common.core.AcquaintedClient;
+import talkeeg.common.core.CryptoService;
+import talkeeg.common.core.OwnedIdentityCardsService;
+import talkeeg.common.core.OwnedKeyType;
 import talkeeg.common.model.*;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.HandlersRegistry;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,15 +49,25 @@ import java.util.logging.Logger;
  * <p/>
  * Created by wayerr on 26.11.14.
  */
+@Singleton
 final class TgbfProcessor implements Io {
 
     private static final Logger LOG = Logger.getLogger(TgbfProcessor.class.getName());
     private final HandlersRegistry<IpcEntryHandler> handlers = new HandlersRegistry<>();
-    private final IpcServiceManager manager;
+    private final MessageVerifier<SingleMessage> singleMessageVerifier;
+    private final OwnedIdentityCardsService ownedIdentityCards;
+    private final Bf bf;
+    private final CryptoService cryptoService;
 
-    TgbfProcessor(IpcServiceManager manager) {
-        this.manager = manager;
-        Preconditions.checkNotNull(this.manager, "manager is null");
+    @Inject
+    TgbfProcessor(Bf bf,
+                  CryptoService cryptoService,
+                  OwnedIdentityCardsService ownedIdentityCards,
+                  SingleMessageVerifier singleMessageVerifier) {
+        this.bf = bf;
+        this.cryptoService = cryptoService;
+        this.ownedIdentityCards = ownedIdentityCards;
+        this.singleMessageVerifier = singleMessageVerifier;
     }
 
     /**
@@ -71,8 +89,7 @@ final class TgbfProcessor implements Io {
             return;
         }
         readBuffer.flip();
-        //TODO check sign on decoding
-        Object message = getBf().read(readBuffer);
+        Object message = this.bf.read(readBuffer);
         if(message instanceof SingleMessage) {
             consume((SingleMessage)message, remote);
         } else {
@@ -85,10 +102,16 @@ final class TgbfProcessor implements Io {
         if(dst != null && !dst.equals(getClientId())) {
             LOG.log(Level.SEVERE, "SingleMessage.dst == " + dst + " , but expected null or clientId. It came from " + remote);
         }
-        final BinaryData data = message.getData();
         final ClientAddress remoteClientAddress = IpcUtil.toClientAddress(remote);
-        final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(message.getSrc(), remoteClientAddress);
-        final List<?> objects = (List<?>)getBf().read(ByteBuffer.wrap(data.getData()));
+        final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(message, remoteClientAddress);
+        final VerifyResult<SingleMessage> verifyResult = this.singleMessageVerifier.verify(ipcEntryHandlerContext, message);
+        if(!verifyResult.isVerified()) {
+            LOG.log(Level.SEVERE, "SingleMessage came from " + remote + ", has errors:" + verifyResult.getErrors());
+            return;
+        }
+
+        final BinaryData data = message.getData();
+        final List<?> objects = (List<?>)this.bf.read(ByteBuffer.wrap(data.getData()));
         for(Object obj: objects) {
             if(!(obj instanceof IpcEntry)) {
                 LOG.log(Level.SEVERE, "unsupported IpcEntry type '" + obj.getClass() + "'. It came from " + remote);
@@ -105,34 +128,38 @@ final class TgbfProcessor implements Io {
         }
     }
 
-    private Bf getBf() {
-        return this.manager.bf;
-    }
-
     @Override
     public void write(Parcel parcel, DatagramChannel channel) throws Exception {
-        final Bf bf = getBf();
-
-        ByteBuffer data = bf.write(parcel.getMessages());
+        ByteBuffer data = this.bf.write(parcel.getMessages());
 
         final ClientAddress destination = parcel.getAddress();
         final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
-
         SingleMessage.Builder builder = SingleMessage.builder();
-        buildMessage(builder);
-        builder.setData(new BinaryData(data));
+        buildMessage(builder, parcel, data);
         //TODO reuse buffer
-        final ByteBuffer buffer = bf.write(builder.build());
+        final ByteBuffer buffer = this.bf.write(builder.build());
         channel.send(buffer, socketAddress);
     }
 
-    protected void buildMessage(SingleMessage.Builder builder) {
+    protected void buildMessage(SingleMessage.Builder builder, Parcel parcel, ByteBuffer data) throws SignatureException {
         builder.setSrc(getClientId());
         builder.setId((short)0);
         builder.setCipherType(MessageCipherType.NONE);
+        builder.setData(new BinaryData(data));
+        builder.setClientSign(createSign(data.duplicate(), OwnedKeyType.CLIENT));
+        if(parcel.isUserSigned()) {
+            builder.setUserSign(createSign(data.duplicate(), OwnedKeyType.USER));
+        }
+    }
+
+    private BinaryData createSign(ByteBuffer data, OwnedKeyType keyType) throws SignatureException {
+        final Signature clientSignService = this.cryptoService.getSignService(keyType);
+        clientSignService.update(data);
+        byte[] clientSign = clientSignService.sign();
+        return new BinaryData(clientSign);
     }
 
     private Int128 getClientId() {
-        return this.manager.ownedIdentityCards.getClientId();
+        return this.ownedIdentityCards.getClientId();
     }
 }

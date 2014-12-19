@@ -17,43 +17,30 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.dc;
+package talkeeg.common.ipc;
 
 import dagger.Module;
 import dagger.Provides;
-import talkeeg.common.conf.Config;
-import talkeeg.common.conf.ConfigImpl;
-import talkeeg.common.conf.DefaultConfiguration;
-import talkeeg.common.core.CoreModule;
-import talkeeg.common.ipc.IpcModule;
-import talkeeg.dc.ui.UiModule;
-import talkeeg.mb.MessageBusRegistry;
-
 import javax.inject.Singleton;
 
 /**
- * IoC container configuration module
- * <p/>
- * Created by wayerr on 26.11.14.
+ * Created by wayerr on 19.12.14.
  */
 @Module(
+  library = true, complete = false,
   injects = {
-    Config.class
-  },
-  includes = {
-    CoreModule.class,
-    IpcModule.class,
-    UiModule.class
+    IpcServiceManager.class,
+    IpcService.class,
+    TgbfProcessor.class,
+    SingleMessageVerifier.class
   }
 )
-final class MainModule {
+public class IpcModule {
 
     @Provides
     @Singleton
-    Config provideConfg(MessageBusRegistry registry) {
-        return ConfigImpl.builder()
-          .applicationName("talkeeg-dc")
-          .backend(new ConfigBackendBasedOnProperties(registry, DefaultConfiguration.get()))
-          .build();
+    IpcService provideIpcService(IpcServiceManager ipcServiceManager) {
+        return ipcServiceManager.getIpc();
     }
+
 }

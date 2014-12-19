@@ -57,12 +57,24 @@ public final class AcquaintedUser {
         return new BinaryData(this.publicKey.getEncoded());
     }
 
+    public PublicKey getKey() {
+        return this.publicKey;
+    }
+
+    /**
+     * sign of UIC
+     * @return
+     */
     public BinaryData getSign() {
         synchronized(lock) {
             return sign;
         }
     }
 
+    /**
+     * sign of UIC
+     * @param sign
+     */
     public void setSign(BinaryData sign) {
         synchronized(lock) {
             if(Objects.equals(this.sign, sign)) {

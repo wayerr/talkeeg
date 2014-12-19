@@ -36,7 +36,7 @@ public final class Parcel {
     private final Int128 destinationId;
     private final ClientAddress address;
     private final List<IpcEntry> messages = new ArrayList<>();
-
+    private boolean userSigned;
     /**
      * create instance of parcel
      * @param destinationId id of target client, maybe null
@@ -45,6 +45,14 @@ public final class Parcel {
     public Parcel(Int128 destinationId, ClientAddress address) {
         this.destinationId = destinationId;
         this.address = address;
+    }
+
+    public boolean isUserSigned() {
+        return userSigned;
+    }
+
+    public void setUserSigned(boolean userSigned) {
+        this.userSigned = userSigned;
     }
 
     /**
