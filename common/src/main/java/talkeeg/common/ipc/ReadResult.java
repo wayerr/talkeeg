@@ -28,12 +28,13 @@ import java.util.List;
  * result of message verification
  * Created by wayerr on 19.12.14.
  */
-public class VerifyResult<T> {
+public class ReadResult<T> {
+
 
     public static class Builder<T> {
         private T message;
         private final List<String> errors = new ArrayList<>();
-
+        private final List <IpcEntry> entries = new ArrayList<>();
 
         public T getMessage() {
             return message;
@@ -51,18 +52,24 @@ public class VerifyResult<T> {
             return errors;
         }
 
-        public VerifyResult<T> build() {
-            return new VerifyResult<>(this);
+        public List<IpcEntry> getEntries() {
+            return entries;
+        }
+
+        public ReadResult<T> build() {
+            return new ReadResult<>(this);
         }
 
     }
 
     private final T message;
     private final List<String> errors;
+    private final List<IpcEntry> entries;
 
-    private VerifyResult(Builder<T> b) {
+    private ReadResult(Builder<T> b) {
         this.message = b.message;
         this.errors = ImmutableList.copyOf(b.errors);
+        this.entries = ImmutableList.copyOf(b.entries);
     }
 
     public static <T> Builder<T> builder() {
@@ -79,6 +86,10 @@ public class VerifyResult<T> {
 
     public List<String> getErrors() {
         return errors;
+    }
+
+    public List<IpcEntry> getEntries() {
+        return this.entries;
     }
 
     @Override

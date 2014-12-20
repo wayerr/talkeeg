@@ -20,7 +20,6 @@
 package talkeeg.common.ipc;
 
 import talkeeg.bf.Bf;
-import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.CryptoService;
 import talkeeg.common.core.OwnedIdentityCardsService;
@@ -98,14 +97,12 @@ final class TgbfProcessor implements Io {
             logConsumeError(address, "SingleMessage.dst == " + dst + " , but expected null or clientId.");
         }
         final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(message, address);
-        final VerifyResult<SingleMessage> verifyResult = this.singleMessageSupport.verify(ipcEntryHandlerContext, message);
-        if(!verifyResult.isVerified()) {
-            logConsumeError(address, "SingleMessage has errors:" + verifyResult.getErrors());
+        final ReadResult<SingleMessage> result = this.singleMessageSupport.read(ipcEntryHandlerContext, message);
+        if(!result.isVerified()) {
+            logConsumeError(address, "SingleMessage has errors:" + result.getErrors());
             return;
         }
-
-        final BinaryData data = message.getData();
-        final List<?> objects = (List<?>)this.bf.read(ByteBuffer.wrap(data.getData()));
+        final List<?> objects = result.getEntries();
         for(Object obj: objects) {
             if(!(obj instanceof IpcEntry)) {
                 logConsumeError(address, "unsupported IpcEntry type '" + obj.getClass() + "'.");

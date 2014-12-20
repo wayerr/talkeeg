@@ -20,9 +20,9 @@
 package talkeeg.common.ipc;
 
 /**
- * tool for verifying message
+ * tool for reading message
  * Created by wayerr on 19.12.14.
  */
-interface MessageVerifier<T> {
-    VerifyResult<T> verify(IpcEntryHandlerContext context, T message);
+interface MessageReader<T> {
+    ReadResult<T> read(IpcEntryHandlerContext context, T message) throws Exception;
 }

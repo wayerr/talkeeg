@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  * Created by wayerr on 19.12.14.
  */
 @Singleton
-final class SingleMessageSupport implements MessageVerifier<SingleMessage>, MessageBuilder<SingleMessage> {
+final class SingleMessageSupport implements MessageReader<SingleMessage>, MessageBuilder<SingleMessage> {
     private static final Logger LOG = Logger.getLogger(SingleMessageSupport.class.getName());
     private final CryptoService cryptoService;
     private final AcquaintedClientsService acquaintedClients;
@@ -71,9 +71,10 @@ final class SingleMessageSupport implements MessageVerifier<SingleMessage>, Mess
         this.ownedIdentityCards = ownedIdentityCards;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public VerifyResult<SingleMessage> verify(IpcEntryHandlerContext context, SingleMessage message) {
-        VerifyResult.Builder<SingleMessage> builder = VerifyResult.builder();
+    public ReadResult<SingleMessage> read(IpcEntryHandlerContext context, SingleMessage message) throws Exception {
+        ReadResult.Builder<SingleMessage> builder = ReadResult.builder();
         try {
             checkSign(context, message, builder);
         } catch(Exception e) {
@@ -81,19 +82,34 @@ final class SingleMessageSupport implements MessageVerifier<SingleMessage>, Mess
             LOG.log(Level.SEVERE, str, e);
             builder.addError(str);
         }
+
+        final BinaryData data = message.getData();
+        byte[] arr = data.getData();
+        final MessageCipherType cipherType = message.getCipherType();
+        if(cipherType == MessageCipherType.NONE) {
+            // we don`t need do anything
+        } else if(cipherType == MessageCipherType.DST_PUBK) {
+            final Cipher decipher = this.cryptoService.getDecipherAsymmetricService(OwnedKeyType.CLIENT);
+            decipher.update(arr);
+            arr = decipher.doFinal();
+        } else {
+            builder.addError(message + "Unsupported cipher type: " + cipherType);
+        }
+        final List<IpcEntry> entries = (List<IpcEntry>)this.bf.read(ByteBuffer.wrap(arr));
+        builder.getEntries().addAll(entries);
         return builder.build();
     }
 
-    private void checkSign(IpcEntryHandlerContext context, SingleMessage message, VerifyResult.Builder<SingleMessage> builder) throws Exception{
+    private void checkSign(IpcEntryHandlerContext context, SingleMessage message, ReadResult.Builder<SingleMessage> builder) throws Exception{
         BinaryData clientSign = message.getClientSign();
         BinaryData userSign = message.getUserSign();
         if(clientSign == null && userSign == null) {
-            builder.addError(message + " is unsigned, reject. It came from " + context.getSrcClientAddress());
+            builder.addError(message + " is unsigned, reject.");
             return;
         }
         final Int128 sourceClientId = message.getSrc();
         if(sourceClientId == null) {
-            LOG.log(Level.SEVERE, message + " has null src, reject. It came from " + context.getSrcClientAddress());
+            builder.addError(message + " has null src, reject.");
             return;
         }
         PublicKey clientPublicKey = null;
@@ -128,7 +144,7 @@ final class SingleMessageSupport implements MessageVerifier<SingleMessage>, Mess
         return AcquaintService.toAcquaintData(entry);
     }
 
-    private void verifySign(SingleMessage message, BinaryData sign, VerifyResult.Builder<SingleMessage> builder, Signature verifyService, String signType) throws SignatureException {
+    private void verifySign(SingleMessage message, BinaryData sign, ReadResult.Builder<SingleMessage> builder, Signature verifyService, String signType) throws SignatureException {
         verifyService.update(message.getData().getData());
         boolean verify = verifyService.verify(sign.getData());
         if(!verify) {
@@ -136,7 +152,7 @@ final class SingleMessageSupport implements MessageVerifier<SingleMessage>, Mess
         }
     }
 
-    public void sign(Parcel parcel, SingleMessage.Builder builder) throws Exception {
+    private void sign(Parcel parcel, SingleMessage.Builder builder) throws Exception {
         byte data[] = builder.getData().getData();
         builder.setClientSign(createSign(data, OwnedKeyType.CLIENT));
         if(parcel.isUserSigned()) {

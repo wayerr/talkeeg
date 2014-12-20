@@ -77,13 +77,28 @@ public final class CryptoService {
     }
 
     /**
-     * return configure cipher service for asymmetric ciphering
+     * configure cipher service for asymmetric ciphering
      * @return
      */
     public Cipher getCipherAsymmetricService(PublicKey key) {
         try {
             Cipher cipher = Cipher.getInstance(CryptoConstants.CIPHER_ASYMMETRIC);
             cipher.init(Cipher.PUBLIC_KEY, key);
+            return cipher;
+        } catch(GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * configure cipher service for asymmetric deciphering
+     * @return
+     */
+    public Cipher getDecipherAsymmetricService(OwnedKeyType keyType) {
+        try {
+            final PrivateKey privateKey = this.getOwnedKeysManager().getPrivateKey(keyType);
+            final Cipher cipher = Cipher.getInstance(CryptoConstants.CIPHER_ASYMMETRIC);
+            cipher.init(Cipher.PRIVATE_KEY, privateKey);
             return cipher;
         } catch(GeneralSecurityException e) {
             throw new RuntimeException(e);
