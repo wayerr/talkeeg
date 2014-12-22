@@ -24,10 +24,7 @@ import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.*;
-import talkeeg.common.model.ClientIdentityCard;
-import talkeeg.common.model.MessageCipherType;
-import talkeeg.common.model.SingleMessage;
-import talkeeg.common.model.UserIdentityCard;
+import talkeeg.common.model.*;
 
 import javax.crypto.Cipher;
 import javax.inject.Inject;
@@ -48,6 +45,8 @@ import java.util.logging.Logger;
 @Singleton
 final class SingleMessageSupport implements MessageReader<SingleMessage>, MessageBuilder<SingleMessage> {
     private static final Logger LOG = Logger.getLogger(SingleMessageSupport.class.getName());
+    private static final String SIGN_TYPE_CLIENT = "client";
+    private static final String SIGN_TYPE_USER = "user";
     private final CryptoService cryptoService;
     private final AcquaintedClientsService acquaintedClients;
     private final AcquaintedUsersService acquaintedUsers;
@@ -122,19 +121,20 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
             final PublicKey userPublicKey = this.keyLoader.loadPublic(uic.getKey().getData());
             clientPublicKey = this.keyLoader.loadPublic(cic.getKey().getData());
             final Signature verifyService = this.cryptoService.getVerifyService(userPublicKey);
-            verifySign(message, userSign, builder, verifyService, "user");
+            verifySign(message, userSign, builder, verifyService, SIGN_TYPE_USER);
         }
         if(clientSign != null) {
             if(clientPublicKey == null) {
                 final AcquaintedClient client = this.acquaintedClients.getClient(sourceClientId);
                 if(client == null) {
                     builder.addError("Client " + sourceClientId + " is not acquainted");
+                    builder.setResponseCode(ResponseCode.NOT_AC);
                     return;
                 }
                 clientPublicKey = client.getKey();
             }
             final Signature verifyService = this.cryptoService.getVerifyService(clientPublicKey);
-            verifySign(message, clientSign, builder, verifyService, "client");
+            verifySign(message, clientSign, builder, verifyService, SIGN_TYPE_CLIENT);
         }
     }
 

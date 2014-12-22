@@ -21,6 +21,8 @@ package talkeeg.common.ipc;
 
 import dagger.Module;
 import dagger.Provides;
+import talkeeg.bf.Bf;
+
 import javax.inject.Singleton;
 
 /**
@@ -31,7 +33,7 @@ import javax.inject.Singleton;
   injects = {
     IpcServiceManager.class,
     IpcService.class,
-    TgbfProcessor.class,
+    Io.class,
     SingleMessageSupport.class
   }
 )
@@ -43,4 +45,9 @@ public class IpcModule {
         return ipcServiceManager.getIpc();
     }
 
+    @Provides
+    @Singleton
+    Io provideIo(Bf bf) {
+        return new TgbfProcessor(bf);
+    }
 }

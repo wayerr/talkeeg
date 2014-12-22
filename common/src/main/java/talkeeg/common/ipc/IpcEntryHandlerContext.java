@@ -32,10 +32,16 @@ import talkeeg.common.model.SingleMessage;
 public final class IpcEntryHandlerContext {
     private final SingleMessage message;
     private final ClientAddress srcClientAddress;
+    private final IpcService service;
 
-    IpcEntryHandlerContext(SingleMessage message, ClientAddress srcClientAddress) {
+    IpcEntryHandlerContext(IpcService service, SingleMessage message, ClientAddress srcClientAddress) {
+        this.service = service;
         this.message = message;
         this.srcClientAddress = srcClientAddress;
+    }
+
+    public IpcService getService() {
+        return service;
     }
 
     public Int128 getSrcClientId() {
@@ -56,5 +62,9 @@ public final class IpcEntryHandlerContext {
 
     public ClientAddress getSrcClientAddress() {
         return srcClientAddress;
+    }
+
+    public SingleMessage getMessage() {
+        return message;
     }
 }

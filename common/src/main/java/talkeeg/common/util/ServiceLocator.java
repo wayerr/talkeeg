@@ -17,34 +17,26 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.ipc;
-
-import talkeeg.common.util.Closeable;
+package talkeeg.common.util;
 
 /**
- * ipc service implementation
- * Created by wayerr on 26.11.14.
+ * abstract iface for service ioc container and service loader implementation
+ *
+ * Created by wayerr on 22.12.14.
  */
-final class IpcServiceImpl implements IpcService {
-    private final Whirligig whirligig;
-    private final IpcServiceManager sm;
+public interface ServiceLocator {
 
-    IpcServiceImpl(IpcServiceManager serviceManager) {
-        this.sm = serviceManager;
-        this.whirligig = new Whirligig(this.sm.config, this.sm.ioProcessor, this);
-    }
+    /**
+     * inject package private fields marked with {@link javax.inject.Inject } annotation
+     * @param thiz
+     */
+    void inject(Object thiz);
 
-    @Override
-    public void push(Parcel parcel) {
-        this.whirligig.push(parcel);
-    }
-
-    @Override
-    public Closeable addIpcHandler(String action, IpcEntryHandler handler) {
-        return this.sm.messageProcessor.addHandler(action, handler);
-    }
-
-    Whirligig getWhirligig() {
-        return whirligig;
-    }
+    /**
+     * load configured instance of specified class
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    <T> T get(Class<T> clazz);
 }

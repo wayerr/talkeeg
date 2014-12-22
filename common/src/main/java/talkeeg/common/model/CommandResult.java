@@ -57,10 +57,28 @@ public class CommandResult implements IpcEntry {
             this.id = id;
         }
 
+        /**
+         * code of response
+         * @return
+         */
         public ResponseCode getCode() {
             return code;
         }
 
+        /**
+         * code of response
+         * @param code
+         * @return
+         */
+        public Builder code(ResponseCode code) {
+            setCode(code);
+            return this;
+        }
+
+        /**
+         * code of response
+         * @param code
+         */
         public void setCode(ResponseCode code) {
             this.code = code;
         }
@@ -132,6 +150,10 @@ public class CommandResult implements IpcEntry {
         return action;
     }
 
+    /**
+     * code of response
+     * @return
+     */
     public ResponseCode getCode() {
         return code;
     }

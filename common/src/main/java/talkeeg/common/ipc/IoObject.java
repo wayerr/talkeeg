@@ -19,32 +19,26 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.common.util.Closeable;
+import talkeeg.common.model.ClientAddress;
 
 /**
- * ipc service implementation
- * Created by wayerr on 26.11.14.
+ * an message - src_address pair
+ * Created by wayerr on 22.12.14.
  */
-final class IpcServiceImpl implements IpcService {
-    private final Whirligig whirligig;
-    private final IpcServiceManager sm;
+final class IoObject {
+    private final Object message;
+    private final ClientAddress srcAddress;
 
-    IpcServiceImpl(IpcServiceManager serviceManager) {
-        this.sm = serviceManager;
-        this.whirligig = new Whirligig(this.sm.config, this.sm.ioProcessor, this);
+    public IoObject(Object message, ClientAddress srcAddress) {
+        this.message = message;
+        this.srcAddress = srcAddress;
     }
 
-    @Override
-    public void push(Parcel parcel) {
-        this.whirligig.push(parcel);
+    public Object getMessage() {
+        return message;
     }
 
-    @Override
-    public Closeable addIpcHandler(String action, IpcEntryHandler handler) {
-        return this.sm.messageProcessor.addHandler(action, handler);
-    }
-
-    Whirligig getWhirligig() {
-        return whirligig;
+    public ClientAddress getSrcAddress() {
+        return srcAddress;
     }
 }

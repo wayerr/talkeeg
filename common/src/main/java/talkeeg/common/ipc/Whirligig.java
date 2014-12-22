@@ -43,6 +43,7 @@ final class Whirligig implements Runnable {
     private final Io io;
     private final Node configNode;
     private final int port;
+    private final IpcService ipcService;
     private volatile State state;
 
     private class State {
@@ -96,9 +97,10 @@ final class Whirligig implements Runnable {
         }
     }
 
-    Whirligig(Config config, Io io) {
+    Whirligig(Config config, Io io, IpcService ipcService) {
         this.config = config;
         this.io = io;
+        this.ipcService = ipcService;
 
         this.configNode = config.getRoot().getNode("net");
 
@@ -151,7 +153,7 @@ final class Whirligig implements Runnable {
         DatagramChannel channel = (DatagramChannel)key.channel();
         if(key.isReadable()) {
             try {
-                io.read(channel);
+                final IoObject ioObject = io.read(channel);
             } catch(Exception e) {
                 LOG.log(Level.SEVERE, "error on key " + key, e);
             }
@@ -168,7 +170,9 @@ final class Whirligig implements Runnable {
             channel = state.channel4;
         }
         try {
-            io.write(parcel, channel);
+            final IoObject ioObject = null;//new IoObject(parcel, parcel.getAddress());
+            ioObject.getMessage();//TODO!
+            io.write(ioObject, channel);
         } catch(Exception e) {
             throw new RuntimeException("at parcel " + parcel, e);
         }

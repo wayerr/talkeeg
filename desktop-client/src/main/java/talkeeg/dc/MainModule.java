@@ -20,12 +20,15 @@
 package talkeeg.dc;
 
 import dagger.Module;
+import dagger.ObjectGraph;
 import dagger.Provides;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
 import talkeeg.common.conf.DefaultConfiguration;
 import talkeeg.common.core.CoreModule;
 import talkeeg.common.ipc.IpcModule;
+import talkeeg.common.util.DaggerServiceLocator;
+import talkeeg.common.util.ServiceLocator;
 import talkeeg.dc.ui.UiModule;
 import talkeeg.mb.MessageBusRegistry;
 
@@ -38,7 +41,8 @@ import javax.inject.Singleton;
  */
 @Module(
   injects = {
-    Config.class
+    Config.class,
+    ServiceLocator.class
   },
   includes = {
     CoreModule.class,
@@ -47,6 +51,25 @@ import javax.inject.Singleton;
   }
 )
 final class MainModule {
+
+    private ObjectGraph objectGraph;
+
+    /**
+     *  wee need that this method will be invoked before any `@Provides` marked methods
+     */
+    void setObjectGraph(ObjectGraph objectGraph) {
+        this.objectGraph = objectGraph;
+    }
+
+
+    @Provides
+    @Singleton
+    ServiceLocator provideServiceLocator() {
+        if(this.objectGraph == null) {
+            throw new IllegalStateException("Invoke setObjectGraph before this.");
+        }
+        return new DaggerServiceLocator(this.objectGraph);
+    }
 
     @Provides
     @Singleton

@@ -57,16 +57,19 @@ public final class IpcServiceManager {
     private final IpcServiceImpl service;
     final MessageBusRegistry messageBusregistry;
     final Config config;
-    final TgbfProcessor processor;
+    final Io ioProcessor;
+    public MessageProcessor messageProcessor;
 
     @Inject
     IpcServiceManager(Config config,
                       MessageBusRegistry messageBusRegistry,
-                      TgbfProcessor tgbfProcessor) {
+                      Io tgbfProcessor,
+                      MessageProcessor messageProcessor) {
         this.config = config;
         this.messageBusregistry = messageBusRegistry;
-        this.processor = tgbfProcessor;
+        this.ioProcessor = tgbfProcessor;
         this.service = new IpcServiceImpl(this);
+        this.messageProcessor = messageProcessor;
         this.serviceThread = new Thread(service.getWhirligig(), config.getApplicationName() + "-ipc-service-thread");
     }
 

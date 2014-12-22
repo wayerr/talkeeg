@@ -20,6 +20,7 @@
 package talkeeg.common.ipc;
 
 import com.google.common.collect.ImmutableList;
+import talkeeg.common.model.ResponseCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ public class ReadResult<T> {
         private T message;
         private final List<String> errors = new ArrayList<>();
         private final List <IpcEntry> entries = new ArrayList<>();
+        private ResponseCode responseCode;
 
         public T getMessage() {
             return message;
@@ -56,6 +58,32 @@ public class ReadResult<T> {
             return entries;
         }
 
+        /**
+         * response code, which sent in {@link talkeeg.common.model.CommandResult}
+         * @return
+         */
+        public ResponseCode getResponseCode() {
+            return responseCode;
+        }
+
+        /**
+         * response code, which sent in {@link talkeeg.common.model.CommandResult}
+         * @param responseCode
+         * @return
+         */
+        public Builder responseCode(ResponseCode responseCode) {
+            setResponseCode(responseCode);
+          return this;
+        }
+
+        /**
+         * response code, which sent in {@link talkeeg.common.model.CommandResult}
+         * @param responseCode
+         */
+        public void setResponseCode(ResponseCode responseCode) {
+            this.responseCode = responseCode;
+        }
+
         public ReadResult<T> build() {
             return new ReadResult<>(this);
         }
@@ -65,11 +93,13 @@ public class ReadResult<T> {
     private final T message;
     private final List<String> errors;
     private final List<IpcEntry> entries;
+    private final ResponseCode responseCode;
 
     private ReadResult(Builder<T> b) {
         this.message = b.message;
         this.errors = ImmutableList.copyOf(b.errors);
         this.entries = ImmutableList.copyOf(b.entries);
+        this.responseCode = b.responseCode;
     }
 
     public static <T> Builder<T> builder() {
@@ -90,6 +120,14 @@ public class ReadResult<T> {
 
     public List<IpcEntry> getEntries() {
         return this.entries;
+    }
+
+    /**
+     * response code, which sent in {@link talkeeg.common.model.CommandResult}
+     * @return
+     */
+    public ResponseCode getResponseCode() {
+        return responseCode;
     }
 
     @Override

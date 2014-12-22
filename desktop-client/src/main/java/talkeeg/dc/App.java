@@ -42,7 +42,9 @@ public final class App {
     private final Config config;
 
     private App() {
-        this.graph = ObjectGraph.create(new MainModule());
+        final MainModule mainModule = new MainModule();
+        this.graph = ObjectGraph.create(mainModule);
+        mainModule.setObjectGraph(this.graph);
         this.serviceManager = this.graph.get(IpcServiceManager.class);
         this.cryptoService = this.graph.get(CryptoService.class);
         this.config = this.graph.get(Config.class);

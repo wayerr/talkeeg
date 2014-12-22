@@ -17,34 +17,28 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.ipc;
+package talkeeg.common.util;
 
-import talkeeg.common.util.Closeable;
+import dagger.ObjectGraph;
 
 /**
- * ipc service implementation
- * Created by wayerr on 26.11.14.
+ * an dagger-based implementation of service locator
+ * Created by wayerr on 22.12.14.
  */
-final class IpcServiceImpl implements IpcService {
-    private final Whirligig whirligig;
-    private final IpcServiceManager sm;
+public final class DaggerServiceLocator implements ServiceLocator {
+    private final ObjectGraph objectGraph;
 
-    IpcServiceImpl(IpcServiceManager serviceManager) {
-        this.sm = serviceManager;
-        this.whirligig = new Whirligig(this.sm.config, this.sm.ioProcessor, this);
+    public DaggerServiceLocator(ObjectGraph objectGraph) {
+        this.objectGraph = objectGraph;
     }
 
     @Override
-    public void push(Parcel parcel) {
-        this.whirligig.push(parcel);
+    public void inject(Object thiz) {
+        this.inject(thiz);
     }
 
     @Override
-    public Closeable addIpcHandler(String action, IpcEntryHandler handler) {
-        return this.sm.messageProcessor.addHandler(action, handler);
-    }
-
-    Whirligig getWhirligig() {
-        return whirligig;
+    public <T> T get(Class<T> clazz) {
+        return this.get(clazz);
     }
 }

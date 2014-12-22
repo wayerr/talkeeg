@@ -27,6 +27,6 @@ import java.nio.channels.DatagramChannel;
  * Created by wayerr on 26.11.14.
  */
 public interface Io {
-    void read(DatagramChannel channel) throws Exception;
-    void write(Parcel parcel, DatagramChannel channel) throws Exception;
+    IoObject read(DatagramChannel channel) throws Exception;
+    void write(IoObject object, DatagramChannel channel) throws Exception;
 }
