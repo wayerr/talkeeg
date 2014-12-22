@@ -114,12 +114,13 @@ final class MessageProcessor {
             final String action = entry.getAction();
             if(action == null) {//is processor action
                 handle(context, entry);
-            }
-            IpcEntryHandler handler = this.handlers.get(action);
-            if(handler == null) {
-                logConsumeError(address, "No handler for '" + action + "'.");
             } else {
-                handler.handle(context, entry);
+                IpcEntryHandler handler = this.handlers.get(action);
+                if(handler == null) {
+                    logConsumeError(address, "No handler for '" + action + "'.");
+                } else {
+                    handler.handle(context, entry);
+                }
             }
         }
     }
