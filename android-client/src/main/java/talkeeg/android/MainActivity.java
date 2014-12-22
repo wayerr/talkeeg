@@ -3,7 +3,6 @@ package talkeeg.android;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,20 +36,28 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * barcode button handler
+     * show view with options fo decoding alien barcode
      * @param view
      */
-    public void showBarcodeActivity(View view) {
-        Intent intent = new Intent(this, CreateBarcodeActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * show wiew with options fo decoding alien barcode
-     * @param view
-     */
-    public void showReadBarcodeActivity(View view) {
-        Intent intent = new Intent(this, ReadBarcodeActivity.class);
+    public void showActivity(View view) {
+        Class<? extends Activity> activityClass;
+        switch(view.getId()) {
+            case R.id.showCreateBarcodeActivity:
+                activityClass = CreateBarcodeActivity.class;
+            break;
+            case R.id.showReadBarcodeActivity:
+                activityClass = ReadBarcodeActivity.class;
+            break;
+            case R.id.showMessagesActivity:
+                activityClass = MessagesActivity.class;
+            break;
+            default:
+                activityClass = null;
+        }
+        if(activityClass == null) {
+            return;
+        }
+        Intent intent = new Intent(this, activityClass);
         startActivity(intent);
     }
 

@@ -10,14 +10,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="show my barcode"
-            android:id="@+id/button"
-            android:onClick="showBarcodeActivity" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+            android:id="@+id/showCreateBarcodeActivity"
+            android:onClick="showActivity" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="read barcode"
-            android:id="@+id/button2" android:layout_below="@+id/button" android:layout_alignParentLeft="true"
-            android:onClick="showReadBarcodeActivity"
-            android:layout_marginTop="36dp" android:layout_alignRight="@+id/button"/>
+            android:id="@+id/showReadBarcodeActivity" android:layout_below="@+id/showCreateBarcodeActivity" android:layout_alignParentLeft="true"
+            android:onClick="showActivity"
+            android:layout_marginTop="10dp" android:layout_alignRight="@+id/showCreateBarcodeActivity"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="show messages"
+            android:id="@+id/showMessagesActivity"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/showReadBarcodeActivity" android:layout_alignParentStart="true"
+            android:layout_alignEnd="@+id/showReadBarcodeActivity" android:onClick="showActivity"/>
 </RelativeLayout>
