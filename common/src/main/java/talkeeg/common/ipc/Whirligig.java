@@ -43,7 +43,7 @@ final class Whirligig implements Runnable {
     private final Io io;
     private final Node configNode;
     private final int port;
-    private final IpcService ipcService;
+    private final IpcServiceImpl ipcService;
     private volatile State state;
 
     private class State {
@@ -97,7 +97,7 @@ final class Whirligig implements Runnable {
         }
     }
 
-    Whirligig(Config config, Io io, IpcService ipcService) {
+    Whirligig(Config config, Io io, IpcServiceImpl ipcService) {
         this.config = config;
         this.io = io;
         this.ipcService = ipcService;
@@ -154,13 +154,14 @@ final class Whirligig implements Runnable {
         if(key.isReadable()) {
             try {
                 final IoObject ioObject = io.read(channel);
+                this.ipcService.accept(ioObject);
             } catch(Exception e) {
                 LOG.log(Level.SEVERE, "error on key " + key, e);
             }
         }
     }
 
-    void push(Parcel parcel) {
+    void push(IoObject ioObject) {
         State state = this.state;
         if(state == null) {
             throw new NullPointerException("state of whirligig is null");
@@ -170,11 +171,9 @@ final class Whirligig implements Runnable {
             channel = state.channel4;
         }
         try {
-            final IoObject ioObject = null;//new IoObject(parcel, parcel.getAddress());
-            ioObject.getMessage();//TODO!
-            io.write(ioObject, channel);
+            this.io.write(ioObject, channel);
         } catch(Exception e) {
-            throw new RuntimeException("at parcel " + parcel, e);
+            throw new RuntimeException("at ioObject " + ioObject, e);
         }
     }
 

@@ -62,21 +62,22 @@ final class MessageProcessor {
     }
 
 
-    void receive(IoObject ro) throws Exception {
+    void receive(IpcService service, IoObject ro) throws Exception {
         Object message = ro.getMessage();
         ClientAddress address = ro.getSrcAddress();
         if(message instanceof SingleMessage) {
-           // final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(service, (SingleMessage)message, address);
-           // consume(ipcEntryHandlerContext);
+            final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(service, (SingleMessage)message, address);
+            consume(ipcEntryHandlerContext);
         } else {
             logConsumeError(address, "unsupported message type " + message.getClass());
         }
     }
 
-    void send(Parcel parcel) throws Exception {
+    IoObject send(Parcel parcel) throws Exception {
         final ClientAddress destination = parcel.getAddress();
         final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
         SingleMessage singleMessage = this.singleMessageSupport.build(parcel);
+        return new IoObject(singleMessage, destination);
     }
 
     private void consume(IpcEntryHandlerContext context) throws Exception {

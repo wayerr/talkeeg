@@ -58,7 +58,7 @@ public final class IpcServiceManager {
     final MessageBusRegistry messageBusregistry;
     final Config config;
     final Io ioProcessor;
-    public MessageProcessor messageProcessor;
+    MessageProcessor messageProcessor;
 
     @Inject
     IpcServiceManager(Config config,
