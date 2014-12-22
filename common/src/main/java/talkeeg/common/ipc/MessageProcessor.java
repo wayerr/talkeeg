@@ -20,10 +20,12 @@
 package talkeeg.common.ipc;
 
 import talkeeg.bf.Int128;
+import talkeeg.common.core.AcquaintService;
 import talkeeg.common.core.OwnedIdentityCardsService;
 import talkeeg.common.model.*;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.HandlersRegistry;
+import talkeeg.common.util.ServiceLocator;
 
 import javax.inject.Inject;
 import java.net.InetSocketAddress;
@@ -42,12 +44,15 @@ final class MessageProcessor {
     private final HandlersRegistry<IpcEntryHandler> handlers = new HandlersRegistry<>();
     private final SingleMessageSupport singleMessageSupport;
     private final OwnedIdentityCardsService ownedIdentityCards;
+    private final ServiceLocator serviceLocator;
 
     @Inject
     MessageProcessor(OwnedIdentityCardsService ownedIdentityCards,
-                     SingleMessageSupport singleMessageSupport) {
+                     SingleMessageSupport singleMessageSupport,
+                     ServiceLocator serviceLocator) {
         this.ownedIdentityCards = ownedIdentityCards;
         this.singleMessageSupport = singleMessageSupport;
+        this.serviceLocator = serviceLocator;
     }
 
 
@@ -93,10 +98,8 @@ final class MessageProcessor {
             final ResponseCode responseCode = result.getResponseCode();
             if(responseCode != null) {
                 Parcel parcel = new Parcel(message.getSrc(), address);
-                //parcel.getMessages().add(CommandResult.builder()
-                //  .action(ACTION_ACQUAINT)
-                //  .code(responseCode)
-                //  .build());
+                // command result with null action - processed as parcel-wide result
+                parcel.getMessages().add(CommandResult.builder().code(responseCode).build());
                 context.getService().push(parcel);
             }
             return;
@@ -130,12 +133,8 @@ final class MessageProcessor {
         ResponseCode code = commandResult.getCode();
         switch(code) {
             case NOT_AC: {
-                Parcel parcel = new Parcel(context.getSrcClientId(), context.getSrcClientAddress());
-                //parcel.getMessages().add(Command.builder()
-                //  .action("test")
-                //  .addArg()
-                //  .build());
-                //context.getService().push(parcel);
+                final AcquaintService acquaintService = this.serviceLocator.get(AcquaintService.class);
+                acquaintService.acquaint(context.getSrcClientAddress());
             }
             break;
             default:

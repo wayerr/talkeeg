@@ -34,11 +34,11 @@ public final class DaggerServiceLocator implements ServiceLocator {
 
     @Override
     public void inject(Object thiz) {
-        this.inject(thiz);
+        this.objectGraph.inject(thiz);
     }
 
     @Override
     public <T> T get(Class<T> clazz) {
-        return this.get(clazz);
+        return this.objectGraph.get(clazz);
     }
 }
