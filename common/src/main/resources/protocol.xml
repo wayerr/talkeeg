@@ -30,6 +30,7 @@
         </list>
     </struct>
     <struct name="Hello" structId="14">
+        <id fieldName="clientId" />
         <struct fieldName="identityCard" structId="11" />
         <struct fieldName="addresses" structId="12" />
     </struct>

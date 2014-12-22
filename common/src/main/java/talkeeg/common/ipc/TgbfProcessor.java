@@ -75,7 +75,7 @@ final class TgbfProcessor implements Io {
 
     @Override
     public void read(DatagramChannel channel) throws Exception {
-        final Integer bufferSize = channel.getOption(StandardSocketOptions.SO_RCVBUF);
+        final Integer bufferSize = channel.socket().getReceiveBufferSize();
         ByteBuffer readBuffer = ByteBuffer.allocate(bufferSize);
         final SocketAddress remote = channel.receive(readBuffer);
         if(remote == null) {

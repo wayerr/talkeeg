@@ -28,6 +28,7 @@ import talkeeg.common.conf.DefaultConfigBackend;
 import talkeeg.common.conf.DefaultConfiguration;
 import talkeeg.common.core.CacheDirsService;
 import talkeeg.common.core.CoreModule;
+import talkeeg.common.ipc.IpcModule;
 import talkeeg.mb.MessageBusRegistry;
 
 import javax.inject.Singleton;
@@ -42,7 +43,8 @@ import javax.inject.Singleton;
     CacheDirsService.class
   },
   includes = {
-    CoreModule.class
+    CoreModule.class,
+    IpcModule.class
   }
 )
 final class MainModule {

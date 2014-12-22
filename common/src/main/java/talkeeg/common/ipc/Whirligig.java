@@ -56,7 +56,15 @@ final class Whirligig implements Runnable {
 
 
             InetSocketAddress socketAddress6 = getInetSocketAddress(port, configNode.<String>getValue("listenIp6", null));
-            if(socketAddress6 != null) {
+            boolean supportProtocolFamilies;
+            try {
+                //in android no this class
+                Class.forName("java.net.StandardProtocolFamily");
+                supportProtocolFamilies = true;
+            } catch(Exception e) {
+                supportProtocolFamilies = false;
+            }
+            if(socketAddress6 != null && supportProtocolFamilies) {
                 this.channel6 = DatagramChannel.open(StandardProtocolFamily.INET6);
                 // check that it ipv6 address
                 if(!(socketAddress6.getAddress() instanceof Inet6Address)) {
@@ -68,7 +76,7 @@ final class Whirligig implements Runnable {
             if(socketAddress6 == null) {
                 InetSocketAddress socketAddress4 = getInetSocketAddress(port, configNode.getValue("listenIp4", "0.0.0.0"));
                 if(socketAddress4 != null) {
-                    this.channel4 = DatagramChannel.open(StandardProtocolFamily.INET);
+                    this.channel4 = DatagramChannel.open();
                     // check that it ipv4 address
                     if(!(socketAddress4.getAddress() instanceof Inet4Address)) {
                         throw new RuntimeException(socketAddress4 + " must be an IPv4 address");
@@ -82,7 +90,8 @@ final class Whirligig implements Runnable {
         private void configureChannel(final DatagramChannel channel, InetSocketAddress socketAddress) throws Exception {
             channel.configureBlocking(false);
             Preconditions.checkNotNull(socketAddress, "socketAddress is null");
-            channel.bind(socketAddress);
+            //android does not have an channel.bind()
+            channel.socket().bind(socketAddress);
             channel.register(this.selector, SelectionKey.OP_READ);
         }
     }
@@ -151,6 +160,9 @@ final class Whirligig implements Runnable {
 
     void push(Parcel parcel) {
         State state = this.state;
+        if(state == null) {
+            throw new NullPointerException("state of whirligig is null");
+        }
         DatagramChannel channel = state.channel6;
         if(channel == null) {
             channel = state.channel4;

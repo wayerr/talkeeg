@@ -52,7 +52,7 @@ public final class ReadBarcodeActivity extends Activity {
 
     /**
      * in this class we save data between configuration changes of activity (in other cases we don`t need state)
-     * but code looks awful and need rewriting, especially `syncronized` statements
+     * but code looks awful and need rewriting, especially `synchronized` statements
      */
     private static class Model {
         private class LoadBarcodeDataTask extends AsyncTask<Object, Object, Object> {
