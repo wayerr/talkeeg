@@ -68,8 +68,8 @@ public final class IpcServiceManager {
         this.config = config;
         this.messageBusregistry = messageBusRegistry;
         this.ioProcessor = tgbfProcessor;
-        this.service = new IpcServiceImpl(this);
         this.messageProcessor = messageProcessor;
+        this.service = new IpcServiceImpl(this);
         this.serviceThread = new Thread(service.getWhirligig(), config.getApplicationName() + "-ipc-service-thread");
     }
 

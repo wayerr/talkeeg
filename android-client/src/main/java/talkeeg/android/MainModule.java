@@ -21,6 +21,7 @@ package talkeeg.android;
 
 import android.app.Application;
 import dagger.Module;
+import dagger.ObjectGraph;
 import dagger.Provides;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
@@ -29,6 +30,8 @@ import talkeeg.common.conf.DefaultConfiguration;
 import talkeeg.common.core.CacheDirsService;
 import talkeeg.common.core.CoreModule;
 import talkeeg.common.ipc.IpcModule;
+import talkeeg.common.util.DaggerServiceLocator;
+import talkeeg.common.util.ServiceLocator;
 import talkeeg.mb.MessageBusRegistry;
 
 import javax.inject.Singleton;
@@ -40,7 +43,8 @@ import javax.inject.Singleton;
   injects = {
     Config.class,
     App.class,
-    CacheDirsService.class
+    CacheDirsService.class,
+    ServiceLocator.class
   },
   includes = {
     CoreModule.class,
@@ -49,10 +53,16 @@ import javax.inject.Singleton;
 )
 final class MainModule {
 
-    private Application app;
+    private App app;
 
-    MainModule(Application app) {
+    MainModule(App app) {
         this.app = app;
+    }
+
+    @Provides
+    @Singleton
+    ServiceLocator provideServiceLocator() {
+        return new DaggerServiceLocator(this.app.getObjectGraph());
     }
 
     @Provides

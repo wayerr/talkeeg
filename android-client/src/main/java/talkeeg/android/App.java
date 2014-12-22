@@ -51,6 +51,10 @@ public class App extends Application {
         INTANCE = this;//share app instance
     }
 
+    ObjectGraph getObjectGraph() {
+        return objectGraph;
+    }
+
     /**
      * invoke {@link dagger.ObjectGraph#get(Class)}
      * @param type
