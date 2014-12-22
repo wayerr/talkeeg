@@ -102,7 +102,7 @@ final class MessagesView implements View {
                     )
                 )
                 .addGap(UiUtils.GAP)
-                .addComponent(contactsComponent)
+                .addComponent(contactsComponent, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap()
             );
         }
