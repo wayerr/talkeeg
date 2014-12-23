@@ -31,8 +31,6 @@ import talkeeg.bf.schema.Schema;
 import talkeeg.bf.schema.SchemaSource;
 import talkeeg.common.barcode.BarcodeService;
 import talkeeg.common.conf.Config;
-import talkeeg.common.ipc.IpcLifecycleEvent;
-import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.*;
 import talkeeg.common.util.*;
@@ -153,6 +151,17 @@ public final class CoreModule {
     @Singleton
     MessageBusRegistry provideMessageBusRegistry() {
         return new MessageBusRegistry();
+    }
+
+    @Provides
+    @Singleton
+    ClientNameService provideClientNameService(Config config) {
+        return new ClientNameService(config, new Supplier<String>() {
+            @Override
+            public String get() {
+                return OS.getInstance().getHostName();
+            }
+        });
     }
 
     /**

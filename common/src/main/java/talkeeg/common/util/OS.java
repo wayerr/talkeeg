@@ -69,7 +69,7 @@ public final class OS {
      * instance of this tool
      * @return
      */
-    public static OS getIntance() {
+    public static OS getInstance() {
         return OS;
     }
 
@@ -102,6 +102,10 @@ public final class OS {
                 }
 
             }
+        }
+        // obliviously, we don`t need names like `localhost`
+        if(name != null && (name.equalsIgnoreCase("localhost") || name.equalsIgnoreCase("localhost.localdomain"))) {
+            name = null;
         }
         return name;
     }

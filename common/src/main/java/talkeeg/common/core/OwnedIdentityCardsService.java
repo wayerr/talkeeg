@@ -24,11 +24,9 @@ import talkeeg.common.conf.Config;
 import talkeeg.common.model.ClientIdentityCard;
 import talkeeg.common.model.UserIdentityCard;
 import talkeeg.bf.BinaryData;
-import talkeeg.common.util.OS;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.File;
 
 /**
  *
@@ -36,21 +34,20 @@ import java.io.File;
  */
 @Singleton
 public final class OwnedIdentityCardsService {
-    //private final File icdir;
     private final Object lock = new Object();
     private final CryptoService cryptoService;
     private final Config config;
+    private final ClientNameService clientNameService;
     private Int128 clientId;
     private Int128 userId;
     private UserIdentityCard user;
     private ClientIdentityCard client;
 
     @Inject
-    OwnedIdentityCardsService(Config config, CryptoService cryptoService) {
+    OwnedIdentityCardsService(Config config, CryptoService cryptoService, ClientNameService clientNameService) {
         this.config = config;
         this.cryptoService = cryptoService;
-        //this.icdir = new File(config.getConfigDir(), "idcards");
-        //this.icdir.mkdirs();//create dirs if need
+        this.clientNameService = clientNameService;
     }
 
     /**
@@ -80,7 +77,7 @@ public final class OwnedIdentityCardsService {
     }
 
     private void load(ClientIdentityCard.Builder builder) {
-        builder.putAttr(ClientIdentityCard.ATTR_NAME, OS.getIntance().getHostName());
+        builder.putAttr(ClientIdentityCard.ATTR_NAME, this.clientNameService.get());
     }
 
     /**

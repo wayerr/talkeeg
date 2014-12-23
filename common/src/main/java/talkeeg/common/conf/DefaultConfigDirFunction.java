@@ -37,7 +37,7 @@ public final class DefaultConfigDirFunction implements Function<String, File> {
     public File apply(final String applicationName) {
         final String dirName;
         final char separator = File.separatorChar;
-        final OS.Family family = OS.getIntance().getFamily();
+        final OS.Family family = OS.getInstance().getFamily();
         switch(family) {
             case LINUX: {
                 //see http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html

@@ -20,6 +20,8 @@
 package talkeeg.android;
 
 import android.app.Application;
+import android.os.Build;
+import com.google.common.base.Supplier;
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
@@ -28,9 +30,11 @@ import talkeeg.common.conf.ConfigImpl;
 import talkeeg.common.conf.DefaultConfigBackend;
 import talkeeg.common.conf.DefaultConfiguration;
 import talkeeg.common.core.CacheDirsService;
+import talkeeg.common.core.ClientNameService;
 import talkeeg.common.core.CoreModule;
 import talkeeg.common.ipc.IpcModule;
 import talkeeg.common.util.DaggerServiceLocator;
+import talkeeg.common.util.OS;
 import talkeeg.common.util.ServiceLocator;
 import talkeeg.mb.MessageBusRegistry;
 
@@ -49,7 +53,8 @@ import javax.inject.Singleton;
   includes = {
     CoreModule.class,
     IpcModule.class
-  }
+  },
+  overrides = true
 )
 final class MainModule {
 
@@ -80,5 +85,17 @@ final class MainModule {
     CacheDirsService provideCacheDirManager(final App app) {
         final AndroidCacheDirectoryProvider provider = new AndroidCacheDirectoryProvider(this.app);
         return new CacheDirsService(provider, provider.getTempProvider());
+    }
+
+
+    @Provides
+    @Singleton
+    ClientNameService provideClientNameService(Config config) {
+        return new ClientNameService(config, new Supplier<String>() {
+            @Override
+            public String get() {
+                return Build.MANUFACTURER + " " + Build.PRODUCT;
+            }
+        });
     }
 }
