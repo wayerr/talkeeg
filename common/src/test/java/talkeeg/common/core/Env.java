@@ -38,7 +38,7 @@ import java.io.File;
  * testing environment
  * Created by wayerr on 28.11.14.
  */
-public final class Env implements AutoCloseable {
+public final class Env implements AutoCloseable, ServiceLocator {
 
     private static final Env INSTANCE = new Env();
     private final MessageBusRegistry registry = new MessageBusRegistry();
@@ -49,6 +49,7 @@ public final class Env implements AutoCloseable {
         EnvModule envModule = new EnvModule();
         this.objectGraph = ObjectGraph.create(envModule);
         envModule.setObjectGraph(this.objectGraph);
+        this.objectGraph.get(CryptoService.class).init();
         this.serviceLocator = this.objectGraph.get(ServiceLocator.class);
     }
 
@@ -56,14 +57,21 @@ public final class Env implements AutoCloseable {
         return INSTANCE;
     }
 
+    @Override
+    public void inject(Object thiz) {
+        this.serviceLocator.inject(thiz);
+    }
 
+    @Override
+    public <T> T get(Class<T> clazz) {
+        return this.serviceLocator.get(clazz);
+    }
 
     @Deprecated
     public Config getConfig() {
         return this.serviceLocator.get(Config.class);
     }
 
-    @Deprecated
     @Override
     public void close() {
         Fs.delete(getConfig().getConfigDir());

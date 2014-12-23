@@ -28,6 +28,8 @@ import talkeeg.common.conf.ConfigImpl;
 import talkeeg.common.conf.DefaultConfigBackend;
 import talkeeg.common.conf.DefaultConfiguration;
 import talkeeg.common.ipc.IpcModule;
+import talkeeg.common.ipc.IpcService;
+import talkeeg.common.ipc.IpcServiceLoopback;
 import talkeeg.common.util.DaggerServiceLocator;
 import talkeeg.common.util.DefaultTempDirProvider;
 import talkeeg.common.util.ServiceLocator;
@@ -44,12 +46,14 @@ import java.io.File;
   injects = {
     Config.class,
     ServiceLocator.class,
-    CacheDirsService.class
+    CacheDirsService.class,
+    IpcServiceLoopback.class,
   },
   includes = {
     CoreModule.class,
     IpcModule.class
-  }
+  },
+  overrides = true
 )
 public class EnvModule {
 
@@ -92,5 +96,11 @@ public class EnvModule {
     CacheDirsService provideCacheDirManager(Config config) {
         final CacheDirsService.DirectoryProvider provider = new DefaultTempDirProvider(config);
         return new CacheDirsService(provider, provider);
+    }
+
+    @Provides
+    @Singleton
+    IpcService provideCacheDirManager(IpcServiceLoopback serviceLoopback) {
+        return serviceLoopback;
     }
 }

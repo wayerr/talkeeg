@@ -50,9 +50,7 @@
         <integer fieldName="sequenceId" storeAs="02_BYTE"/>
         <!-- action of IPC which handle this message -->
         <string fieldName="action" />
-        <list fieldName="args" >
-            <generic />
-        </list>
+        <generic fieldName="arg" />
     </struct>
 
     <message name="SingleMessage" structId="1">

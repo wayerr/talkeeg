@@ -22,10 +22,12 @@ package talkeeg.common.core;
 import talkeeg.bf.*;
 import talkeeg.common.ipc.IpcEntryHandler;
 import talkeeg.common.ipc.IpcService;
+import talkeeg.common.ipc.IpcServiceLoopback;
 import talkeeg.common.ipc.Parcel;
 import talkeeg.common.model.*;
 import talkeeg.common.util.Closeable;
 
+import javax.annotation.PreDestroy;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -36,11 +38,30 @@ import static org.junit.Assert.*;
  */
 public class Test {
 
+
+    @org.junit.BeforeClass
+    public static void postConstruct() {
+        Env.getInstance();
+    }
+    @org.junit.AfterClass
+    public static void preDestroy() {
+        Env.getInstance().close();
+    }
+
     @org.junit.Test
+    public void acquaint() throws Exception {
+        System.out.println("acquaint");
+        final Env env = Env.getInstance();
+        final AcquaintService acquaintService = env.get(AcquaintService.class);
+        acquaintService.acquaint(IpcServiceLoopback.LOCALHOST);
+    }
+
     public void save() throws Exception {
         System.out.println("save");
-        Bf bf = Env.getInstance().getBf();
-
+        final Env env = Env.getInstance();
+        final Bf bf = env.get(Bf.class);
+        final AcquaintService acquaintService = env.get(AcquaintService.class);
+        acquaintService.acquaint(IpcServiceLoopback.LOCALHOST);
 
         SingleMessage.Builder smbuilder = SingleMessage.builder();
         smbuilder.setId((short)0);
@@ -49,10 +70,7 @@ public class Test {
         smbuilder.setCipherType(MessageCipherType.NONE);
         UserIdentityCard uic = SampleMessages.USER_2_UIC;
         ClientAddresses addresses = ClientAddresses.builder()
-                .addAddress(ClientAddress.builder()
-                  .external(true)
-                  .value("fc71:0:0:0:131:1ace:a61:4aa0%eth0")
-                  .build())
+                .addAddress(IpcServiceLoopback.LOCALHOST)
                 .build();
         List<Object> list = java.util.Arrays.<Object>asList(uic, addresses);
         ByteBuffer buffer = bf.write(list);
@@ -74,18 +92,5 @@ public class Test {
         final Object r = bf.read(buffer);
         assertEquals(uic, r);
         return r;
-    }
-
-    private static class IpcServiceStub implements IpcService {
-
-        @Override
-        public void push(Parcel parcel) {
-
-        }
-
-        @Override
-        public Closeable addIpcHandler(String action, IpcEntryHandler handler) {
-            return null;
-        }
     }
 }
