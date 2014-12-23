@@ -20,7 +20,11 @@
 package talkeeg.common.core;
 
 import talkeeg.bf.*;
+import talkeeg.common.ipc.IpcEntryHandler;
+import talkeeg.common.ipc.IpcService;
+import talkeeg.common.ipc.Parcel;
 import talkeeg.common.model.*;
+import talkeeg.common.util.Closeable;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -36,6 +40,7 @@ public class Test {
     public void save() throws Exception {
         System.out.println("save");
         Bf bf = Env.getInstance().getBf();
+
 
         SingleMessage.Builder smbuilder = SingleMessage.builder();
         smbuilder.setId((short)0);
@@ -69,5 +74,18 @@ public class Test {
         final Object r = bf.read(buffer);
         assertEquals(uic, r);
         return r;
+    }
+
+    private static class IpcServiceStub implements IpcService {
+
+        @Override
+        public void push(Parcel parcel) {
+
+        }
+
+        @Override
+        public Closeable addIpcHandler(String action, IpcEntryHandler handler) {
+            return null;
+        }
     }
 }

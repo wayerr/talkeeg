@@ -21,6 +21,7 @@ package talkeeg.common.core;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
+import dagger.ObjectGraph;
 import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
 import talkeeg.common.conf.ConfigImpl;
@@ -28,6 +29,7 @@ import talkeeg.common.conf.DefaultConfigBackend;
 import talkeeg.common.conf.DefaultConfiguration;
 import talkeeg.common.util.DefaultTempDirProvider;
 import talkeeg.common.util.Fs;
+import talkeeg.common.util.ServiceLocator;
 import talkeeg.mb.MessageBusRegistry;
 
 import java.io.File;
@@ -38,49 +40,42 @@ import java.io.File;
  */
 public final class Env implements AutoCloseable {
 
-
     private static final Env INSTANCE = new Env();
-    private final Config config;
-    private final Bf bf;
-    private final CacheDirsService cacheDirsService;
     private final MessageBusRegistry registry = new MessageBusRegistry();
+    private final ObjectGraph objectGraph;
+    private final ServiceLocator serviceLocator;
 
     public Env() {
-        CoreModule coreModule = new CoreModule();
-        this.config = ConfigImpl.builder()
-          .applicationName("talkeeg-test")
-          .configDirFunction(new Function<String, File>() {
-              @Override
-              public File apply(String appName) {
-                  return new File(System.getProperty("java.io.tmpdir"), appName);
-              }
-          })
-          .backend(new DefaultConfigBackend(registry, DefaultConfiguration.get()))
-          .build();
-
-        this.bf = coreModule.provideBf();
-        CacheDirsService.DirectoryProvider provider = new DefaultTempDirProvider(this.config);
-        this.cacheDirsService = new CacheDirsService(provider, provider);
+        EnvModule envModule = new EnvModule();
+        this.objectGraph = ObjectGraph.create(envModule);
+        envModule.setObjectGraph(this.objectGraph);
+        this.serviceLocator = this.objectGraph.get(ServiceLocator.class);
     }
 
     public static Env getInstance() {
         return INSTANCE;
     }
 
+
+
+    @Deprecated
     public Config getConfig() {
-        return config;
+        return this.serviceLocator.get(Config.class);
     }
 
+    @Deprecated
     @Override
     public void close() {
-        Fs.delete(this.config.getConfigDir());
+        Fs.delete(getConfig().getConfigDir());
     }
 
+    @Deprecated
     public Bf getBf() {
-        return bf;
+        return this.serviceLocator.get(Bf.class);
     }
 
+    @Deprecated
     public CacheDirsService getCacheDirsService() {
-        return cacheDirsService;
+        return this.serviceLocator.get(CacheDirsService.class);
     }
 }
