@@ -24,16 +24,23 @@
               android:layout_height="match_parent">
 
     <ListView
-            android:layout_width="match_parent"
-            android:layout_height="456dp"
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
             android:id="@+id/messagesListView" android:layout_gravity="center_horizontal" android:padding="10dp"
             android:layout_alignParentLeft="true" android:layout_marginLeft="10dp" android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp" android:layout_above="@+id/sendButton" android:layout_marginRight="10dp"/>
+            android:layout_marginTop="10dp" android:layout_marginRight="10dp" android:layout_marginBottom="10dp"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="send"
             android:id="@+id/sendButton" android:padding="10dp"
-            android:layout_alignParentBottom="true" android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/messageTextView" android:layout_alignEnd="@+id/messageTextView"
+            android:onClick="sendMessageAction"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/messageTextView" android:layout_above="@+id/sendButton"
+            android:layout_alignStart="@+id/messagesListView" android:layout_alignEnd="@+id/messagesListView"
+            android:layout_below="@+id/messagesListView" android:editable="true" android:focusable="true"/>
 </RelativeLayout>
