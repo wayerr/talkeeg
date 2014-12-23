@@ -25,10 +25,10 @@ import talkeeg.bf.Arrays;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.*;
 import talkeeg.common.model.ClientAddress;
-import talkeeg.common.model.ClientAddresses;
 import talkeeg.common.model.ClientIdentityCard;
 import talkeeg.common.model.UserIdentityCard;
 import talkeeg.common.util.StringUtils;
+import talkeeg.common.util.Stringifiers;
 import talkeeg.mb.MessageBusRegistry;
 
 import javax.inject.Inject;
@@ -47,6 +47,7 @@ import java.util.List;
  */
 final class ContactsModel implements TreeModel {
 
+
     private interface NodeLoader<T> {
         void load(Node<T> parent, List<Node<?>> childs);
     }
@@ -57,7 +58,7 @@ final class ContactsModel implements TreeModel {
             final AcquaintedUser user = parent.getValue();
             List<AcquaintedClient> clients = acquaintedClients.getUserClients(user.getId());
             for(AcquaintedClient client : clients) {
-                childs.add(new Node<>(client, ContactsModel.this::clientStringifier));
+                childs.add(new Node<>(client, ContactsModel.this.clientStringifier));
             }
         }
     };
@@ -72,49 +73,32 @@ final class ContactsModel implements TreeModel {
         public void load(Node<Object> parent, List<Node<?>> value) {
             final List<AcquaintedUser> users = acquaintedUsers.getAcquaintedUsers();
             for(final AcquaintedUser user: users) {
-                value.add(new ListNode<>(user, ContactsModel.this::userStringifier, loaderClients));
+                value.add(new ListNode<>(user, ContactsModel.this.userStringifier, loaderClients));
             }
         }
     });
+    private final Function<AcquaintedUser, String> userStringifier;
+    private final Function<AcquaintedClient, String> clientStringifier;
+
 
     @Inject
     public ContactsModel(MessageBusRegistry registry,
                          AcquaintedUsersService acquaintedUsers,
                          AcquaintedClientsService acquaintedClients,
-                         ClientsAddressesService clientsAddresses) {
+                         ClientsAddressesService clientsAddresses,
+                         Stringifiers stringifiers) {
         this.registry = registry;
         this.acquaintedUsers = acquaintedUsers;
         this.acquaintedClients = acquaintedClients;
         this.clientsAddresses = clientsAddresses;
+        this.userStringifier = stringifiers.getToStringFunction(AcquaintedUser.class);
+        this.clientStringifier = stringifiers.getToStringFunction(AcquaintedClient.class);
 
         this.registry.getOrCreateBus(AcquaintedUsersService.MB_KEY).register(event -> reloadTree());
         this.registry.getOrCreateBus(AcquaintedClientsService.MB_KEY).register(event -> reloadTree());
 
         reloadTree();
     }
-
-    private String userStringifier(AcquaintedUser user) {
-        UserIdentityCard identityCard = user.getIdentityCard();
-        Object string = identityCard.getAttrs().get(UserIdentityCard.ATTR_NICK);
-        if(string == null) {
-            string = Arrays.toHexString(user.getId().getData());
-        }
-        return string.toString();
-    }
-
-    private String clientStringifier(AcquaintedClient client) {
-        final Int128 id = client.getId();
-        String result = null;
-        final List<ClientAddress> addresses = this.clientsAddresses.getAddresses(id);
-        if(addresses != null) {
-            result = StringUtils.print(addresses);
-        }
-        if(result == null) {
-            result = Arrays.toHexString(id.getData());
-        }
-        return result;
-    }
-
     protected void reloadTree() {
         root.reload();
         fireStructureChanged(new TreeModelEvent(this, new Object[]{this.root}));

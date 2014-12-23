@@ -19,6 +19,8 @@
 
 package talkeeg.common.util;
 
+import com.google.common.base.Function;
+
 import java.util.Collection;
 
 /**
@@ -28,6 +30,42 @@ import java.util.Collection;
  * Created by wayerr on 30.11.14.
  */
 public final class StringUtils {
+
+    /**
+     * * wrapper of {@link StringUtils#toString(Object)}
+     */
+    public static final Function<?,String> FUNCTION_TO_STRING = new Function<Object, String>() {
+        @Override
+        public String apply(Object input) {
+            return StringUtils.toString(input);
+        }
+    };
+
+    public static final class StringifierFunction<T> implements Function<T, String> {
+        private final Stringifier<? super T> handler;
+
+        public StringifierFunction(Stringifier<? super T> handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public String apply(T input) {
+            StringBuilder sb = new StringBuilder();
+            handler.toString(input, sb);
+            return sb.toString();
+        }
+    }
+
+    /**
+     * wrapper of {@link StringUtils#toString(Object)}
+     * @see #FUNCTION_TO_STRING
+     * @param <T>
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Function<T, String> getToStringFunction() {
+        return (Function<T, String>)FUNCTION_TO_STRING;
+    }
 
     /**
      * split string to target collection
@@ -72,5 +110,17 @@ public final class StringUtils {
             text = String.valueOf(object);
         }
         return text;
+    }
+
+    /**
+     * if o is null then null else {@link Object#toString()}
+     * @param o
+     * @return
+     */
+    public static String toString(Object o) {
+        if(o == null) {
+            return null;
+        }
+        return o.toString();
     }
 }

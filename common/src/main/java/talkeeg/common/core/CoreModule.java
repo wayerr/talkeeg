@@ -21,6 +21,7 @@ package talkeeg.common.core;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableMap;
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
@@ -34,10 +35,11 @@ import talkeeg.common.ipc.IpcLifecycleEvent;
 import talkeeg.common.ipc.IpcService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.*;
-import talkeeg.common.util.WakeUpAtEvent;
+import talkeeg.common.util.*;
 import talkeeg.mb.MessageBusRegistry;
 
 import javax.inject.Singleton;
+import java.util.List;
 
 /**
  * module for configure instances of services
@@ -56,7 +58,9 @@ import javax.inject.Singleton;
         AcquaintedClientsService.class,
         AcquaintService.class,
         MessageBusRegistry.class,
-        DataService.class
+        ClientsAddressesService.class,
+        DataService.class,
+        Stringifiers.class
     }
 )
 public final class CoreModule {
@@ -101,6 +105,48 @@ public final class CoreModule {
             .putType(Hello.class, Hello.STRUCT_BUILDER_FACTORY)
             .putType(Data.class, Data.STRUCT_BUILDER_FACTORY)
             .build();
+    }
+
+    @Provides
+    @Singleton
+    Stringifiers provideStringifiers(final ServiceLocator serviceLocator) {
+        ImmutableMap.Builder<Class<?>, Stringifier<?>> builder = ImmutableMap.builder();
+        builder.put(AcquaintedUser.class, new Stringifier<AcquaintedUser>() {
+            @Override
+            public void toString(AcquaintedUser user, StringBuilder sb) {
+                UserIdentityCard identityCard = user.getIdentityCard();
+                Object string = identityCard.getAttrs().get(UserIdentityCard.ATTR_NICK);
+                if(string == null) {
+                    string = Arrays.toHexString(user.getId().getData());
+                }
+                sb.append(string);
+            }
+        });
+
+        builder.put(AcquaintedClient.class, new Stringifier<AcquaintedClient>() {
+            @Override
+            public void toString(AcquaintedClient client, StringBuilder sb) {
+                final Int128 id = client.getId();
+                ClientIdentityCard cic = client.getIdentityCard();
+                boolean hasName = false;
+                if(cic != null) {
+                    String name = StringUtils.toString(cic.getAttrs().get(ClientIdentityCard.ATTR_NAME));
+                    if(name != null) {
+                        sb.append(name).append(" \n");
+                        hasName = true;
+                    }
+                }
+                final List<ClientAddress> addresses = serviceLocator.get(ClientsAddressesService.class).getSuitableAddress(id);
+                if(addresses != null && !addresses.isEmpty()) {
+                    sb.append(addresses.get(0).getValue());
+                    hasName = true;
+                }
+                if(!hasName) {
+                    sb.append(Arrays.toHexString(id.getData()));
+                }
+            }
+        });
+        return new Stringifiers(builder.build());
     }
 
     @Provides
