@@ -55,16 +55,17 @@ public final class DataService {
     DataService(IpcService ipc, ClientsAddressesService clientsAddresses) {
         this.ipc = ipc;
         this.clientsAddresses = clientsAddresses;
-        this.ipc.addIpcHandler(ACTION_DATA, new IpcEntryHandler() {
+        IpcEntryHandler handler = new IpcEntryHandler() {
             @Override
             public void handle(IpcEntryHandlerContext context, IpcEntry entry) {
-                if(entry instanceof Command) {
-                    processCommand(context, (Command)entry);
-                } else {
+                if(!(entry instanceof Command)) {
                     throw new RuntimeException("Unsupported IpcEntry type: " + entry);
                 }
+                processCommand(context, (Command)entry);
             }
-        });
+        };
+        this.ipc.addIpcHandler(ACTION_DATA, handler);
+        this.ipc.addIpcHandler(ACTION_DATA_RESPONSE, handler);
     }
 
     short getNextId() {
@@ -75,12 +76,11 @@ public final class DataService {
         if(ACTION_DATA_RESPONSE.equals(command.getAction())) {
             final DataMessage message = this.sentMessages.get(command.getId());
             if(message != null) {
-                StatusCode code = (StatusCode)command.getArg();
-                if(code == null || code == StatusCode.OK) {
-                    message.success();
-                } else {
-                    message.success();
-                }
+                final StatusCode code = (StatusCode)command.getArg();
+                final DataMessage.State state = (code == null || code == StatusCode.OK)?
+                    DataMessage.State.SUCCESS :
+                    DataMessage.State.FAIL;
+                message.setState(state);
             }
             return;
         }

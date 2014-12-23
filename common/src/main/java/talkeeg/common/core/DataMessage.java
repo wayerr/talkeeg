@@ -96,10 +96,6 @@ public final class DataMessage {
         }
     }
 
-    void success() {
-        setState(State.SUCCESS);
-    }
-
     Integer getId() {
         return (int)this.command.getSequenceId();
     }
@@ -109,7 +105,7 @@ public final class DataMessage {
     }
 
 
-    private void setState(State state) {
+    void setState(State state) {
         synchronized(this.lock) {
             this.state = state;
         }
