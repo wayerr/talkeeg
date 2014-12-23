@@ -85,8 +85,9 @@ public final class DataService {
             return;
         }
         Command.Builder builder = Command.builder()
-          .id(command.getId())
-          .action(command.getAction());
+          .id(getNextId())
+          .sequenceId(command.getSequenceId())
+          .action(ACTION_DATA_RESPONSE);
         final Object arg = command.getArg();
         final Data data = (Data)arg;
         final String action = data.getAction();

@@ -101,7 +101,7 @@ public final class DataMessage {
     }
 
     Integer getId() {
-        return (int)this.command.getId();
+        return (int)this.command.getSequenceId();
     }
 
     public Data getData() {
