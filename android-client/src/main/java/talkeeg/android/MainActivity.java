@@ -13,7 +13,7 @@ import talkeeg.android.barcode.ReadBarcodeActivity;
  * main app activity, potentially contains list of most used activities
  */
 public class MainActivity extends Activity {
-
+    private final OptionsMenuSupport optionsMenuSupport = new OptionsMenuSupport(this);
     /**
      * Called when the activity is first created.
      *
@@ -63,10 +63,8 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.actionAcquairedUsers:
-                startActivity(new Intent(this, AcquaintedUsersActivity.class));
-                return true;
+        if(optionsMenuSupport.onOptionsItemSelected(item)) {
+            return true;
         }
         return super.onContextItemSelected(item);
     }

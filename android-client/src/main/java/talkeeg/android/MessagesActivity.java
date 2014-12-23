@@ -22,11 +22,7 @@ package talkeeg.android;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.view.*;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,6 +37,7 @@ import talkeeg.common.util.Closeables;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * activity of messages list
@@ -48,6 +45,7 @@ import java.util.List;
  */
 public final class MessagesActivity extends Activity {
 
+    private final OptionsMenuSupport optionsMenuSupport = new OptionsMenuSupport(this);
     private DataService dataService;
     private Int128 clientId;
     private MessagesListAdapter listAdapter;
@@ -94,16 +92,30 @@ public final class MessagesActivity extends Activity {
         return true;
     }
 
-    private static final class MessagesListAdapter extends BaseAdapter implements Closeable {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(this.optionsMenuSupport.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private final class MessagesListAdapter extends BaseAdapter implements Closeable {
 
         private final DataService service;
         private final LayoutInflater inflater;
         private final int resource;
-        private final List<Data> history = new ArrayList<>();
+        private final List<Data> history = new CopyOnWriteArrayList<>();
         private final Callback<Data> chatCallback = new Callback<Data>() {
             @Override
             public void call(Data value) {
                 history.add(value);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
             }
         };
         private final Closeable callbackEnd;
