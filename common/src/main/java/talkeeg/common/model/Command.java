@@ -44,21 +44,48 @@ public class Command implements IpcEntry {
     };
 
     public static class Builder implements BuilderInterface {
-        private int id;
+        private short id;
+        private short sequenceId;
         private String action;
-        private final List<Object> args = new ArrayList<>();
+        private Object arg;
 
-        public int getId() {
+        public short getId() {
             return id;
         }
 
-        public Builder id(int id) {
+        public Builder id(short id) {
             setId(id);
             return this;
         }
 
-        public void setId(int id) {
+        public void setId(short id) {
             this.id = id;
+        }
+
+        /**
+         * id of command sequence
+         * @return
+         */
+        public short getSequenceId() {
+            return sequenceId;
+        }
+
+        /**
+         * id of command sequence
+         * @param sequenceId
+         * @return
+         */
+        public Builder sequenceId(short sequenceId) {
+            setSequenceId(sequenceId);
+            return this;
+        }
+
+        /**
+         * id of command sequence
+         * @param sequenceId
+         */
+        public void setSequenceId(short sequenceId) {
+            this.sequenceId = sequenceId;
         }
 
         /**
@@ -89,18 +116,17 @@ public class Command implements IpcEntry {
             this.action = action;
         }
 
-        public List<Object> getArgs() {
-            return args;
+        public Object getArg() {
+            return arg;
         }
 
-        public void setArgs(List<Object> args) {
-            this.args.clear();
-            this.args.addAll(args);
-        }
-
-        public Builder addArg(Object arg) {
-            this.args.add(arg);
+        public Builder arg(Object arg) {
+            setArg(arg);
             return this;
+        }
+
+        public void setArg(Object arg) {
+            this.arg = arg;
         }
 
         @Override
@@ -109,15 +135,17 @@ public class Command implements IpcEntry {
         }
     }
 
-    private final int id;
+    private final short id;
+    private final short sequenceId;
     private final String action;
-    private final List<Object> args;
+    private final Object arg;
 
     private Command(Builder b) {
         this.id = b.id;
+        this.sequenceId = b.sequenceId;
         this.action = b.action;
         Preconditions.checkNotNull(this.action, "action is null");
-        this.args = ImmutableList.copyOf(b.args);
+        this.arg = b.arg;
     }
 
     public static Builder builder() {
@@ -125,8 +153,13 @@ public class Command implements IpcEntry {
     }
 
     @Override
-    public int getId() {
+    public short getId() {
         return id;
+    }
+
+    @Override
+    public short getSequenceId() {
+        return sequenceId;
     }
 
     /**
@@ -139,8 +172,8 @@ public class Command implements IpcEntry {
         return action;
     }
 
-    public List<Object> getArgs() {
-        return args;
+    public Object getArg() {
+        return arg;
     }
 
     @Override
@@ -160,7 +193,7 @@ public class Command implements IpcEntry {
         if(action != null? !action.equals(command.action) : command.action != null) {
             return false;
         }
-        if(args != null? !args.equals(command.args) : command.args != null) {
+        if(arg != null? !arg.equals(command.arg) : command.arg != null) {
             return false;
         }
 
@@ -171,7 +204,7 @@ public class Command implements IpcEntry {
     public int hashCode() {
         int result = id;
         result = 31 * result + (action != null? action.hashCode() : 0);
-        result = 31 * result + (args != null? args.hashCode() : 0);
+        result = 31 * result + (arg != null? arg.hashCode() : 0);
         return result;
     }
 
@@ -180,7 +213,7 @@ public class Command implements IpcEntry {
         return "Command{" +
           "id=" + id +
           ", action='" + action + '\'' +
-          ", args=" + args +
+          ", arg=" + arg +
           '}';
     }
 }

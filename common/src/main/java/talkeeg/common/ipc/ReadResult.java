@@ -20,7 +20,7 @@
 package talkeeg.common.ipc;
 
 import com.google.common.collect.ImmutableList;
-import talkeeg.common.model.ResponseCode;
+import talkeeg.common.model.StatusCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +35,8 @@ public class ReadResult<T> {
     public static class Builder<T> {
         private T message;
         private final List<String> errors = new ArrayList<>();
-        private final List <IpcEntry> entries = new ArrayList<>();
-        private ResponseCode responseCode;
+        private Object arg;
+        private StatusCode statusCode;
 
         public T getMessage() {
             return message;
@@ -54,34 +54,38 @@ public class ReadResult<T> {
             return errors;
         }
 
-        public List<IpcEntry> getEntries() {
-            return entries;
+        public Object getArg() {
+            return arg;
+        }
+
+        public void setArg(Object arg) {
+            this.arg = arg;
         }
 
         /**
-         * response code, which sent in {@link talkeeg.common.model.CommandResult}
+         * status code, which sent in {@link talkeeg.common.model.Command}
          * @return
          */
-        public ResponseCode getResponseCode() {
-            return responseCode;
+        public StatusCode getStatusCode() {
+            return statusCode;
         }
 
         /**
-         * response code, which sent in {@link talkeeg.common.model.CommandResult}
-         * @param responseCode
+         * status code, which sent in {@link talkeeg.common.model.Command}
+         * @param statusCode
          * @return
          */
-        public Builder responseCode(ResponseCode responseCode) {
-            setResponseCode(responseCode);
+        public Builder responseCode(StatusCode statusCode) {
+            setStatusCode(statusCode);
           return this;
         }
 
         /**
-         * response code, which sent in {@link talkeeg.common.model.CommandResult}
-         * @param responseCode
+         * status code, which sent in {@link talkeeg.common.model.Command}
+         * @param statusCode
          */
-        public void setResponseCode(ResponseCode responseCode) {
-            this.responseCode = responseCode;
+        public void setStatusCode(StatusCode statusCode) {
+            this.statusCode = statusCode;
         }
 
         public ReadResult<T> build() {
@@ -92,14 +96,14 @@ public class ReadResult<T> {
 
     private final T message;
     private final List<String> errors;
-    private final List<IpcEntry> entries;
-    private final ResponseCode responseCode;
+    private final Object arg;
+    private final StatusCode statusCode;
 
     private ReadResult(Builder<T> b) {
         this.message = b.message;
         this.errors = ImmutableList.copyOf(b.errors);
-        this.entries = ImmutableList.copyOf(b.entries);
-        this.responseCode = b.responseCode;
+        this.arg = b.arg;
+        this.statusCode = b.statusCode;
     }
 
     public static <T> Builder<T> builder() {
@@ -118,16 +122,16 @@ public class ReadResult<T> {
         return errors;
     }
 
-    public List<IpcEntry> getEntries() {
-        return this.entries;
+    public Object getArg() {
+        return this.arg;
     }
 
     /**
-     * response code, which sent in {@link talkeeg.common.model.CommandResult}
+     * status code, which sent in {@link talkeeg.common.model.Command}
      * @return
      */
-    public ResponseCode getResponseCode() {
-        return responseCode;
+    public StatusCode getStatusCode() {
+        return statusCode;
     }
 
     @Override

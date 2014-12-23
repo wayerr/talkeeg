@@ -25,6 +25,7 @@ import talkeeg.common.model.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,9 +47,10 @@ public final class AcquaintService {
         private final ClientAddresses clientAddresses;
         private final Command command;
 
+        @SuppressWarnings("unchecked")
         private AcquaintData(Command entry) {
             this.command = entry;
-            List<Object> args = command.getArgs();
+            List<Object> args = (List<Object>)command.getArg();
             //see buildAcquaintCommand() for order of arguments
             this.userIdentityCard = (UserIdentityCard)args.get(0);
             this.clientIdentityCard = (ClientIdentityCard)args.get(1);
@@ -145,9 +147,9 @@ public final class AcquaintService {
     }
 
     private Command.Builder buildAcquaintCommand(Command.Builder builder) {
-        builder.addArg(this.ownedIdentityCards.getUserIdentityCard())
-          .addArg(this.ownedIdentityCards.getClientIdentityCard())
-          .addArg(this.currentAddresses.getClientAddresses());
+        builder.setArg(Arrays.asList(this.ownedIdentityCards.getUserIdentityCard(),
+          this.ownedIdentityCards.getClientIdentityCard(),
+          this.currentAddresses.getClientAddresses()));
         return builder;
     }
 

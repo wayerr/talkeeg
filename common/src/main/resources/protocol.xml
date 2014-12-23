@@ -45,21 +45,14 @@
     </struct>
     <struct name="Command" structId="16">
         <!-- command id must be unique for each client -->
-        <integer fieldName="id" storeAs="04_BYTE"/>
+        <integer fieldName="id" storeAs="02_BYTE"/>
+        <!-- id of command sequence -->
+        <integer fieldName="sequenceId" storeAs="02_BYTE"/>
         <!-- action of IPC which handle this message -->
         <string fieldName="action" />
         <list fieldName="args" >
             <generic />
         </list>
-    </struct>
-    <!-- response of IPC command -->
-    <struct name="CommandResult" structId="17">
-        <!-- command id must be unique for each client -->
-        <integer fieldName="id" storeAs="04_BYTE"/>
-        <!-- action of IPC which handle this message -->
-        <string fieldName="action" />
-        <integer fieldName="code" storeAs="01_BYTE"/>
-        <generic fieldName="value"/>
     </struct>
 
     <message name="SingleMessage" structId="1">

@@ -31,7 +31,6 @@ import javax.inject.Singleton;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,11 +44,12 @@ public final class DataService {
     static final Logger LOG = Logger.getLogger(DataService.class.getName());
     static final int MAX_SEND_ON_ONE_ADDR = 3;
     public static final String ACTION_DATA = "tg.data";
+    public static final String ACTION_DATA_RESPONSE = "tg.dataResponse";
     final IpcService ipc;
     private final HandlersRegistry<Callback<Data>> registry = new HandlersRegistry<>();
     private final ClientsAddressesService clientsAddresses;
-    private final ConcurrentMap<Integer, DataMessage> sended = new ConcurrentHashMap<>();
-    private final AtomicInteger commandIdGenerator = new AtomicInteger();
+    private final ConcurrentMap<Integer, DataMessage> sentMessages = new ConcurrentHashMap<>();
+    private final IdSequenceGenerator commandIdGenerator = IdSequenceGenerator.shortIdGenerator();
 
     @Inject
     DataService(IpcService ipc, ClientsAddressesService clientsAddresses) {
@@ -58,9 +58,7 @@ public final class DataService {
         this.ipc.addIpcHandler(ACTION_DATA, new IpcEntryHandler() {
             @Override
             public void handle(IpcEntryHandlerContext context, IpcEntry entry) {
-                if(entry instanceof CommandResult) {
-                    processCommandResult((CommandResult)entry);
-                } else if(entry instanceof Command) {
+                if(entry instanceof Command) {
                     processCommand(context, (Command)entry);
                 } else {
                     throw new RuntimeException("Unsupported IpcEntry type: " + entry);
@@ -69,34 +67,40 @@ public final class DataService {
         });
     }
 
-    int getNextId() {
-        return this.commandIdGenerator.getAndIncrement();
-    }
-
-    private void processCommandResult(CommandResult commandResult) {
-        DataMessage message = this.sended.get(commandResult.getId());
-        message.success();
+    short getNextId() {
+        return this.commandIdGenerator.next();
     }
 
     private void processCommand(IpcEntryHandlerContext context, Command command) {
-        CommandResult.Builder builder = CommandResult.builder()
+        if(ACTION_DATA_RESPONSE.equals(command.getAction())) {
+            final DataMessage message = this.sentMessages.get(command.getId());
+            if(message != null) {
+                StatusCode code = (StatusCode)command.getArg();
+                if(code == null || code == StatusCode.OK) {
+                    message.success();
+                } else {
+                    message.success();
+                }
+            }
+            return;
+        }
+        Command.Builder builder = Command.builder()
           .id(command.getId())
           .action(command.getAction());
-        final List<Object> args = command.getArgs();
-        final Object arg = args.get(0);
+        final Object arg = command.getArg();
         final Data data = (Data)arg;
         final String action = data.getAction();
         final Callback<Data> callback = registry.get(action);
         if(callback == null) {
             LOG.warning("no callback for action: " + action);
-            builder.setCode(ResponseCode.ERROR);
+            builder.setArg(StatusCode.ERROR);
         }
         if(callback != null) {
             try {
                 callback.call(data);
             } catch(Exception e) {
                 LOG.log(Level.SEVERE, "fail callback", e);
-                builder.setCode(ResponseCode.ERROR);
+                builder.setArg(StatusCode.ERROR);
             }
         }
 
@@ -122,7 +126,7 @@ public final class DataService {
             throw new RuntimeException("no addresses for client: " + clientId);
         }
         final DataMessage message = new DataMessage(this, clientId, addresses, data);
-        this.sended.put(message.getId(), message);
+        this.sentMessages.put(message.getId(), message);
         message.send();
         return message;
     }

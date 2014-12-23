@@ -26,9 +26,7 @@ import talkeeg.common.model.*;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.HandlersRegistry;
 import talkeeg.common.util.ServiceLocator;
-
 import javax.inject.Inject;
-import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,7 +78,6 @@ final class MessageProcessor {
 
     IoObject send(Parcel parcel) throws Exception {
         final ClientAddress destination = parcel.getAddress();
-        final InetSocketAddress socketAddress = IpcUtil.toAddress(destination.getValue());
         SingleMessage singleMessage = this.singleMessageSupport.build(parcel);
         return new IoObject(singleMessage, destination);
     }
@@ -95,26 +92,24 @@ final class MessageProcessor {
         final ReadResult<SingleMessage> result = this.singleMessageSupport.read(context, message);
         if(!result.isVerified()) {
             logConsumeError(address, "SingleMessage has errors:" + result.getErrors());
-            final ResponseCode responseCode = result.getResponseCode();
-            if(responseCode != null) {
+            final StatusCode statusCode = result.getStatusCode();
+            if(statusCode != null) {
                 Parcel parcel = new Parcel(message.getSrc(), address);
-                // command result with null action - processed as parcel-wide result
-                parcel.getMessages().add(CommandResult.builder().code(responseCode).build());
+                parcel.setCode(statusCode);
                 context.getService().push(parcel);
             }
             return;
         }
-        final List<?> objects = result.getEntries();
-        for(Object obj: objects) {
-            if(!(obj instanceof IpcEntry)) {
-                logConsumeError(address, "unsupported IpcEntry type '" + obj.getClass() + "'.");
-                continue;
-            }
-            IpcEntry entry = (IpcEntry)obj;
-            final String action = entry.getAction();
-            if(action == null) {//is processor action
-                handle(context, entry);
-            } else {
+        Object arg = result.getArg();
+        if(arg instanceof List) {
+            final List<?> objects = (List<?>)arg;
+            for(Object obj: objects) {
+                if(!(obj instanceof IpcEntry)) {
+                    logConsumeError(address, "unsupported IpcEntry type '" + obj.getClass() + "'.");
+                    continue;
+                }
+                IpcEntry entry = (IpcEntry)obj;
+                final String action = entry.getAction();
                 IpcEntryHandler handler = this.handlers.get(action);
                 if(handler == null) {
                     logConsumeError(address, "No handler for '" + action + "'.");
@@ -122,16 +117,19 @@ final class MessageProcessor {
                     handler.handle(context, entry);
                 }
             }
+        } else {
+            //is processor action
+            handle(context, arg);
         }
     }
 
-    private void handle(IpcEntryHandlerContext context, IpcEntry entry) {
-        if(!(entry instanceof CommandResult)) {
+    private void handle(IpcEntryHandlerContext context, Object entry) {
+        if(!(entry instanceof Command)) {
             logConsumeError(context.getSrcClientAddress(), "unknown processor entry: " + entry);
             return;
         }
-        CommandResult commandResult = (CommandResult)entry;
-        ResponseCode code = commandResult.getCode();
+        Command commandResult = (Command)entry;
+        StatusCode code = (StatusCode)commandResult.getArg();
         switch(code) {
             case NOT_AC: {
                 final AcquaintService acquaintService = this.serviceLocator.get(AcquaintService.class);

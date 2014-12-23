@@ -19,10 +19,9 @@
 
 package talkeeg.common.ipc;
 
-import com.google.common.base.Preconditions;
 import talkeeg.bf.Int128;
 import talkeeg.common.model.ClientAddress;
-import talkeeg.common.model.Command;
+import talkeeg.common.model.StatusCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +37,7 @@ public final class Parcel {
     private final List<IpcEntry> messages = new ArrayList<>();
     private boolean userSigned;
     private boolean ciphered;
+    private StatusCode code;
 
     /**
      * create instance of parcel
@@ -47,6 +47,22 @@ public final class Parcel {
     public Parcel(Int128 destinationId, ClientAddress address) {
         this.destinationId = destinationId;
         this.address = address;
+    }
+
+    /**
+     * status code of message
+     * @return
+     */
+    public StatusCode getCode() {
+        return code;
+    }
+
+    /**
+     * status code of message
+     * @param code
+     */
+    public void setCode(StatusCode code) {
+        this.code = code;
     }
 
     public boolean isUserSigned() {

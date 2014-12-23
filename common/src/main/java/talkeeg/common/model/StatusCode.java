@@ -17,30 +17,41 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.common.ipc;
+package talkeeg.common.model;
+
+import talkeeg.common.util.EnumWithValue;
 
 /**
- * common iface for any IPC entry like COMMAND or COMAND_RESULT
- *
- * Created by wayerr on 11.12.14.
+ * Code for {@link talkeeg.common.model.Command }
+ * Created by wayerr on 21.11.14.
  */
-public interface IpcEntry {
+public enum StatusCode implements EnumWithValue<Byte> {
     /**
-     * unique per client id of entry (for result entry command_result.id == command.id)
-     * @return id of entry
+     * OK = 1
      */
-    short getId();
+    OK(1),
+    /**
+     * ERROR = 2
+     */
+    ERROR(2),
+    /**
+     * NOT_AC = 3
+     *       (client not acquainted, в ответ на это клиент посылает `CLIENT_IC`)
+     */
+    NOT_AC(3),
+    /**
+     * NOT_AU = 4  (user not acquainted, тут ничего не поделать)
+     */
+    NOT_AU(4);
 
-    /**
-     * id of command sequence
-     * @return
-     */
-    short getSequenceId();
+    private final byte value;
 
-    /**
-     * action on which is registered handler
-     * @see talkeeg.common.ipc.IpcService#addIpcHandler(String, talkeeg.common.ipc.IpcEntryHandler)
-     * @return
-     */
-    String getAction();
+    StatusCode(int value) {
+        this.value = (byte)value;
+    }
+
+    @Override
+    public Byte getValue() {
+        return value;
+    }
 }

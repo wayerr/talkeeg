@@ -53,7 +53,7 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
     private final Bf bf;
     private final KeyLoader keyLoader;
     private final OwnedIdentityCardsService ownedIdentityCards;
-    private final AtomicInteger idGenerator = new AtomicInteger();
+    private final IdSequenceGenerator idGenerator = IdSequenceGenerator.shortIdGenerator();
 
     @Inject
     public SingleMessageSupport(Bf bf,
@@ -70,7 +70,6 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
         this.ownedIdentityCards = ownedIdentityCards;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ReadResult<SingleMessage> read(IpcEntryHandlerContext context, SingleMessage message) throws Exception {
         ReadResult.Builder<SingleMessage> builder = ReadResult.builder();
@@ -94,8 +93,8 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
         } else {
             builder.addError(message + "Unsupported cipher type: " + cipherType);
         }
-        final List<IpcEntry> entries = (List<IpcEntry>)this.bf.read(ByteBuffer.wrap(arr));
-        builder.getEntries().addAll(entries);
+        final Object entries = this.bf.read(ByteBuffer.wrap(arr));
+        builder.setArg(entries);
         return builder.build();
     }
 
@@ -128,7 +127,7 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
                 final AcquaintedClient client = this.acquaintedClients.getClient(sourceClientId);
                 if(client == null) {
                     builder.addError("Client " + sourceClientId + " is not acquainted");
-                    builder.setResponseCode(ResponseCode.NOT_AC);
+                    builder.setStatusCode(StatusCode.NOT_AC);
                     return;
                 }
                 clientPublicKey = client.getKey();
@@ -173,7 +172,7 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
         ByteBuffer data = this.bf.write(parcel.getMessages());
         SingleMessage.Builder builder = SingleMessage.builder();
         builder.setSrc(this.ownedIdentityCards.getClientId());
-        builder.setId(nextId());
+        builder.setId(this.idGenerator.next());
         final Int128 dstClientId = parcel.getDestinationId();
         builder.setDst(dstClientId);
         if(!parcel.isCiphered()) {
@@ -191,18 +190,4 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
         return builder.build();
     }
 
-    private short nextId() {
-        int nextId;
-        while(true) {
-            nextId = this.idGenerator.getAndIncrement();
-            if(nextId > Short.MAX_VALUE) {
-                if(this.idGenerator.compareAndSet(nextId, 0)) {
-                    nextId = 0;
-                    break;
-                }
-            }
-            break;
-        }
-        return (short)nextId;
-    }
 }

@@ -57,7 +57,7 @@ public final class DataMessage {
         this.command = Command.builder()
           .id(this.dataService.getNextId())
           .action(DataService.ACTION_DATA)
-          .addArg(this.data)
+          .arg(this.data)
           .build();
     }
 
@@ -101,7 +101,7 @@ public final class DataMessage {
     }
 
     Integer getId() {
-        return this.command.getId();
+        return (int)this.command.getId();
     }
 
     public Data getData() {

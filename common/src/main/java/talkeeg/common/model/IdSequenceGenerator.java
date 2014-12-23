@@ -19,39 +19,38 @@
 
 package talkeeg.common.model;
 
-import talkeeg.common.util.EnumWithValue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Code for {@link talkeeg.common.model.Command }
- * Created by wayerr on 21.11.14.
+ * thread safe generator of sequence ids
+ * Created by wayerr on 23.12.14.
  */
-public enum ResponseCode implements EnumWithValue<Byte> {
-    /**
-     * OK = 1
-     */
-    OK(1),
-    /**
-     * ERROR = 2
-     */
-    ERROR(2),
-    /**
-     * NOT_AC = 3
-     *       (client not acquainted, в ответ на это клиент посылает `CLIENT_IC`)
-     */
-    NOT_AC(3),
-    /**
-     * NOT_AU = 4  (user not acquainted, тут ничего не поделать)
-     */
-    NOT_AU(4);
+public final class IdSequenceGenerator {
 
-    private final byte value;
+    private final AtomicInteger idGenerator = new AtomicInteger();
 
-    ResponseCode(int value) {
-        this.value = (byte)value;
+    private final int maxValue;
+
+    public IdSequenceGenerator(int maxValue) {
+        this.maxValue = maxValue;
     }
 
-    @Override
-    public Byte getValue() {
-        return value;
+    public static IdSequenceGenerator shortIdGenerator() {
+        return new IdSequenceGenerator(Short.MAX_VALUE);
+    }
+
+    public short next() {
+        int nextId;
+        while(true) {
+            nextId = this.idGenerator.getAndIncrement();
+            if(nextId > maxValue) {
+                if(this.idGenerator.compareAndSet(nextId, 0)) {
+                    nextId = 0;
+                    break;
+                }
+            }
+            break;
+        }
+        return (short)nextId;
     }
 }

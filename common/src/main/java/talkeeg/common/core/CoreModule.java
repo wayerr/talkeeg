@@ -94,7 +94,6 @@ public final class CoreModule {
               .build())
             .putType(SingleMessage.class, SingleMessage.STRUCT_BUILDER_FACTORY)
             .putType(Command.class, Command.STRUCT_BUILDER_FACTORY)
-            .putType(CommandResult.class, CommandResult.STRUCT_BUILDER_FACTORY)
             .putType(UserIdentityCard.class, UserIdentityCard.STRUCT_BUILDER_FACTORY)
             .putType(ClientIdentityCard.class, ClientIdentityCard.STRUCT_BUILDER_FACTORY)
             .putType(ClientAddresses.class, ClientAddresses.STRUCT_BUILDER_FACTORY)
