@@ -48,7 +48,7 @@ public final class DataService {
     final IpcService ipc;
     private final HandlersRegistry<Callback<Data>> registry = new HandlersRegistry<>();
     private final ClientsAddressesService clientsAddresses;
-    private final ConcurrentMap<Integer, DataMessage> sentMessages = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Short, DataMessage> sentMessages = new ConcurrentHashMap<>();
     private final IdSequenceGenerator commandIdGenerator = IdSequenceGenerator.shortIdGenerator();
 
     @Inject
@@ -74,7 +74,7 @@ public final class DataService {
 
     private void processCommand(IpcEntryHandlerContext context, Command command) {
         if(ACTION_DATA_RESPONSE.equals(command.getAction())) {
-            final DataMessage message = this.sentMessages.get(command.getId());
+            final DataMessage message = this.sentMessages.get(getMessageId(command));
             if(message != null) {
                 final StatusCode code = (StatusCode)command.getArg();
                 final DataMessage.State state = (code == null || code == StatusCode.OK)?
@@ -86,7 +86,7 @@ public final class DataService {
         }
         Command.Builder builder = Command.builder()
           .id(getNextId())
-          .sequenceId(command.getSequenceId())
+          .sequenceId(getMessageId(command))
           .action(ACTION_DATA_RESPONSE);
         final Object arg = command.getArg();
         final Data data = (Data)arg;
@@ -111,6 +111,10 @@ public final class DataService {
         this.ipc.push(parcel);
     }
 
+    private short getMessageId(Command command) {
+        return command.getSequenceId();
+    }
+
     public Closeable addHandler(String key, Callback<Data> callback) {
         return this.registry.register(key, callback);
     }
@@ -127,7 +131,7 @@ public final class DataService {
             throw new RuntimeException("no addresses for client: " + clientId);
         }
         final DataMessage message = new DataMessage(this, clientId, addresses, data);
-        this.sentMessages.put(message.getId(), message);
+        this.sentMessages.put(getMessageId(message.getCommand()), message);
         message.send();
         return message;
     }
