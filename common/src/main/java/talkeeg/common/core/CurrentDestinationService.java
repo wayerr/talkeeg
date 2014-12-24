@@ -72,7 +72,10 @@ public final class CurrentDestinationService {
         }
     }
 
-    public static final MessageBusKey<CurrentDestinationService.Event> MB_KEY = MessageBusKey.create("tg.CurrentDestinationService", Event.class);
+    /**
+     * key of message bus for this service
+     */
+    public static final MessageBusKey<CurrentDestinationService.Event> MB_KEY = MessageBusKey.create("tg.service.currentDestination", Event.class);
 
     private final AcquaintedClientsService acquaintedClients;
     private final AcquaintedUsersService acquaintedUsers;
@@ -85,7 +88,7 @@ public final class CurrentDestinationService {
             }
         }
     };
-    private final Listener<ChangeItemEvent<AcquaintedUsersService, AcquaintedUser>> acquaintedUserdListener =
+    private final Listener<ChangeItemEvent<AcquaintedUsersService, AcquaintedUser>> acquaintedUsersListener =
       new Listener<ChangeItemEvent<AcquaintedUsersService, AcquaintedUser>>() {
         @Override
         public void listen(ChangeItemEvent<AcquaintedUsersService, AcquaintedUser> event) throws Exception {
@@ -106,35 +109,68 @@ public final class CurrentDestinationService {
 
 
     @Inject
-    public CurrentDestinationService(MessageBusRegistry registry, AcquaintedClientsService acquaintedClients, AcquaintedUsersService acquaintedUsers) {
+    CurrentDestinationService(MessageBusRegistry registry, AcquaintedClientsService acquaintedClients, AcquaintedUsersService acquaintedUsers) {
         this.registry = registry;
         this.acquaintedClients = acquaintedClients;
         this.acquaintedUsers = acquaintedUsers;
         registry.getOrCreateBus(AcquaintedClientsService.MB_KEY).register(acquaintedClientsListener);
-        registry.getOrCreateBus(AcquaintedUsersService.MB_KEY).register(acquaintedUserdListener);
+        registry.getOrCreateBus(AcquaintedUsersService.MB_KEY).register(acquaintedUsersListener);
     }
 
+    /**
+     * set current userId
+     * @see #MB_KEY
+     * @param userId
+     */
     public void setUserId(Int128 userId) {
         this.userIdRef.set(userId);
     }
 
+    /**
+     * get current userId
+     * @see #MB_KEY
+     * @return
+     */
     public Int128 getUserId() {
         return this.userIdRef.get();
     }
 
+    /**
+     * get user by current user id
+     * @see #getUserId()
+     * @return
+     */
     public AcquaintedUser getUser() {
         final Int128 local = getUserId();
+        if(local == null) {
+            return null;
+        }
         return this.acquaintedUsers.getUser(local);
     }
 
+    /**
+     * set current clientId
+     * @see #MB_KEY
+     * @param clientId
+     */
     public void setClientId(Int128 clientId) {
         this.clientIdRef.set(clientId);
     }
 
+    /**
+     * get current clientId
+     * @see #MB_KEY
+     * @return
+     */
     public Int128 getClientId() {
         return this.clientIdRef.get();
     }
 
+    /**
+     * get current client by current client id
+     * @see #getClientId()
+     * @return
+     */
     public AcquaintedClient getClient() {
         final Int128 local = this.getClientId();
         return this.acquaintedClients.getClient(local);
