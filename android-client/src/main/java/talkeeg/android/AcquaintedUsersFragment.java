@@ -71,12 +71,13 @@ public final class AcquaintedUsersFragment extends Fragment {
         final ListView listView = (ListView)inflate.findViewById(R.id.acquaintedUsersList);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setAdapter(adapter);
+        listView.setSelection(0);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             final CurrentDestinationService currentDestination = App.get(CurrentDestinationService.class);
-
+            //TODO selection does not work
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AcquaintedClient selectedClient = (AcquaintedClient)listView.getSelectedItem();
+                AcquaintedClient selectedClient = (AcquaintedClient)listView.getAdapter().getItem(position);
                 updateDestination(selectedClient);
             }
 

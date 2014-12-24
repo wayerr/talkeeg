@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -89,7 +90,11 @@ public final class MessagesActivity extends Activity {
             return;
         }
         final BinaryData data = new BinaryData(string.getBytes());
-        this.dataService.push(clientId, Data.buidler().action(Constants.DATA_ACTION_CHAT).data(data).build());
+        try {
+            this.dataService.push(clientId, Data.buidler().action(Constants.DATA_ACTION_CHAT).data(data).build());
+        } catch(Exception e) {
+            Log.e(getLocalClassName(), "error while send to client: " + clientId, e);
+        }
     }
 
     public void selectDestinationAction(View view) {
