@@ -104,6 +104,7 @@ public final class FileData {
         try {
             raf = new RandomAccessFile(this.file, "rw");
             channel = raf.getChannel();
+            raf.setLength(0);//without this line, where no messages then file data was remain
             for(Object message: messages) {
                 ByteBuffer buffer = bf.write(message);
                 channel.write(buffer);
