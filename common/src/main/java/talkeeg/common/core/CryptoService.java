@@ -47,7 +47,7 @@ public final class CryptoService {
         this.ownedKeysManager = new OwnedKeysManager(config, keyLoader, new KeyPairGen());
     }
 
-    public void init() {
+    void init() {
         this.ownedKeysManager.loadKeys();
     }
 

@@ -24,6 +24,7 @@ import talkeeg.common.conf.Config;
 import talkeeg.common.core.CoreModule;
 import talkeeg.common.core.CryptoService;
 import talkeeg.common.ipc.IpcServiceManager;
+import talkeeg.common.util.ServiceLocator;
 import talkeeg.dc.ui.GuiManager;
 
 import java.awt.*;
@@ -56,9 +57,7 @@ public final class App {
     }
 
     void start() {
-        CoreModule.init(this.graph);
-        serviceManager.start();
-        cryptoService.init();
+        CoreModule.init(this.graph.get(ServiceLocator.class));
         EventQueue.invokeLater(this.guiManager);
     }
 

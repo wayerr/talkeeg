@@ -19,7 +19,6 @@
 
 package talkeeg.common.util;
 
-import dagger.ObjectGraph;
 import talkeeg.common.ipc.IpcLifecycleEvent;
 import talkeeg.mb.Listener;
 
@@ -29,11 +28,11 @@ import talkeeg.mb.Listener;
  */
 public final class WakeUpAtEvent<T extends IpcLifecycleEvent> implements Listener<T> {
     private final Class<?> clazz;
-    private final ObjectGraph graph;
+    private final ServiceLocator graph;
     private final Object lock = new Object();
     private volatile Object instance;
 
-    public WakeUpAtEvent(ObjectGraph graph, Class<?> clazz) {
+    public WakeUpAtEvent(ServiceLocator graph, Class<?> clazz) {
         this.clazz = clazz;
         this.graph = graph;
     }

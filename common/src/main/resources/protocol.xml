@@ -61,6 +61,7 @@
         <!-- fingerprint of destination public key -->
         <id fieldName="dst" />
         <!-- -->
+        <integer fieldName="status" storeAs="01_BYTE"/>
         <blob fieldName="clientSign" />
         <blob fieldName="userSign" />
         <integer fieldName="cipherType" storeAs="HALF"/>

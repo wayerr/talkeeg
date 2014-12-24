@@ -172,6 +172,7 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
         ByteBuffer data = this.bf.write(parcel.getMessages());
         SingleMessage.Builder builder = SingleMessage.builder();
         builder.setSrc(this.ownedIdentityCards.getClientId());
+        builder.setStatus(parcel.getCode());
         builder.setId(this.idGenerator.next());
         final Int128 dstClientId = parcel.getDestinationId();
         builder.setDst(dstClientId);

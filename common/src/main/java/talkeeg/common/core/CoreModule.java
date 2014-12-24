@@ -23,7 +23,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import dagger.Module;
-import dagger.ObjectGraph;
 import dagger.Provides;
 import talkeeg.bf.*;
 import talkeeg.bf.schema.PrimitiveEntry;
@@ -35,7 +34,6 @@ import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.model.*;
 import talkeeg.common.util.*;
 import talkeeg.mb.MessageBusRegistry;
-
 import javax.inject.Singleton;
 import java.util.List;
 
@@ -168,10 +166,12 @@ public final class CoreModule {
     /**
      * an ugly workaround for binding some wakeup-r on event buses <p/>
      * in future we must bind services on remote events instead of lifecycle event (for example, by using {@link dagger.Lazy})
-     * @param objectGraph
+     * @param locator
      */
-    public static void init(ObjectGraph objectGraph) {
-        final MessageBusRegistry registry = objectGraph.get(MessageBusRegistry.class);
-        registry.getOrCreateBus(IpcServiceManager.MB_SERVICE_LIFECYCLE).register(new WakeUpAtEvent<>(objectGraph, AcquaintService.class));
+    public static void init(ServiceLocator locator) {
+        final MessageBusRegistry registry = locator.get(MessageBusRegistry.class);
+        locator.get(IpcServiceManager.class).start();
+        locator.get(CryptoService.class).init();
+        registry.getOrCreateBus(IpcServiceManager.MB_SERVICE_LIFECYCLE).register(new WakeUpAtEvent<>(locator, AcquaintService.class));
     }
 }

@@ -89,6 +89,11 @@ final class MessageProcessor {
         if(dst != null && !dst.equals(getClientId())) {
             logConsumeError(address, "SingleMessage.dst == " + dst + " , but expected null or clientId.");
         }
+        final StatusCode status = message.getStatus();
+        if(status != null && status != StatusCode.OK) {
+            processMessageWithStatus(context, status);
+            return;
+        }
         final ReadResult<SingleMessage> result = this.singleMessageSupport.read(context, message);
         if(!result.isVerified()) {
             logConsumeError(address, "SingleMessage has errors:" + result.getErrors());
@@ -118,26 +123,19 @@ final class MessageProcessor {
                 }
             }
         } else {
-            //is processor action
-            handle(context, arg);
+            logConsumeError(address, "Unsupported command argument type: '" + (arg == null? "null" : arg.getClass()) + "'.");
         }
     }
 
-    private void handle(IpcEntryHandlerContext context, Object entry) {
-        if(!(entry instanceof Command)) {
-            logConsumeError(context.getSrcClientAddress(), "unknown processor entry: " + entry);
-            return;
-        }
-        Command commandResult = (Command)entry;
-        StatusCode code = (StatusCode)commandResult.getArg();
-        switch(code) {
+    private void processMessageWithStatus(IpcEntryHandlerContext context, StatusCode status) {
+        switch(status) {
             case NOT_AC: {
                 final AcquaintService acquaintService = this.serviceLocator.get(AcquaintService.class);
                 acquaintService.acquaint(context.getSrcClientAddress());
             }
             break;
             default:
-                logConsumeError(context.getSrcClientAddress(), " response code: " + code);
+                logConsumeError(context.getSrcClientAddress(), " unsupported response code: " + status);
         }
     }
 

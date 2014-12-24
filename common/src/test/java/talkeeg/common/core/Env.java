@@ -19,20 +19,12 @@
 
 package talkeeg.common.core;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
 import dagger.ObjectGraph;
 import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
-import talkeeg.common.conf.ConfigImpl;
-import talkeeg.common.conf.DefaultConfigBackend;
-import talkeeg.common.conf.DefaultConfiguration;
-import talkeeg.common.util.DefaultTempDirProvider;
 import talkeeg.common.util.Fs;
 import talkeeg.common.util.ServiceLocator;
 import talkeeg.mb.MessageBusRegistry;
-
-import java.io.File;
 
 /**
  * testing environment
@@ -45,11 +37,11 @@ public final class Env implements AutoCloseable, ServiceLocator {
     private final ObjectGraph objectGraph;
     private final ServiceLocator serviceLocator;
 
-    public Env() {
+    private Env() {
         EnvModule envModule = new EnvModule();
         this.objectGraph = ObjectGraph.create(envModule);
         envModule.setObjectGraph(this.objectGraph);
-        this.objectGraph.get(CryptoService.class).init();
+        CoreModule.init(this.objectGraph.get(ServiceLocator.class));
         this.serviceLocator = this.objectGraph.get(ServiceLocator.class);
     }
 

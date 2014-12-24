@@ -44,6 +44,7 @@ public class SingleMessage extends BaseSingleMessage {
     public static class Builder extends BaseSingleMessage.Builder {
         private BinaryData clientSign;
         private BinaryData userSign;
+        private StatusCode status;
         private BinaryData data;
         private MessageCipherType cipherType;
 
@@ -53,6 +54,35 @@ public class SingleMessage extends BaseSingleMessage {
 
         public void setData(BinaryData data) {
             this.data = data;
+        }
+
+        /**
+         * status code of message
+         * @see talkeeg.common.model.StatusCode
+         * @return
+         */
+        public StatusCode getStatus() {
+            return status;
+        }
+
+        /**
+         * status code of message
+         * @see talkeeg.common.model.StatusCode
+         * @param status
+         * @return
+         */
+        public Builder status(StatusCode status) {
+            setStatus(status);
+            return this;
+        }
+
+        /**
+         * status code of message
+         * @see talkeeg.common.model.StatusCode
+         * @param status
+         */
+        public void setStatus(StatusCode status) {
+            this.status = status;
         }
 
         /**
@@ -103,6 +133,7 @@ public class SingleMessage extends BaseSingleMessage {
 
     private final BinaryData clientSign;
     private final BinaryData userSign;
+    private final StatusCode status;
     private final MessageCipherType cipherType;
     private final BinaryData data;
 
@@ -110,6 +141,7 @@ public class SingleMessage extends BaseSingleMessage {
         super(b);
         this.clientSign = b.clientSign;
         this.userSign = b.userSign;
+        this.status = b.status;
         this.data = b.data;
         this.cipherType = b.cipherType;
     }
@@ -132,6 +164,15 @@ public class SingleMessage extends BaseSingleMessage {
      */
     public BinaryData getUserSign() {
         return userSign;
+    }
+
+    /**
+     * status code of message
+     * @see talkeeg.common.model.StatusCode
+     * @return
+     */
+    public StatusCode getStatus() {
+        return status;
     }
 
     /**

@@ -21,8 +21,9 @@ package talkeeg.android;
 
 import android.app.Application;
 import dagger.ObjectGraph;
+import talkeeg.common.core.CoreModule;
 import talkeeg.common.core.CryptoService;
-import talkeeg.common.ipc.IpcServiceManager;
+import talkeeg.common.util.ServiceLocator;
 
 import javax.inject.Inject;
 
@@ -38,16 +39,13 @@ public class App extends Application {
 
     @Inject
     CryptoService cryptoService;
-    @Inject
-    IpcServiceManager serviceManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
         this.objectGraph = ObjectGraph.create(new MainModule(this));
         this.objectGraph.inject(this);
-        this.cryptoService.init();
-        this.serviceManager.start();
+        CoreModule.init(this.objectGraph.get(ServiceLocator.class));
         INTANCE = this;//share app instance
     }
 
