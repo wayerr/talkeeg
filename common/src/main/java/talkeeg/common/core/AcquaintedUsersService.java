@@ -118,4 +118,8 @@ public final class AcquaintedUsersService {
     public List<AcquaintedUser> getAcquaintedUsers() {
         return ImmutableList.copyOf(this.users.values());
     }
+
+    public AcquaintedUser getUser(Int128 userId) {
+        return this.users.get(userId);
+    }
 }

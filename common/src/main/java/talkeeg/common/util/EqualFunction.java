@@ -17,35 +17,12 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.mb;
+package talkeeg.common.util;
 
 /**
- * message bus iface
- * Created by wayerr on 12.12.14.
+ * function which test two objects for equality
+ * Created by wayerr on 23.12.14.
  */
-public interface MessageBus<T> extends Listener<T> {
-    /**
-     * unique identified of bus in registry
-     * @return
-     */
-    MessageBusKey<T> getKey();
-
-    /**
-     * send specified event to subscribed listeners
-     * @param event
-     */
-    @Override
-    void listen(T event);
-
-    /**
-     * register listener
-     * @param listener
-     */
-    void register(Listener<T> listener);
-
-    /**
-     * unregister listener
-     * @param listener
-     */
-    void unregister(Listener<T> listener);
+public interface EqualFunction<T> {
+    public boolean equal(T left, T right);
 }

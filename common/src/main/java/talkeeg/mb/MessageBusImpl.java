@@ -32,7 +32,7 @@ final class MessageBusImpl<T> implements MessageBus<T> {
 
     private final MessageBusKey<T> key;
     private final Listener<UncaughtExceptionEvent> exceptionHandler;
-    private final List<Listener<? super T>> listenerList = new ArrayList<>();
+    private final List<Listener<T>> listenerList = new ArrayList<>();
 
     MessageBusImpl(MessageBusKey<T> key, Listener<UncaughtExceptionEvent> exceptionHandler) {
         this.key = key;
@@ -54,7 +54,7 @@ final class MessageBusImpl<T> implements MessageBus<T> {
         synchronized(listenerList) {
             final int size = listenerList.size();
             for(int i = 0; i < size; ++i) {
-                final Listener<? super T> listener = listenerList.get(i);
+                final Listener<T> listener = listenerList.get(i);
                 try {
                     listener.listen(event);
                 } catch(InterruptedException e) {
@@ -68,7 +68,7 @@ final class MessageBusImpl<T> implements MessageBus<T> {
         }
     }
 
-    protected void processException(T event, Listener<? super T> listener, Exception e) {
+    protected void processException(T event, Listener<T> listener, Exception e) {
         final UncaughtExceptionEvent exceptionEvent = new UncaughtExceptionEvent(this, event, listener, e);
         if(this.exceptionHandler != null) {
             try {
@@ -91,7 +91,7 @@ final class MessageBusImpl<T> implements MessageBus<T> {
     }
 
     @Override
-    public void register(Listener<? super T> listener) {
+    public void register(Listener<T> listener) {
         synchronized(listenerList) {
             // in array list contains method used a Object.equals , but we need check identity
             final int size = listenerList.size();
@@ -106,7 +106,7 @@ final class MessageBusImpl<T> implements MessageBus<T> {
     }
 
     @Override
-    public void unregister(Listener<? super T> listener) {
+    public void unregister(Listener<T> listener) {
         synchronized(listenerList) {
             // in array list contains method used a Object.equals , but we need check identity
             for(int i = 0; i < listenerList.size(); ++i) {

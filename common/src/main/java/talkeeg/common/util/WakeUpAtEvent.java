@@ -20,13 +20,14 @@
 package talkeeg.common.util;
 
 import dagger.ObjectGraph;
+import talkeeg.common.ipc.IpcLifecycleEvent;
 import talkeeg.mb.Listener;
 
 /**
  * service which wake up specified class from object graph at event
  * Created by wayerr on 15.12.14.
  */
-public final class WakeUpAtEvent<T> implements Listener<T> {
+public final class WakeUpAtEvent<T extends IpcLifecycleEvent> implements Listener<T> {
     private final Class<?> clazz;
     private final ObjectGraph graph;
     private final Object lock = new Object();

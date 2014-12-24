@@ -21,9 +21,11 @@ package talkeeg.android;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import talkeeg.bf.BinaryData;
@@ -34,8 +36,6 @@ import talkeeg.common.model.Data;
 import talkeeg.common.util.Callback;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.Closeables;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -45,9 +45,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public final class MessagesActivity extends Activity {
 
+    private static final int CODE_SELECTED_TARGET = 100;
     private final OptionsMenuSupport optionsMenuSupport = new OptionsMenuSupport(this);
     private DataService dataService;
-    private Int128 clientId;
+    private static Int128 clientId;
     private MessagesListAdapter listAdapter;
 
     /**
@@ -81,10 +82,19 @@ public final class MessagesActivity extends Activity {
         if(this.clientId == null) {
             return;
         }
-        BinaryData data = new BinaryData("тест уникода".getBytes());
+        final EditText editText = (EditText)findViewById(R.id.messagesEditText);
+        final String string = editText.getText().toString();
+        if(string.isEmpty()) {
+            return;
+        }
+        final BinaryData data = new BinaryData(string.getBytes());
         this.dataService.push(this.clientId, Data.buidler().action(Constants.DATA_ACTION_CHAT).data(data).build());
     }
 
+    public void selectDestinationAction(View view) {
+        startActivityForResult(new Intent(this, AcquaintedUsersActivity.class), CODE_SELECTED_TARGET);
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
