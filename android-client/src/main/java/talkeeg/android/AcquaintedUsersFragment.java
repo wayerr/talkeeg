@@ -26,11 +26,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.google.common.base.Function;
 import talkeeg.bf.Arrays;
-import talkeeg.common.core.AcquaintedUser;
-import talkeeg.common.core.AcquaintedUsersService;
+import talkeeg.common.core.*;
 import talkeeg.common.model.UserIdentityCard;
+import talkeeg.common.util.Stringifier;
+import talkeeg.common.util.Stringifiers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,35 +44,56 @@ public final class AcquaintedUsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflate = inflater.inflate(R.layout.acquainted_users_fragment, container, false);
-        ListView listView = (ListView)inflate.findViewById(R.id.acquaintedUsersList);
-        AcquaintedUsersService service = App.get(AcquaintedUsersService.class);
-        listView.setAdapter(new AcquaintedUserListAdapter(getActivity(), R.layout.acquainted_user_view, service));
+        final ListView listView = (ListView)inflate.findViewById(R.id.acquaintedUsersList);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setAdapter(new AcquaintedUserListAdapter(getActivity(), R.layout.acquainted_user_view));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            final CurrentDestinationService currentDestination = App.get(CurrentDestinationService.class);
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AcquaintedClient selectedClient = (AcquaintedClient)listView.getSelectedItem();
+                updateDestination(selectedClient);
+            }
+
+            protected void updateDestination(AcquaintedClient selectedClient) {
+                currentDestination.setClientId(selectedClient == null? null : selectedClient.getId());
+                currentDestination.setUserId(selectedClient == null? null : selectedClient.getUserId());
+            }
+        });
         return inflate;
     }
 
     private static final class AcquaintedUserListAdapter extends BaseAdapter {
 
-        private final AcquaintedUsersService service;
+        private final AcquaintedUsersService usersService;
+        private final AcquaintedClientsService clientsService;
         private final LayoutInflater inflater;
         private final int resource;
-        private List<AcquaintedUser> userList;
+        private final Function<AcquaintedClient, String> clientStringifier;
+        private final Function<AcquaintedUser, String> userStringifier;
+        private final List<AcquaintedClient> clientList = new ArrayList<>();
 
-        private AcquaintedUserListAdapter(Context context, int resource, AcquaintedUsersService service) {
+        private AcquaintedUserListAdapter(Context context, int resource) {
 
-            this.service = service;
+            this.usersService = App.get(AcquaintedUsersService.class);
+            this.clientsService = App.get(AcquaintedClientsService.class);
+            final Stringifiers stringifiers = App.get(Stringifiers.class);
+            this.clientStringifier = stringifiers.getToStringFunction(AcquaintedClient.class);
+            this.userStringifier = stringifiers.getToStringFunction(AcquaintedUser.class);
             this.resource = resource;
             this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            this.userList = this.service.getAcquaintedUsers();
+            this.clientList.addAll(this.clientsService.getClients());
         }
 
         @Override
         public int getCount() {
-            return this.userList.size();
+            return this.clientList.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return this.userList.get(i);
+            return this.clientList.get(i);
         }
 
         @Override
@@ -89,16 +113,17 @@ public final class AcquaintedUsersFragment extends Fragment {
             TextView fingerprintView  = (TextView)itemView.findViewById(R.id.acquaintedUserFingerprint);
 
             AcquaintedUser user = null;
-            if(this.userList != null && this.userList.size() > position) {
-                user = this.userList.get(position);
+            AcquaintedClient client = null;
+            if(this.clientList != null && this.clientList.size() > position) {
+                client = this.clientList.get(position);
+                user = this.usersService.getUser(client.getUserId());
             }
             if(user == null) {
                 nickView.setText(null);
                 fingerprintView.setText(null);
             } else {
-                final UserIdentityCard identityCard = user.getIdentityCard();
-                nickView.setText(String.valueOf(identityCard.getAttrs().get(UserIdentityCard.ATTR_NICK)));
-                fingerprintView.setText(Arrays.toHexString(user.getId().getData()));
+                nickView.setText(this.userStringifier.apply(user));
+                fingerprintView.setText(this.clientStringifier.apply(client));
             }
 
             return itemView;

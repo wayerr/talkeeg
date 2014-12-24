@@ -58,7 +58,8 @@ import java.util.List;
         MessageBusRegistry.class,
         ClientsAddressesService.class,
         DataService.class,
-        Stringifiers.class
+        Stringifiers.class,
+        CurrentDestinationService.class
     }
 )
 public final class CoreModule {

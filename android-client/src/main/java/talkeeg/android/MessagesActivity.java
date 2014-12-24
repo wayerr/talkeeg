@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
+import talkeeg.common.core.CurrentDestinationService;
 import talkeeg.common.core.DataService;
 import talkeeg.common.model.Constants;
 import talkeeg.common.model.Data;
@@ -45,10 +46,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public final class MessagesActivity extends Activity {
 
-    private static final int CODE_SELECTED_TARGET = 100;
     private final OptionsMenuSupport optionsMenuSupport = new OptionsMenuSupport(this);
     private DataService dataService;
-    private static Int128 clientId;
     private MessagesListAdapter listAdapter;
 
     /**
@@ -79,7 +78,9 @@ public final class MessagesActivity extends Activity {
     }
 
     public void sendMessageAction(View view) {
-        if(this.clientId == null) {
+        final CurrentDestinationService currentDestination = App.get(CurrentDestinationService.class);
+        final Int128 clientId = currentDestination.getClientId();
+        if(clientId == null) {
             return;
         }
         final EditText editText = (EditText)findViewById(R.id.messagesEditText);
@@ -88,11 +89,11 @@ public final class MessagesActivity extends Activity {
             return;
         }
         final BinaryData data = new BinaryData(string.getBytes());
-        this.dataService.push(this.clientId, Data.buidler().action(Constants.DATA_ACTION_CHAT).data(data).build());
+        this.dataService.push(clientId, Data.buidler().action(Constants.DATA_ACTION_CHAT).data(data).build());
     }
 
     public void selectDestinationAction(View view) {
-        startActivityForResult(new Intent(this, AcquaintedUsersActivity.class), CODE_SELECTED_TARGET);
+        startActivity(new Intent(this, AcquaintedUsersActivity.class));
     }
     
     @Override

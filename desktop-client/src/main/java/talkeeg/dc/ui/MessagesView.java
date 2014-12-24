@@ -22,6 +22,7 @@ package talkeeg.dc.ui;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.AcquaintedClient;
+import talkeeg.common.core.CurrentDestinationService;
 import talkeeg.common.core.DataMessage;
 import talkeeg.common.core.DataService;
 import talkeeg.common.model.Constants;
@@ -45,12 +46,14 @@ final class MessagesView implements View {
     private JTextField input;
     private JTextArea history;
     private ContactsComponent contacts;
+    private final CurrentDestinationService currentDestination;
     private final DataService dataService;
     private final Callback<DataMessage> dataMessageCallback = this::dataMessageChanged;
 
     @Inject
-    public MessagesView(DataService dataService) {
+    public MessagesView(DataService dataService, CurrentDestinationService currentDestination) {
         this.dataService = dataService;
+        this.currentDestination = currentDestination;
         this.dataService.addHandler(Constants.DATA_ACTION_CHAT, this::receiveMessage);
     }
 
@@ -110,11 +113,10 @@ final class MessagesView implements View {
     }
 
     private void sendMessage(SimpleAction simpleAction, ActionEvent actionEvent) {
-        AcquaintedClient selectedClient = this.contacts.getSelectedClient();
-        if(selectedClient == null) {
+        final Int128 clientId = this.currentDestination.getClientId();
+        if(clientId == null) {
             return;
         }
-        Int128 clientId = selectedClient.getId();
         BinaryData stringData = new BinaryData(input.getText().getBytes(StandardCharsets.UTF_8));
         Data data = Data.buidler()
           .action(Constants.DATA_ACTION_CHAT)

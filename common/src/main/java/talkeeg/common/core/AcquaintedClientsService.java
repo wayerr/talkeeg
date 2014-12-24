@@ -37,6 +37,7 @@ import javax.inject.Singleton;
 import java.io.File;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -125,5 +126,13 @@ public final class AcquaintedClientsService {
      */
     public AcquaintedClient getClient(Int128 clientId) {
         return this.map.get(clientId);
+    }
+
+    /**
+     * all acquainted clients
+     * @return
+     */
+    public Collection<AcquaintedClient> getClients() {
+        return ImmutableList.copyOf(this.map.values());
     }
 }
