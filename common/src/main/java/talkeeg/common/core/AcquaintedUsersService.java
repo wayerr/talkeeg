@@ -122,4 +122,18 @@ public final class AcquaintedUsersService {
     public AcquaintedUser getUser(Int128 userId) {
         return this.users.get(userId);
     }
+
+    /**
+     * remove user specified by id
+     * @param id
+     * @return removed user or null
+     */
+    public AcquaintedUser remove(Int128 id) {
+        final AcquaintedUser removed = this.users.remove(id);
+        if(removed != null) {
+            save();
+        }
+        registry.getOrCreateBus(MB_KEY).listen(new ChangeItemEvent<>(this, Modification.DELETE, removed));
+        return removed;
+    }
 }

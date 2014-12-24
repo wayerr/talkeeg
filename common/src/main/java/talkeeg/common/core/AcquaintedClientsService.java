@@ -135,4 +135,18 @@ public final class AcquaintedClientsService {
     public Collection<AcquaintedClient> getClients() {
         return ImmutableList.copyOf(this.map.values());
     }
+
+    /**
+     * remove client specified by id
+     * @param id
+     * @return removed client
+     */
+    public AcquaintedClient remove(Int128 id) {
+        AcquaintedClient removed = this.map.remove(id);
+        if(removed != null) {
+            save();
+        }
+        registry.getOrCreateBus(MB_KEY).listen(new ChangeItemEvent<>(this, Modification.DELETE, removed));
+        return removed;
+    }
 }

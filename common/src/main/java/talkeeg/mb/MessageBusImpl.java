@@ -90,8 +90,9 @@ final class MessageBusImpl<T> implements MessageBus<T> {
         return Logger.getLogger(getClass().getName());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void register(Listener<T> listener) {
+    public void register(Listener<? super T> listener) {
         synchronized(listenerList) {
             // in array list contains method used a Object.equals , but we need check identity
             final int size = listenerList.size();
@@ -101,12 +102,12 @@ final class MessageBusImpl<T> implements MessageBus<T> {
                     return;
                 }
             }
-            listenerList.add(listener);
+            listenerList.add((Listener<T>)listener);
         }
     }
 
     @Override
-    public void unregister(Listener<T> listener) {
+    public void unregister(Listener<? super T> listener) {
         synchronized(listenerList) {
             // in array list contains method used a Object.equals , but we need check identity
             for(int i = 0; i < listenerList.size(); ++i) {

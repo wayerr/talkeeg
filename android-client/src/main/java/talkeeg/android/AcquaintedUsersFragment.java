@@ -22,6 +22,7 @@ package talkeeg.android;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +31,12 @@ import com.google.common.base.Function;
 import talkeeg.bf.Arrays;
 import talkeeg.common.core.*;
 import talkeeg.common.model.UserIdentityCard;
+import talkeeg.common.util.ChangeItemEvent;
+import talkeeg.common.util.Closeable;
 import talkeeg.common.util.Stringifier;
 import talkeeg.common.util.Stringifiers;
+import talkeeg.mb.Listener;
+import talkeeg.mb.MessageBusRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +46,31 @@ import java.util.List;
  * Created by wayerr on 08.12.14.
  */
 public final class AcquaintedUsersFragment extends Fragment {
+
+    private AcquaintedUserListAdapter adapter;
+    private Listener<Object> listener;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.adapter = new AcquaintedUserListAdapter(getActivity(), R.layout.acquainted_user_view);
+        final MessageBusRegistry registry = App.get(MessageBusRegistry.class);
+        this.listener = new Listener<Object>() {
+            @Override
+            public void listen(Object event) throws Exception {
+                adapter.reload();
+            }
+        };
+        registry.getOrCreateBus(AcquaintedClientsService.MB_KEY).register(listener);
+        registry.getOrCreateBus(AcquaintedUsersService.MB_KEY).register(listener);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflate = inflater.inflate(R.layout.acquainted_users_fragment, container, false);
         final ListView listView = (ListView)inflate.findViewById(R.id.acquaintedUsersList);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        listView.setAdapter(new AcquaintedUserListAdapter(getActivity(), R.layout.acquainted_user_view));
+        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             final CurrentDestinationService currentDestination = App.get(CurrentDestinationService.class);
 
@@ -62,6 +86,14 @@ public final class AcquaintedUsersFragment extends Fragment {
             }
         });
         return inflate;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        final MessageBusRegistry registry = App.get(MessageBusRegistry.class);
+        registry.getOrCreateBus(AcquaintedClientsService.MB_KEY).unregister(listener);
+        registry.getOrCreateBus(AcquaintedUsersService.MB_KEY).unregister(listener);
     }
 
     private static final class AcquaintedUserListAdapter extends BaseAdapter {
@@ -83,7 +115,13 @@ public final class AcquaintedUsersFragment extends Fragment {
             this.userStringifier = stringifiers.getToStringFunction(AcquaintedUser.class);
             this.resource = resource;
             this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            reload();
+        }
+
+        private void reload() {
+            this.clientList.clear();
             this.clientList.addAll(this.clientsService.getClients());
+            notifyDataSetChanged();
         }
 
         @Override
@@ -111,13 +149,29 @@ public final class AcquaintedUsersFragment extends Fragment {
             }
             TextView nickView = (TextView)itemView.findViewById(R.id.acquaintedUserNick);
             TextView fingerprintView  = (TextView)itemView.findViewById(R.id.acquaintedUserFingerprint);
+            Button delButton = (Button)itemView.findViewById(R.id.acquaintedUserDel);
 
-            AcquaintedUser user = null;
-            AcquaintedClient client = null;
+
+            final AcquaintedUser user;
+            final AcquaintedClient client;
             if(this.clientList != null && this.clientList.size() > position) {
                 client = this.clientList.get(position);
                 user = this.usersService.getUser(client.getUserId());
+            } else {
+                client = null;
+                user = null;
             }
+            delButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(user != null) {
+                        usersService.remove(user.getId());
+                    }
+                    if(client != null) {
+                        clientsService.remove(client.getId());
+                    }
+                }
+            });
             if(user == null) {
                 nickView.setText(null);
                 fingerprintView.setText(null);

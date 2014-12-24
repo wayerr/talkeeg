@@ -41,11 +41,11 @@ public interface MessageBus<T> extends Listener<T> {
      * register listener
      * @param listener
      */
-    void register(Listener<T> listener);
+    void register(Listener<? super T> listener);
 
     /**
      * unregister listener
      * @param listener
      */
-    void unregister(Listener<T> listener);
+    void unregister(Listener<? super T> listener);
 }
