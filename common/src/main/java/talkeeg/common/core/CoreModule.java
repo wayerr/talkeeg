@@ -170,8 +170,8 @@ public final class CoreModule {
      */
     public static void init(ServiceLocator locator) {
         final MessageBusRegistry registry = locator.get(MessageBusRegistry.class);
+        registry.getOrCreateBus(IpcServiceManager.MB_SERVICE_LIFECYCLE).register(new WakeUpAtEvent<>(locator, AcquaintService.class));
         locator.get(IpcServiceManager.class).start();
         locator.get(CryptoService.class).init();
-        registry.getOrCreateBus(IpcServiceManager.MB_SERVICE_LIFECYCLE).register(new WakeUpAtEvent<>(locator, AcquaintService.class));
     }
 }
