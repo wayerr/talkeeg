@@ -19,6 +19,8 @@
 
 package talkeeg.common.util;
 
+import com.google.common.base.Preconditions;
+
 /**
  * class like {@link java.util.concurrent.atomic.AtomicReference } but with allowing custom compare operation
  * and {@link #valueChanged(Object, Object)}  on change value hook}. <p/>
@@ -31,9 +33,10 @@ public class ThreadSafeRef<T> {
     private volatile T value;
     private final EqualFunction<T> function;
 
-    private ThreadSafeRef(EqualFunction<T> function, T value) {
-        this.function = function;
+    private ThreadSafeRef(T value, EqualFunction<T> function) {
         this.value = value;
+        Preconditions.checkNotNull(function, "function is null");
+        this.function = function;
     }
 
     /**
@@ -52,7 +55,15 @@ public class ThreadSafeRef<T> {
      * @return
      */
     public static <T> ThreadSafeRef<T> create(T value) {
-        return new ThreadSafeRef<>(EqualFunctions.<T>functionEquality(), value);
+        return new ThreadSafeRef<>(value, EqualFunctions.<T>functionEquality());
+    }
+
+    public static <T> ThreadSafeRef<T> create(T value, EqualFunction<T> function) {
+        return new ThreadSafeRef<>(value, function);
+    }
+
+    public static <T> ThreadSafeRef<T> createWithCallback(ChangeValueCallback<ThreadSafeRef<T>, T> callback) {
+        return new ThreadSafeRefWithCallback<>(null, EqualFunctions.<T>functionEquality(), callback);
     }
 
     /**
@@ -70,7 +81,7 @@ public class ThreadSafeRef<T> {
      * @param value
      * @return
      */
-    public T set(T value) {
+    public final T set(T value) {
         T old;
         synchronized(this.lock) {
             old = this.value;
@@ -98,7 +109,7 @@ public class ThreadSafeRef<T> {
      * @param value new value
      * @return
      */
-    public boolean compareAndSet(T expected, T value) {
+    public final boolean compareAndSet(T expected, T value) {
         return compareAndSet(expected, value, this.function);
     }
 
@@ -110,7 +121,7 @@ public class ThreadSafeRef<T> {
      * @param function function which used for comparing
      * @return
      */
-    public boolean compareAndSet(T expected, T value, EqualFunction<T> function) {
+    public final boolean compareAndSet(T expected, T value, EqualFunction<T> function) {
         final T old;
         final boolean ok;
         synchronized(this.lock) {
@@ -126,5 +137,20 @@ public class ThreadSafeRef<T> {
             valueChanged(old, value);
         }
         return ok;
+    }
+
+    private final static class ThreadSafeRefWithCallback<T> extends ThreadSafeRef<T> {
+        private final ChangeValueCallback<ThreadSafeRef<T>, T> callback;
+
+        private ThreadSafeRefWithCallback(T value, EqualFunction<T> function, ChangeValueCallback<ThreadSafeRef<T>, T> callback) {
+            super(value, function);
+            Preconditions.checkNotNull(callback, "callback is null");
+            this.callback = callback;
+        }
+
+        @Override
+        protected void valueChanged(T oldValue, T newValue) {
+            this.compareAndSet(oldValue, newValue);
+        }
     }
 }

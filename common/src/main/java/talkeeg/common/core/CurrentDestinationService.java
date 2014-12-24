@@ -21,6 +21,7 @@ package talkeeg.common.core;
 
 import talkeeg.bf.Int128;
 import talkeeg.common.util.ChangeItemEvent;
+import talkeeg.common.util.ChangeValueCallback;
 import talkeeg.common.util.Modification;
 import talkeeg.common.util.ThreadSafeRef;
 import talkeeg.mb.Listener;
@@ -37,6 +38,40 @@ import javax.inject.Singleton;
 @Singleton
 public final class CurrentDestinationService {
 
+    public static final class Event {
+        private final Int128 userId;
+        private final Int128 clientId;
+
+        private Event(Int128 userId, Int128 clientId) {
+            this.userId = userId;
+            this.clientId = clientId;
+        }
+
+        /**
+         * current userId
+         * @return
+         */
+        public Int128 getUserId() {
+            return userId;
+        }
+
+        /**
+         * current clientIdRef
+         * @return
+         */
+        public Int128 getClientId() {
+            return clientId;
+        }
+
+        @Override
+        public String toString() {
+            return "Event{" +
+              "userId=" + userId +
+              ", clientId=" + clientId +
+              '}';
+        }
+    }
+
     public static final MessageBusKey<CurrentDestinationService.Event> MB_KEY = MessageBusKey.create("tg.CurrentDestinationService", Event.class);
 
     private final AcquaintedClientsService acquaintedClients;
@@ -46,7 +81,7 @@ public final class CurrentDestinationService {
         @Override
         public void listen(ChangeItemEvent<AcquaintedClientsService, AcquaintedClient> event) throws Exception {
             if(event.getModification() == Modification.DELETE) {
-                selectedClientId.compareAndSet(event.getItem().getId(), null);
+                clientIdRef.compareAndSet(event.getItem().getId(), null);
             }
         }
     };
@@ -55,13 +90,19 @@ public final class CurrentDestinationService {
         @Override
         public void listen(ChangeItemEvent<AcquaintedUsersService, AcquaintedUser> event) throws Exception {
             if(event.getModification() == Modification.DELETE) {
-                selectedUserId.compareAndSet(event.getItem().getId(), null);
+                userIdRef.compareAndSet(event.getItem().getId(), null);
             }
         }
     };
     private final MessageBusRegistry registry;
-    private final ThreadSafeRef<Int128> selectedUserId = ThreadSafeRef.create();
-    private final ThreadSafeRef<Int128> selectedClientId = ThreadSafeRef.create();
+    private final ChangeValueCallback<ThreadSafeRef<Int128>, Int128> callback = new ChangeValueCallback<ThreadSafeRef<Int128>, Int128>() {
+        @Override
+        public void valueChanged(ThreadSafeRef<Int128> callSource, Int128 oldValue, Int128 newValue) {
+            registry.getOrCreateBus(MB_KEY).listen(new Event(getUserId(), getClientId()));
+        }
+    };
+    private final ThreadSafeRef<Int128> userIdRef = ThreadSafeRef.createWithCallback(this.callback);
+    private final ThreadSafeRef<Int128> clientIdRef = ThreadSafeRef.createWithCallback(this.callback);
 
 
     @Inject
@@ -73,32 +114,30 @@ public final class CurrentDestinationService {
         registry.getOrCreateBus(AcquaintedUsersService.MB_KEY).register(acquaintedUserdListener);
     }
 
-    public void setSelectedUserId(Int128 selectedUserId) {
-        this.selectedUserId.set(selectedUserId);
+    public void setUserId(Int128 userId) {
+        this.userIdRef.set(userId);
     }
 
-    public Int128 getSelectedUserId() {
-        return this.selectedUserId.get();
+    public Int128 getUserId() {
+        return this.userIdRef.get();
     }
 
-    public AcquaintedUser getSelectedUser() {
-        final Int128 local = getSelectedUserId();
+    public AcquaintedUser getUser() {
+        final Int128 local = getUserId();
         return this.acquaintedUsers.getUser(local);
     }
 
-    public void setSelectedClientId(Int128 selectedClientId) {
-        this.selectedClientId.set(selectedClientId);
+    public void setClientId(Int128 clientId) {
+        this.clientIdRef.set(clientId);
     }
 
-    public Int128 getSelectedClientId() {
-        return this.selectedClientId.get();
+    public Int128 getClientId() {
+        return this.clientIdRef.get();
     }
 
-    public AcquaintedClient getSelectedClient() {
-        final Int128 local = this.getSelectedClientId();
+    public AcquaintedClient getClient() {
+        final Int128 local = this.getClientId();
         return this.acquaintedClients.getClient(local);
     }
 
-    public static class Event {
-    }
 }
