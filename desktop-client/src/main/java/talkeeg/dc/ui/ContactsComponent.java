@@ -19,10 +19,15 @@
 
 package talkeeg.dc.ui;
 
+import talkeeg.bf.Int128;
 import talkeeg.common.core.AcquaintedClient;
+import talkeeg.common.core.CurrentDestinationService;
 import talkeeg.dc.App;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
 
 /**
  * GUI component with list (or three) of acquaint contacts
@@ -44,6 +49,32 @@ public final class ContactsComponent implements ComponentOwner {
             this.tree = new JTree(contactsModel);
             this.tree.setRootVisible(false);
             this.tree.setShowsRootHandles(true);
+            try {
+                this.tree.addTreeSelectionListener(new TreeSelectionListener() {
+
+                    private final CurrentDestinationService currentDestination = App.get(CurrentDestinationService.class);
+
+                    @Override
+                    public void valueChanged(TreeSelectionEvent e) {
+                        final TreePath path = e.getPath();
+                        if(path == null) {
+                            return;
+                        }
+                        final ContactsModel.Node node = (ContactsModel.Node)path.getLastPathComponent();
+                        final Object obj = node.getValue();
+                        if(obj instanceof AcquaintedClient) {
+                            final AcquaintedClient client = (AcquaintedClient)obj;
+                            currentDestination.setClientId(client.getId());
+                            currentDestination.setUserId(client.getUserId());
+                        } else {
+                            currentDestination.setClientId(null);
+                            currentDestination.setUserId(null);
+                        }
+                    }
+                });
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
             this.treeScrollPane = new JScrollPane(this.tree);
         }
         return this.treeScrollPane;
