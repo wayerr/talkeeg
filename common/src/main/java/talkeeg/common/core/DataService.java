@@ -46,7 +46,7 @@ public final class DataService {
     /**
      * delay between message repeating in seconds
      */
-    static long DEFAULT_REPEAT_DELAY = 30;
+    static long DEFAULT_REPEAT_DELAY = 5;
     public static final String ACTION_DATA = "tg.data";
     public static final String ACTION_DATA_RESPONSE = "tg.dataResponse";
     final IpcService ipc;

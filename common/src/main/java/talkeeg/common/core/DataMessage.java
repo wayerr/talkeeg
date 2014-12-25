@@ -85,9 +85,10 @@ public final class DataMessage {
             this.sendCounter++;
             if(sendCounter > DataService.MAX_SEND_ON_ONE_ADDR) {
                 this.addressNumber++;
+                this.sendCounter = 0;//we must reset counter
             }
             if(this.addresses.size() <= this.addressNumber) {
-                DataService.LOG.log(Level.SEVERE, "Fail to send message in " + this.sendCounter + " attempts.");
+                DataService.LOG.log(Level.SEVERE, "Fail to send message in " + DataService.MAX_SEND_ON_ONE_ADDR * this.addressNumber + " attempts.");
                 this.setState(State.FAIL);
             }
             ClientAddress address = this.addresses.get(this.addressNumber);
