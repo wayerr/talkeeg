@@ -22,7 +22,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:descendantFocusability="blocksDescendants" >
 
     <TextView
             android:layout_width="wrap_content"
@@ -36,18 +37,18 @@
             android:layout_height="wrap_content"
             android:id="@+id/acquaintedUserFingerprint" android:text="fingeprint:"
             android:layout_marginLeft="0dp"
-            android:layout_toEndOf="@+id/acquaintedUserCheckBox"
-            android:layout_toRightOf="@+id/acquaintedUserCheckBox" android:layout_toLeftOf="@+id/acquaintedUserDel"
-            android:layout_alignBottom="@+id/acquaintedUserDel"/>
+            android:minLines="2" android:layout_below="@+id/acquaintedUserNick"
+            android:layout_toRightOf="@+id/acquaintedUserCheckBox" android:layout_toLeftOf="@+id/acquaintedUserDel"/>
     <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/acquaintedUserDel" android:layout_alignParentTop="true" android:layout_alignParentEnd="true"
-            android:focusable="false" android:background="@android:drawable/ic_delete"/>
+            android:focusable="false" android:background="@android:drawable/ic_delete"
+            />
     <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/acquaintedUserCheckBox"
             android:layout_alignParentTop="true" android:layout_alignParentStart="true"
-            android:layout_alignBottom="@+id/acquaintedUserFingerprint" android:focusable="false"/>
+            android:focusable="false" android:layout_alignBottom="@+id/acquaintedUserDel"/>
 </RelativeLayout>
