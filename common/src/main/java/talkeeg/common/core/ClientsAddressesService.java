@@ -154,7 +154,7 @@ public final class ClientsAddressesService {
             } else {
                 final String networkAddress = IpcUtil.getNetworkAddress(address.getValue());
                 // we must add address if it from our network or its network can not be detected
-                if(networkAddress == null && networks.contains(networkAddress)) {
+                if(networkAddress == null || networks.contains(networkAddress)) {
                     suitableAddresses.add(address);
                 }
             }
