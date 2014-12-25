@@ -39,12 +39,11 @@
             android:layout_toEndOf="@+id/acquaintedUserCheckBox"
             android:layout_toRightOf="@+id/acquaintedUserCheckBox" android:layout_toLeftOf="@+id/acquaintedUserDel"
             android:layout_alignBottom="@+id/acquaintedUserDel"/>
-    <Button
+    <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="del"
             android:id="@+id/acquaintedUserDel" android:layout_alignParentTop="true" android:layout_alignParentEnd="true"
-            android:focusable="false"/>
+            android:focusable="false" android:background="@android:drawable/ic_delete"/>
     <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

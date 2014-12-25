@@ -50,6 +50,9 @@ public final class StringUtils {
 
         @Override
         public String apply(T input) {
+            if(input == null) {
+                return null;
+            }
             StringBuilder sb = new StringBuilder();
             handler.toString(input, sb);
             return sb.toString();

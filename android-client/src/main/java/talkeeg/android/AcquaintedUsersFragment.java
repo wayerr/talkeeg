@@ -19,8 +19,10 @@
 
 package talkeeg.android;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.google.common.base.Function;
 import talkeeg.android.util.CheckableLayout;
+import talkeeg.android.util.ConfirmAction;
 import talkeeg.common.core.*;
 import talkeeg.common.util.Stringifiers;
 import talkeeg.mb.Listener;
@@ -148,7 +151,7 @@ public final class AcquaintedUsersFragment extends Fragment {
             }
             TextView nickView = (TextView)itemView.findViewById(R.id.acquaintedUserNick);
             TextView fingerprintView  = (TextView)itemView.findViewById(R.id.acquaintedUserFingerprint);
-            Button delButton = (Button)itemView.findViewById(R.id.acquaintedUserDel);
+            View delButton = itemView.findViewById(R.id.acquaintedUserDel);
 
 
             final AcquaintedUser user;
@@ -160,25 +163,21 @@ public final class AcquaintedUsersFragment extends Fragment {
                 client = null;
                 user = null;
             }
-            delButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(user != null) {
-                        usersService.remove(user.getId());
-                    }
-                    if(client != null) {
-                        clientsService.remove(client.getId());
-                    }
-                }
-            });
-            if(user == null) {
-                nickView.setText(null);
-                fingerprintView.setText(null);
-            } else {
-                nickView.setText(this.userStringifier.apply(user));
-                fingerprintView.setText(this.clientStringifier.apply(client));
-            }
-
+            delButton.setOnClickListener(new ConfirmAction()
+              .messageResource(R.string.dialog_confirm_delete_content)
+              .onYes(new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                      if(user != null) {
+                          usersService.remove(user.getId());
+                      }
+                      if(client != null) {
+                          clientsService.remove(client.getId());
+                      }
+                  }
+              }));
+            nickView.setText(this.userStringifier.apply(user));
+            fingerprintView.setText(this.clientStringifier.apply(client));
             return itemView;
         }
     }
