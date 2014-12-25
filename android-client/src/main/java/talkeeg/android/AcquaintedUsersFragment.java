@@ -141,11 +141,11 @@ public final class AcquaintedUsersFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View itemView;
-            //if(convertView == null) {
+            if(convertView == null) {
                 itemView = new CheckableLayout(context, R.layout.acquainted_user_view, R.id.acquaintedUserCheckBox);
-            //} else {
-            //    itemView = convertView;
-            //}
+            } else {
+                itemView = convertView;
+            }
             TextView nickView = (TextView)itemView.findViewById(R.id.acquaintedUserNick);
             TextView fingerprintView  = (TextView)itemView.findViewById(R.id.acquaintedUserFingerprint);
             Button delButton = (Button)itemView.findViewById(R.id.acquaintedUserDel);
