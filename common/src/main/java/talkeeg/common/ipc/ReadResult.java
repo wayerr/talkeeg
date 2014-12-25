@@ -54,6 +54,10 @@ public class ReadResult<T> {
             return errors;
         }
 
+        public boolean isVerified() {
+            return errors.isEmpty() && (this.statusCode == null || this.statusCode == StatusCode.OK);
+        }
+
         public Object getArg() {
             return arg;
         }
@@ -91,7 +95,6 @@ public class ReadResult<T> {
         public ReadResult<T> build() {
             return new ReadResult<>(this);
         }
-
     }
 
     private final T message;
@@ -115,7 +118,7 @@ public class ReadResult<T> {
     }
 
     public boolean isVerified() {
-        return this.errors.isEmpty();
+        return errors.isEmpty() && (this.statusCode == null || this.statusCode == StatusCode.OK);
     }
 
     public List<String> getErrors() {

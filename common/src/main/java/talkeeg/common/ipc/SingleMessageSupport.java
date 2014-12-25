@@ -54,6 +54,7 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
     private final KeyLoader keyLoader;
     private final OwnedIdentityCardsService ownedIdentityCards;
     private final IdSequenceGenerator idGenerator = IdSequenceGenerator.shortIdGenerator();
+    private final ClientsAddressesService clientsAddresses;
 
     @Inject
     public SingleMessageSupport(Bf bf,
@@ -61,13 +62,15 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
                                 KeyLoader keyLoader,
                                 CryptoService cryptoService,
                                 AcquaintedClientsService acquaintedClients,
-                                AcquaintedUsersService acquaintedUsers) {
+                                AcquaintedUsersService acquaintedUsers,
+                                ClientsAddressesService clientsAddresses) {
         this.bf = bf;
         this.keyLoader = keyLoader;
         this.cryptoService = cryptoService;
         this.acquaintedClients = acquaintedClients;
         this.acquaintedUsers = acquaintedUsers;
         this.ownedIdentityCards = ownedIdentityCards;
+        this.clientsAddresses = clientsAddresses;
     }
 
     @Override
@@ -80,7 +83,10 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
             LOG.log(Level.SEVERE, str, e);
             builder.addError(str);
         }
-
+        if(builder.isVerified()) {
+            //we need update client address if got message from him
+            this.clientsAddresses.update(context.getSrcClientId(), context.getSrcClientAddress());
+        }
         final BinaryData data = message.getData();
         byte[] arr = data.getData();
         final MessageCipherType cipherType = message.getCipherType();

@@ -28,6 +28,7 @@ import talkeeg.common.ipc.IpcUtil;
 import talkeeg.common.model.ClientAddress;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,49 +67,33 @@ public final class ClientsAddressesService {
             return addresses;
         }
 
-        public List<ClientAddress> getSuitableAddress() {
-
-            final List<ClientAddress> clientAddresses = getAddresses();
-            final Set<String> networks = new HashSet<>();
-            final List<ClientAddress> suitableAddresses = new ArrayList<>();
-
-            final Predicate<ClientAddress> filter = serviceManager.getSupportedAddressFilter();
-
-            final Set<ClientAddress> currentAddressesSet = currentAddresses.getAddresses();
-            for(ClientAddress currentAddress: currentAddressesSet) {
-                if(!filter.apply(currentAddress)) {
-                    continue;
+        private synchronized void update(ClientAddress clientAddress) {
+            if(this.addresses == null) {
+                this.addresses = ImmutableList.of(clientAddress);
+            } else {
+                final int pos = this.addresses.indexOf(clientAddress);
+                if(pos == 0) {
+                    return;
                 }
-                final String networkAddress = IpcUtil.getNetworkAddress(currentAddress.getValue());
-                networks.add(networkAddress);
-            }
-
-            for(ClientAddress address: clientAddresses) {
-                if(!filter.apply(address)) {
-                    continue;
-                }
-                if(address.isExternal()) {
-                    suitableAddresses.add(address);
-                } else {
-                    final String networkAddress = IpcUtil.getNetworkAddress(address.getValue());
-                    if(networkAddress != null && networks.contains(networkAddress)) {
-                        suitableAddresses.add(address);
-                    }
+                final ArrayList<ClientAddress> temp = new ArrayList<>(this.addresses);
+                // add current address to list
+                temp.add(0, clientAddress);
+                if(pos != -1) {
+                    //if list already has address then we need remove it
+                    temp.remove(pos);
                 }
             }
-            Collections.sort(suitableAddresses, ADDRESS_COMPARATOR);
-            return suitableAddresses;
         }
     }
 
     private final ConcurrentMap<Int128, Entry> map = new ConcurrentHashMap<>();
-    private final CurrentAddressesService currentAddresses;
-    private final IpcServiceManager serviceManager;
+    private final Provider<CurrentAddressesService> currentAddressesProvider;
+    private final Provider<IpcServiceManager> serviceManagerProvider;
 
     @Inject
-    ClientsAddressesService(CurrentAddressesService currentAddresses, IpcServiceManager serviceManager) {
-        this.currentAddresses = currentAddresses;
-        this.serviceManager = serviceManager;
+    ClientsAddressesService(Provider<CurrentAddressesService> currentAddressesProvider, Provider<IpcServiceManager> serviceManagerProvider) {
+        this.currentAddressesProvider = currentAddressesProvider;
+        this.serviceManagerProvider = serviceManagerProvider;
     }
 
     public void setAddresses(Int128 clientId, List<ClientAddress> addresses) {
@@ -144,6 +129,54 @@ public final class ClientsAddressesService {
         if(entry == null) {
             return Collections.emptyList();
         }
-        return entry.getSuitableAddress();
+
+        final List<ClientAddress> clientAddresses = entry.getAddresses();
+        final Set<String> networks = new HashSet<>();
+        final List<ClientAddress> suitableAddresses = new ArrayList<>();
+
+        final Predicate<ClientAddress> filter = serviceManagerProvider.get().getSupportedAddressFilter();
+
+        final Set<ClientAddress> currentAddressesSet = currentAddressesProvider.get().getAddresses();
+        for(ClientAddress currentAddress: currentAddressesSet) {
+            if(!filter.apply(currentAddress)) {
+                continue;
+            }
+            final String networkAddress = IpcUtil.getNetworkAddress(currentAddress.getValue());
+            networks.add(networkAddress);
+        }
+
+        for(ClientAddress address: clientAddresses) {
+            if(!filter.apply(address)) {
+                continue;
+            }
+            if(address.isExternal()) {
+                suitableAddresses.add(address);
+            } else {
+                final String networkAddress = IpcUtil.getNetworkAddress(address.getValue());
+                // we must add address if it from our network or its network can not be detected
+                if(networkAddress == null && networks.contains(networkAddress)) {
+                    suitableAddresses.add(address);
+                }
+            }
+        }
+        Collections.sort(suitableAddresses, ADDRESS_COMPARATOR);
+        return suitableAddresses;
+    }
+
+    /**
+     * add address to known client addresses, and move it to top of suitable
+     * @param clientId
+     * @param clientAddress
+     */
+    public void update(Int128 clientId, ClientAddress clientAddress) {
+        Entry entry = map.get(clientId);
+        if(entry == null) {
+            final Entry newEntry = new Entry(clientId);
+            entry = map.putIfAbsent(clientId, newEntry);
+            if(entry == null) {
+                entry = newEntry;
+            }
+        }
+        entry.update(clientAddress);
     }
 }
