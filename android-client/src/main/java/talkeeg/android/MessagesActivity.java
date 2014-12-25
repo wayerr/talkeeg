@@ -32,6 +32,7 @@ import android.widget.TextView;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.CurrentDestinationService;
+import talkeeg.common.core.DataMessage;
 import talkeeg.common.core.DataService;
 import talkeeg.common.model.Constants;
 import talkeeg.common.model.Data;
@@ -50,6 +51,16 @@ public final class MessagesActivity extends Activity {
     private final OptionsMenuSupport optionsMenuSupport = new OptionsMenuSupport(this);
     private DataService dataService;
     private MessagesListAdapter listAdapter;
+    private final Callback<DataMessage> messageCallback = new Callback<DataMessage>() {
+        @Override
+        public void call(DataMessage value) {
+            DataMessage.State state = value.getState();
+            if(state == null || state == DataMessage.State.INITIAL) {
+                return;
+            }
+            listAdapter.addData(value.getData(), state);
+        }
+    };
 
     /**
      * Called when the activity is first created.
@@ -89,9 +100,13 @@ public final class MessagesActivity extends Activity {
         if(string.isEmpty()) {
             return;
         }
-        final BinaryData data = new BinaryData(string.getBytes());
         try {
-            this.dataService.push(clientId, Data.buidler().action(Constants.DATA_ACTION_CHAT).data(data).build());
+            final Data data = Data.buidler()
+              .action(Constants.DATA_ACTION_CHAT)
+              .data(new BinaryData(string.getBytes()))
+              .build();
+            final DataMessage message = this.dataService.push(clientId, data);
+            message.addCallback(messageCallback);
         } catch(Exception e) {
             Log.e(getLocalClassName(), "error while send to client: " + clientId, e);
         }
@@ -116,22 +131,37 @@ public final class MessagesActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    private static class DataEntry {
+        private final Data data;
+        private DataMessage.State state;
+
+        public DataEntry(Data data) {
+            this.data = data;
+        }
+
+        public Data getData() {
+            return data;
+        }
+
+        public DataMessage.State getState() {
+            return state;
+        }
+
+        public void setState(DataMessage.State state) {
+            this.state = state;
+        }
+    }
+
     private final class MessagesListAdapter extends BaseAdapter implements Closeable {
 
         private final DataService service;
         private final LayoutInflater inflater;
         private final int resource;
-        private final List<Data> history = new CopyOnWriteArrayList<>();
+        private final List<DataEntry> history = new CopyOnWriteArrayList<>();
         private final Callback<Data> chatCallback = new Callback<Data>() {
             @Override
             public void call(Data value) {
-                history.add(value);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyDataSetChanged();
-                    }
-                });
+                addData(value, null);
             }
         };
         private final Closeable callbackEnd;
@@ -142,6 +172,18 @@ public final class MessagesActivity extends Activity {
             this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             this.callbackEnd = this.service.addHandler(Constants.DATA_ACTION_CHAT, chatCallback);
+        }
+
+        public void addData(Data data, DataMessage.State state) {
+            DataEntry entry = new DataEntry(data);
+            entry.setState(state);
+            history.add(entry);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    notifyDataSetChanged();
+                }
+            });
         }
 
         @Override
@@ -170,15 +212,16 @@ public final class MessagesActivity extends Activity {
             TextView sourceView = (TextView)itemView.findViewById(R.id.messagesListItemSource);
             TextView dataView  = (TextView)itemView.findViewById(R.id.messagesListItemData);
 
-            Data data = null;
+            DataEntry entry = null;
             if(this.history.size() > position) {
-                data = this.history.get(position);
+                entry = this.history.get(position);
             }
-            if(data == null) {
+            if(entry == null) {
                 sourceView.setText(null);
                 dataView.setText(null);
             } else {
-                sourceView.setText(data.getAction());
+                final Data data = entry.getData();
+                sourceView.setText(data.getAction() + "  " + entry.getState());
                 final BinaryData binaryData = data.getData();
                 dataView.setText(new String(binaryData.getData()));
             }
