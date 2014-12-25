@@ -22,18 +22,13 @@ package talkeeg.android;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.google.common.base.Function;
-import talkeeg.bf.Arrays;
+import talkeeg.android.util.CheckableLayout;
 import talkeeg.common.core.*;
-import talkeeg.common.model.UserIdentityCard;
-import talkeeg.common.util.ChangeItemEvent;
-import talkeeg.common.util.Closeable;
-import talkeeg.common.util.Stringifier;
 import talkeeg.common.util.Stringifiers;
 import talkeeg.mb.Listener;
 import talkeeg.mb.MessageBusRegistry;
@@ -53,7 +48,7 @@ public final class AcquaintedUsersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.adapter = new AcquaintedUserListAdapter(getActivity(), R.layout.acquainted_user_view);
+        this.adapter = new AcquaintedUserListAdapter(getActivity());
         final MessageBusRegistry registry = App.get(MessageBusRegistry.class);
         this.listener = new Listener<Object>() {
             @Override
@@ -71,12 +66,18 @@ public final class AcquaintedUsersFragment extends Fragment {
         final ListView listView = (ListView)inflate.findViewById(R.id.acquaintedUsersList);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setAdapter(adapter);
-        listView.setSelection(0);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             final CurrentDestinationService currentDestination = App.get(CurrentDestinationService.class);
-            //TODO selection does not work
+            private int oldCheckedPosition = -1;
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // here item always checked
+                if(oldCheckedPosition == position) {
+                    listView.setItemChecked(position, false);
+                    oldCheckedPosition = -1;
+                } else {
+                    oldCheckedPosition = position;
+                }
                 AcquaintedClient selectedClient = (AcquaintedClient)listView.getAdapter().getItem(position);
                 updateDestination(selectedClient);
             }
@@ -101,21 +102,18 @@ public final class AcquaintedUsersFragment extends Fragment {
 
         private final AcquaintedUsersService usersService;
         private final AcquaintedClientsService clientsService;
-        private final LayoutInflater inflater;
-        private final int resource;
         private final Function<AcquaintedClient, String> clientStringifier;
         private final Function<AcquaintedUser, String> userStringifier;
         private final List<AcquaintedClient> clientList = new ArrayList<>();
+        private final Context context;
 
-        private AcquaintedUserListAdapter(Context context, int resource) {
-
+        private AcquaintedUserListAdapter(Context context) {
+            this.context = context;
             this.usersService = App.get(AcquaintedUsersService.class);
             this.clientsService = App.get(AcquaintedClientsService.class);
             final Stringifiers stringifiers = App.get(Stringifiers.class);
             this.clientStringifier = stringifiers.getToStringFunction(AcquaintedClient.class);
             this.userStringifier = stringifiers.getToStringFunction(AcquaintedUser.class);
-            this.resource = resource;
-            this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             reload();
         }
 
@@ -143,11 +141,11 @@ public final class AcquaintedUsersFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View itemView;
-            if(convertView == null) {
-                itemView = this.inflater.inflate(this.resource, parent, false);
-            } else {
-                itemView = convertView;
-            }
+            //if(convertView == null) {
+                itemView = new CheckableLayout(context, R.layout.acquainted_user_view, R.id.acquaintedUserCheckBox);
+            //} else {
+            //    itemView = convertView;
+            //}
             TextView nickView = (TextView)itemView.findViewById(R.id.acquaintedUserNick);
             TextView fingerprintView  = (TextView)itemView.findViewById(R.id.acquaintedUserFingerprint);
             Button delButton = (Button)itemView.findViewById(R.id.acquaintedUserDel);
