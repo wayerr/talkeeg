@@ -150,7 +150,7 @@ public class ThreadSafeRef<T> {
 
         @Override
         protected void valueChanged(T oldValue, T newValue) {
-            this.compareAndSet(oldValue, newValue);
+            this.callback.valueChanged(this, oldValue, newValue);
         }
     }
 }
