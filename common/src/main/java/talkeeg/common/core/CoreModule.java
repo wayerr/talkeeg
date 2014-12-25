@@ -101,6 +101,7 @@ public final class CoreModule {
             .putType(ClientAddress.class, ClientAddress.STRUCT_BUILDER_FACTORY)
             .putType(Hello.class, Hello.STRUCT_BUILDER_FACTORY)
             .putType(Data.class, Data.STRUCT_BUILDER_FACTORY)
+            .putType(ResponseData.class, ResponseData.STRUCT_BUILDER_FACTORY)
             .build();
     }
 

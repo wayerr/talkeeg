@@ -43,6 +43,10 @@
         </map>
         <blob fieldName="data"/>
     </struct>
+    <struct name="ResponseData" structId="19">
+        <integer fieldName="status" storeAs="01_BYTE"/>
+        <string fieldName="message"/>
+    </struct>
     <struct name="Command" structId="16">
         <!-- command id must be unique for each client -->
         <integer fieldName="id" storeAs="02_BYTE"/>

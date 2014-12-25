@@ -85,11 +85,13 @@ public final class DataService {
         if(ACTION_DATA_RESPONSE.equals(command.getAction())) {
             final DataMessage message = this.sentMessages.get(getMessageId(command));
             if(message != null) {
-                final StatusCode code = (StatusCode)command.getArg();
+                ResponseData responseData = (ResponseData)command.getArg();
+                final StatusCode code = responseData.getStatus();
                 final DataMessage.State state = (code == null || code == StatusCode.OK)?
                     DataMessage.State.SUCCESS :
                     DataMessage.State.FAIL;
                 message.setState(state);
+                LOG.info("response to message(" + message + "): code=" + code + " message=" + responseData.getMessage());
             }
             return;
         }
@@ -102,15 +104,17 @@ public final class DataService {
         final String action = data.getAction();
         final Callback<Data> callback = registry.get(action);
         if(callback == null) {
-            LOG.warning("no callback for action: " + action);
-            builder.setArg(StatusCode.ERROR);
+            final String msg = "no callback for action: " + action;
+            LOG.warning(msg);
+            builder.setArg(ResponseData.builder().status(StatusCode.ERROR).message(msg).build());
         }
         if(callback != null) {
             try {
                 callback.call(data);
             } catch(Exception e) {
-                LOG.log(Level.SEVERE, "fail callback", e);
-                builder.setArg(StatusCode.ERROR);
+                final String msg = "fail callback";
+                LOG.log(Level.SEVERE, msg, e);
+                builder.setArg(ResponseData.builder().status(StatusCode.ERROR).message(msg + " " + e.toString()).build());
             }
         }
 
