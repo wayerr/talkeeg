@@ -27,6 +27,8 @@ import talkeeg.common.model.Data;
 import talkeeg.common.util.Callback;
 import talkeeg.common.util.CallbacksContainer;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -34,6 +36,7 @@ import java.util.logging.Level;
  * Created by wayerr on 18.12.14.
  */
 public final class DataMessage {
+
     public enum State {
         INITIAL, FAIL, SUCCESS
     }
@@ -47,6 +50,14 @@ public final class DataMessage {
     private int addressNumber = 0;
     private int sendCounter = 0;
     private final CallbacksContainer<DataMessage> callbacks = new CallbacksContainer<>();
+    private final ScheduledFuture<?> future;
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            java.util.logging.Logger.getLogger(getClass().getName()).warning("dataMessage send " + command);
+            send();
+        }
+    };
     private State state = State.INITIAL;
 
     DataMessage(DataService dataService, Int128 clientId, List<ClientAddress> addresses, Data data) {
@@ -59,13 +70,15 @@ public final class DataMessage {
           .action(DataService.ACTION_DATA)
           .arg(this.data)
           .build();
+
+        this.future = dataService.scheduledExecutorService.scheduleWithFixedDelay(runnable, 0, DataService.DEFAULT_REPEAT_DELAY, TimeUnit.SECONDS);
     }
 
     /**
      * do asynchronous sending of command, can be invoked repeatedly <p/>
      * after calling you will need check {@link #getState() }
      */
-    void send() {
+    private void send() {
         synchronized(this.lock) {
             if(this.state != State.INITIAL) {
                 return;
@@ -107,7 +120,16 @@ public final class DataMessage {
 
     void setState(State state) {
         synchronized(this.lock) {
+            if(this.state == state) {
+                return;
+            }
+            if(this.state != State.INITIAL) {
+                throw new RuntimeException("can not change non initial state");
+            }
             this.state = state;
+        }
+        if(state == State.FAIL || state == State.SUCCESS) {
+            future.cancel(true);
         }
         this.callbacks.call(this);
     }

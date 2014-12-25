@@ -19,6 +19,7 @@
 
 package talkeeg.common.core;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import talkeeg.bf.Int128;
 import talkeeg.common.ipc.*;
 import talkeeg.common.model.*;
@@ -29,8 +30,7 @@ import talkeeg.common.util.HandlersRegistry;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,6 +43,10 @@ public final class DataService {
 
     static final Logger LOG = Logger.getLogger(DataService.class.getName());
     static final int MAX_SEND_ON_ONE_ADDR = 3;
+    /**
+     * delay between message repeating in seconds
+     */
+    static long DEFAULT_REPEAT_DELAY = 30;
     public static final String ACTION_DATA = "tg.data";
     public static final String ACTION_DATA_RESPONSE = "tg.dataResponse";
     final IpcService ipc;
@@ -50,6 +54,7 @@ public final class DataService {
     private final ClientsAddressesService clientsAddresses;
     private final ConcurrentMap<Short, DataMessage> sentMessages = new ConcurrentHashMap<>();
     private final IdSequenceGenerator commandIdGenerator = IdSequenceGenerator.shortIdGenerator();
+    final ScheduledExecutorService scheduledExecutorService;
 
     @Inject
     DataService(IpcService ipc, ClientsAddressesService clientsAddresses) {
@@ -66,6 +71,10 @@ public final class DataService {
         };
         this.ipc.addIpcHandler(ACTION_DATA, handler);
         this.ipc.addIpcHandler(ACTION_DATA_RESPONSE, handler);
+        final ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
+        builder.setDaemon(true);
+        builder.setNameFormat(getClass().getSimpleName() + "-pool-%d");
+        this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1, builder.build());
     }
 
     short getNextId() {
@@ -132,7 +141,6 @@ public final class DataService {
         }
         final DataMessage message = new DataMessage(this, clientId, addresses, data);
         this.sentMessages.put(getMessageId(message.getCommand()), message);
-        message.send();
         return message;
     }
 }
