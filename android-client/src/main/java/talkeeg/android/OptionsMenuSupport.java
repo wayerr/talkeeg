@@ -22,6 +22,8 @@ package talkeeg.android;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.MenuItem;
+import talkeeg.android.barcode.CreateBarcodeActivity;
+import talkeeg.android.barcode.ReadBarcodeActivity;
 
 /**
  * coomon code for options menu
@@ -36,11 +38,28 @@ final class OptionsMenuSupport {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        Class<? extends Activity> activityClass;
         switch(item.getItemId()) {
-            case R.id.actionAcquairedUsers:
-                this.activity.startActivity(new Intent(activity, AcquaintedUsersActivity.class));
-                return true;
+            case R.id.actionShowBarcode:
+                activityClass = CreateBarcodeActivity.class;
+                break;
+            case R.id.actionReadBarcode:
+                activityClass = ReadBarcodeActivity.class;
+                break;
+            //case R.id.actionMessages:
+            //    activityClass = MessagesActivity.class;
+            //    break;
+            case R.id.actionAcquaintedUsers:
+                activityClass = AcquaintedUsersActivity.class;
+                break;
+            default:
+                activityClass = null;
         }
-        return false;
+        if(activityClass == null) {
+            return false;
+        }
+        Intent intent = new Intent(this.activity, activityClass);
+        this.activity.startActivity(intent);
+        return true;
     }
 }

@@ -7,4 +7,6 @@
     <string name="action_acquainted_users">Acquainted users</string>
     <string name="dialog_confirm_title">Confirm</string>
     <string name="dialog_confirm_delete_content">Confirm deletion?</string>
+    <string name="action_show_barcode">Show barcode</string>
+    <string name="action_read_barcode">Read barcode</string>
 </resources>
