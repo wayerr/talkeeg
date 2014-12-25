@@ -143,4 +143,8 @@ public final class DataService {
         this.sentMessages.put(getMessageId(message.getCommand()), message);
         return message;
     }
+
+    void removeOldMessage(DataMessage message) {
+        this.sentMessages.remove(getMessageId(message.getCommand()), message);
+    }
 }

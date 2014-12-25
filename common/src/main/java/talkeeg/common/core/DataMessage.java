@@ -54,7 +54,6 @@ public final class DataMessage {
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            java.util.logging.Logger.getLogger(getClass().getName()).warning("dataMessage send " + command);
             send();
         }
     };
@@ -130,6 +129,7 @@ public final class DataMessage {
         }
         if(state == State.FAIL || state == State.SUCCESS) {
             future.cancel(true);
+            this.dataService.removeOldMessage(this);
         }
         this.callbacks.call(this);
     }
