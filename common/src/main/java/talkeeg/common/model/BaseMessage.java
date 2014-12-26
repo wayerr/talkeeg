@@ -22,83 +22,87 @@ package talkeeg.common.model;
 import talkeeg.bf.Int128;
 
 /**
+ * base message
  * Created by wayerr on 21.11.14.
  */
-public class BaseSingleMessage {
+public class BaseMessage {
 
     public static abstract class Builder implements BuilderInterface {
         /**
-         * `id(T02)`:  циклический идентификатор (используется для фильтрации дублей, уникален для каждого src)
-         */
-        protected short id;
-        /**
-         * `scr(T16)`: отпечаток CPubK клиента отправителя
+         * fingerprint of source client public key (clientId)
          */
         protected Int128 src;
         /**
-         *  `dst(T16)`: отпечаток CPubK клиента адресата
+         * fingerprint of destination client public key (clientId)
          */
         protected Int128 dst;
 
         public Builder() {
         }
 
-        public short getId() {
-            return id;
-        }
-
-        public void setId(short id) {
-            this.id = id;
-        }
-
+        /**
+         * fingerprint of source client public key (clientId)
+         * @return
+         */
         public Int128 getSrc() {
             return src;
         }
 
+        /**
+         * fingerprint of source client public key (clientId)
+         * @param src
+         */
         public void setSrc(Int128 src) {
             this.src = src;
         }
 
+        /**
+         * fingerprint of destination client public key (clientId)
+         * @return
+         */
         public Int128 getDst() {
             return dst;
         }
 
+        /**
+         * fingerprint of destination client public key (clientId)
+         * @param dst
+         */
         public void setDst(Int128 dst) {
             this.dst = dst;
         }
 
-        public BaseSingleMessage build() {
-            return new BaseSingleMessage(this);
+        public BaseMessage build() {
+            return new BaseMessage(this);
         }
     }
 
     /**
-     * `id(T02)`:  циклический идентификатор (используется для фильтрации дублей, уникален для каждого src)
-     */
-    protected final short id;
-    /**
-     * `scr(T16)`: отпечаток CPubK клиента отправителя
+     * fingerprint of source client public key (clientId)
      */
     protected final Int128 src;
     /**
-     *  `dst(T16)`: отпечаток CPubK клиента адресата
+     * fingerprint of destination client public key (clientId)
      */
     protected final Int128 dst;
 
-    protected BaseSingleMessage(Builder b) {
-        this.id = b.id;
+    protected BaseMessage(Builder b) {
         this.src = b.src;
         this.dst = b.dst;
     }
 
+    /**
+     * fingerprint of destination client public key (clientId)
+     * @return
+     */
     public Int128 getDst() {
         return dst;
     }
 
-    public short getId() {
-        return id;
-    }
-
+    /**
+     * fingerprint of source client public key (clientId)
+     * @return
+     */
     public Int128 getSrc() {
         return src;
     }
@@ -108,15 +112,12 @@ public class BaseSingleMessage {
         if(this == o) {
             return true;
         }
-        if(!(o instanceof BaseSingleMessage)) {
+        if(!(o instanceof BaseMessage)) {
             return false;
         }
 
-        final BaseSingleMessage that = (BaseSingleMessage)o;
+        final BaseMessage that = (BaseMessage)o;
 
-        if(id != that.id) {
-            return false;
-        }
         if(dst != null ? !dst.equals(that.dst) : that.dst != null) {
             return false;
         }
@@ -129,9 +130,8 @@ public class BaseSingleMessage {
 
     @Override
     public int hashCode() {
-        int result = (int)id;
-        result = 31 * result + (src != null ? src.hashCode() : 0);
-        result = 31 * result + (dst != null ? dst.hashCode() : 0);
+        int result = src != null? src.hashCode() : 0;
+        result = 31 * result + (dst != null? dst.hashCode() : 0);
         return result;
     }
 }

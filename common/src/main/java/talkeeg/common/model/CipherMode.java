@@ -22,24 +22,17 @@ package talkeeg.common.model;
 import talkeeg.common.util.EnumWithValue;
 
 /**
- *
- * Type of {@link talkeeg.common.model.SingleMessage single message} ciphering
- * Created by wayerr on 21.11.14.
+ * block cipher mode
+ * Created by wayerr on 26.12.14.
  */
-public enum MessageCipherType implements EnumWithValue<Byte> {
-    /**
-     * MSG_CIPHER_NONE = 0 (used for CA process)
-     */
+public enum CipherMode implements EnumWithValue<Byte> {
     NONE(0),
-    /**
-     * MSG_CIPHER_DST_PUBK = 1
-     * @see talkeeg.common.core.CryptoConstants#CIPHER_ASYMMETRIC
-     */
-    DST_PUBK(1);
+    CTR(1);
+
 
     private final byte value;
 
-    MessageCipherType(int value) {
+    CipherMode(int value) {
         this.value = (byte)value;
     }
 

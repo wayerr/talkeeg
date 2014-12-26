@@ -56,7 +56,31 @@
         <string fieldName="action" />
         <generic fieldName="arg" />
     </struct>
+    <struct name="CipherOptions" structId="20">
+        <integer fieldName="cipher" storeAs="01_BYTE"/>
+        <integer fieldName="mode" storeAs="01_BYTE"/>
+        <integer fieldName="mac" storeAs="01_BYTE"/>
+        <integer fieldName="padding" storeAs="01_BYTE"/>
+        <blob fieldName="iv"/>
+    </struct>
+    <struct name="StreamHead" structId="21">
+        <struct fieldName="options" structId="20"/>
+        <integer fieldName="length" storeAs="08_BYTE"/>
+    </struct>
 
+    <message name="StreamMessage" structId="2">
+        <!-- fingerprint of source public key -->
+        <id fieldName="src" />
+        <!-- fingerprint of destination public key -->
+        <id fieldName="dst" />
+        <!-- id of stream -->
+        <integer fieldName="streamId" storeAs="02_BYTE"/>
+        <!-- id of message in stream -->
+        <integer fieldName="id" storeAs="04_BYTE"/>
+        <!-- id of message in stream -->
+        <blob fieldName="mac" />
+        <blob fieldName="data" />
+    </message>
     <message name="SingleMessage" structId="1">
         <!-- cyclic id of message for prevent duplicating-->
         <integer fieldName="id" storeAs="02_BYTE"/>

@@ -20,12 +20,9 @@
 package talkeeg.common.model;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.StructureBuilder;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * simple single message with signed and optionally ciphered data
@@ -33,7 +30,7 @@ import java.util.List;
  * Created by wayerr on 21.11.14.
  */
 @StructInfo(id = 1)
-public class SingleMessage extends BaseSingleMessage {
+public class SingleMessage extends BaseMessage {
     public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
         @Override
         public StructureBuilder get() {
@@ -41,12 +38,21 @@ public class SingleMessage extends BaseSingleMessage {
         }
     };
 
-    public static class Builder extends BaseSingleMessage.Builder {
+    public static class Builder extends BaseMessage.Builder {
+        private short id;
         private BinaryData clientSign;
         private BinaryData userSign;
         private StatusCode status;
         private BinaryData data;
         private MessageCipherType cipherType;
+
+        public short getId() {
+            return id;
+        }
+
+        public void setId(short id) {
+            this.id = id;
+        }
 
         public BinaryData getData() {
             return data;
@@ -131,6 +137,10 @@ public class SingleMessage extends BaseSingleMessage {
         }
     }
 
+    /**
+     * `id(T02)`:  циклический идентификатор (используется для фильтрации дублей, уникален для каждого src)
+     */
+    private final short id;
     private final BinaryData clientSign;
     private final BinaryData userSign;
     private final StatusCode status;
@@ -139,6 +149,7 @@ public class SingleMessage extends BaseSingleMessage {
 
     private SingleMessage(Builder b) {
         super(b);
+        this.id = b.id;
         this.clientSign = b.clientSign;
         this.userSign = b.userSign;
         this.status = b.status;
@@ -148,6 +159,14 @@ public class SingleMessage extends BaseSingleMessage {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * `id(T02)`:  циклический идентификатор (используется для фильтрации дублей, уникален для каждого src)
+     * @return
+     */
+    public short getId() {
+        return id;
     }
 
     /**
@@ -203,18 +222,24 @@ public class SingleMessage extends BaseSingleMessage {
             return false;
         }
 
-        final SingleMessage that = (SingleMessage)o;
+        SingleMessage that = (SingleMessage)o;
 
+        if(id != that.id) {
+            return false;
+        }
         if(cipherType != that.cipherType) {
             return false;
         }
-        if(clientSign != null ? !clientSign.equals(that.clientSign) : that.clientSign != null) {
+        if(clientSign != null? !clientSign.equals(that.clientSign) : that.clientSign != null) {
             return false;
         }
-        if(data != null ? !data.equals(that.data) : that.data != null) {
+        if(data != null? !data.equals(that.data) : that.data != null) {
             return false;
         }
-        if(userSign != null ? !userSign.equals(that.userSign) : that.userSign != null) {
+        if(status != that.status) {
+            return false;
+        }
+        if(userSign != null? !userSign.equals(that.userSign) : that.userSign != null) {
             return false;
         }
 
@@ -224,10 +249,12 @@ public class SingleMessage extends BaseSingleMessage {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (clientSign != null ? clientSign.hashCode() : 0);
-        result = 31 * result + (userSign != null ? userSign.hashCode() : 0);
-        result = 31 * result + (cipherType != null ? cipherType.hashCode() : 0);
-        result = 31 * result + (data != null ? data.hashCode() : 0);
+        result = 31 * result + (int)id;
+        result = 31 * result + (clientSign != null? clientSign.hashCode() : 0);
+        result = 31 * result + (userSign != null? userSign.hashCode() : 0);
+        result = 31 * result + (status != null? status.hashCode() : 0);
+        result = 31 * result + (cipherType != null? cipherType.hashCode() : 0);
+        result = 31 * result + (data != null? data.hashCode() : 0);
         return result;
     }
 }
