@@ -102,6 +102,11 @@ public final class CoreModule {
             .putType(Hello.class, Hello.STRUCT_BUILDER_FACTORY)
             .putType(Data.class, Data.STRUCT_BUILDER_FACTORY)
             .putType(ResponseData.class, ResponseData.STRUCT_BUILDER_FACTORY)
+            .putType(StreamMessage.class, StreamMessage.STRUCT_BUILDER_FACTORY)
+            .putType(StreamInit.class, StreamInit.STRUCT_BUILDER_FACTORY)
+            .putType(StreamHead.class, StreamHead.STRUCT_BUILDER_FACTORY)
+            .putType(StreamResponse.class, StreamResponse.STRUCT_BUILDER_FACTORY)
+            .putType(StreamEnd.class, StreamEnd.STRUCT_BUILDER_FACTORY)
             .build();
     }
 

@@ -67,6 +67,15 @@
         <struct fieldName="options" structId="20"/>
         <integer fieldName="length" storeAs="08_BYTE"/>
     </struct>
+    <struct name="StreamInit" structId="22">
+        <integer fieldName="streamId" storeAs="02_BYTE"/>
+        <blob fieldName="seed"/>
+    </struct>
+    <struct name="StreamResponse" structId="23">
+        <list fieldName="accepted"><integer storeAs="04_BYTE" /></list>
+        <list fieldName="needed"><integer storeAs="04_BYTE" /></list>
+    </struct>
+    <struct name="StreamEnd" structId="24" />
 
     <message name="StreamMessage" structId="2">
         <!-- fingerprint of source public key -->
