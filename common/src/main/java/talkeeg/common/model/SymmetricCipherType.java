@@ -27,20 +27,46 @@ import talkeeg.common.util.EnumWithValue;
  * Created by wayerr on 26.12.14.
  */
 public enum SymmetricCipherType implements EnumWithValue<Byte> {
-    NONE(0),
+    NONE(0, null, 0, 0),
     /**
      * AES with 128 bit key
      */
-    AES_128(1);
+    AES_128(1, "AES_128", 16, 16);
 
     private final byte value;
+    private final String algorithm;
+    private final int blockSize;
+    private final int keySize;
 
-    SymmetricCipherType(int value) {
+    SymmetricCipherType(int value, String algorithm, int keySize, int blockSize) {
         this.value = (byte)value;
+        this.algorithm = algorithm;
+        this.keySize = keySize;
+        this.blockSize = blockSize;
     }
 
     @Override
     public Byte getValue() {
         return value;
+    }
+
+    public String getName() {
+        return algorithm;
+    }
+
+    /**
+     * size of key in bytes
+     * @return
+     */
+    public int getKeySize() {
+        return keySize;
+    }
+
+    /**
+     * size of block in bytes
+     * @return
+     */
+    public int getBlockSize() {
+        return blockSize;
     }
 }

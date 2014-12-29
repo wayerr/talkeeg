@@ -22,12 +22,17 @@ package talkeeg.common.core;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.conf.Config;
 import talkeeg.bf.Int128;
+import talkeeg.common.model.CipherOptions;
+import talkeeg.common.model.SymmetricCipherType;
+
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.security.*;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
@@ -129,10 +134,8 @@ public final class CryptoService {
      * @return
      * @throws GeneralSecurityException
      */
-    public Cipher getCipherService(Key secretKey, IvParameterSpec iv) throws GeneralSecurityException {
-        Cipher cipher = Cipher.getInstance(CryptoConstants.CIPHER_SYMMETRIC);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
-        return cipher;
+    public Cipher getCipherService(CipherOptions options, Key secretKey, IvParameterSpec iv) throws GeneralSecurityException {
+        return createCipherService(options, secretKey, iv, Cipher.ENCRYPT_MODE);
     }
 
     /**
@@ -142,9 +145,14 @@ public final class CryptoService {
      * @return
      * @throws GeneralSecurityException
      */
-    public Cipher getDecipherService(Key secretKey, IvParameterSpec iv) throws GeneralSecurityException {
-        Cipher cipher = Cipher.getInstance(CryptoConstants.CIPHER_SYMMETRIC);
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
+    public Cipher getDecipherService(CipherOptions options, Key secretKey, IvParameterSpec iv) throws GeneralSecurityException {
+        return createCipherService(options, secretKey, iv, Cipher.DECRYPT_MODE);
+    }
+
+    private Cipher createCipherService(CipherOptions options, Key secretKey, IvParameterSpec iv, int mode) throws GeneralSecurityException {
+        final String transformation = options.getCipher().getName() + '/' + options.getMode().getName() + '/' + options.getPadding().getName();
+        Cipher cipher = Cipher.getInstance(transformation);
+        cipher.init(mode, secretKey, iv);
         return cipher;
     }
 
@@ -171,5 +179,19 @@ public final class CryptoService {
 
     public OwnedKeysManager getOwnedKeysManager() {
         return ownedKeysManager;
+    }
+
+    public Key generateSecretKey(BinaryData providerSeed, BinaryData consumerSeed, SymmetricCipherType cipherType)  {
+        final String name = cipherType.getName();
+        final int providerSeedLen = providerSeed.getLength();
+        final int consumerSeedLen = consumerSeed.getLength();
+        final int keyLen = providerSeedLen + consumerSeedLen;
+        if(keyLen != cipherType.getKeySize()) {
+            throw new RuntimeException("Expected key len: " + cipherType.getKeySize() + " but receive: " + keyLen);
+        }
+        final byte key[] = new byte[keyLen];
+        System.arraycopy(providerSeed.getData(), 0, key, 0, providerSeedLen);
+        System.arraycopy(consumerSeed.getData(), 0, key, providerSeedLen, consumerSeedLen);
+        return new SecretKeySpec(key, name);
     }
 }

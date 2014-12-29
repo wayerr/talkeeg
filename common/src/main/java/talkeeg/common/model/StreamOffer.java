@@ -69,7 +69,7 @@ public final class StreamOffer {
         }
 
         @Override
-        public Object build() {
+        public StreamOffer build() {
             return new StreamOffer(this);
         }
     }
@@ -81,6 +81,10 @@ public final class StreamOffer {
     private StreamOffer(Builder b) {
         this.streamId = b.streamId;
         this.length = b.length;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public short getStreamId() {

@@ -49,8 +49,28 @@ public final class StreamResponse {
             return accepted;
         }
 
+        public Builder accepted(List<Integer> accepted) {
+            setAccepted(accepted);
+            return this;
+        }
+
+        public void setAccepted(List<Integer> accepted) {
+            this.accepted.clear();
+            this.accepted.addAll(accepted);
+        }
+
         public List<Integer> getNeeded() {
             return needed;
+        }
+
+        public Builder needed(List<Integer> needed) {
+            setNeeded(needed);
+            return this;
+        }
+
+        public void setNeeded(List<Integer> needed) {
+            this.needed.clear();
+            this.needed.addAll(accepted);
         }
 
         public StreamResponse build() {
@@ -64,6 +84,10 @@ public final class StreamResponse {
     private StreamResponse(Builder b) {
         this.accepted = ImmutableList.copyOf(b.accepted);
         this.needed = ImmutableList.copyOf(b.needed);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public List<Integer> getAccepted() {

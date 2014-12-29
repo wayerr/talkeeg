@@ -19,10 +19,16 @@
 
 package talkeeg.common.ipc;
 
+import talkeeg.bf.BinaryData;
+
 /**
  * source of stream
  * Created by wayerr on 29.12.14.
  */
 public interface StreamProvider {
-    void provide();
+    void open(StreamProviderRegistration registration);
+    BinaryData provide(StreamProviderRegistration registration, int size);
+    void abort(StreamProviderRegistration registration);
+    long getLength();
+
 }

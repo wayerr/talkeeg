@@ -21,157 +21,62 @@ package talkeeg.common.ipc;
 
 
 import talkeeg.bf.BinaryData;
-import talkeeg.bf.Int128;
-import talkeeg.common.core.AcquaintedClient;
-import talkeeg.common.core.OwnedKeyType;
-import talkeeg.common.model.StreamMessage;
-import talkeeg.common.model.StreamMessageType;
-import talkeeg.common.util.Closeable;
-import talkeeg.common.util.DateUtils;
-import talkeeg.common.util.StateChecker;
+import talkeeg.common.model.*;
 
-import javax.crypto.Cipher;
-import javax.crypto.Mac;
 import javax.crypto.spec.IvParameterSpec;
-import java.security.GeneralSecurityException;
-import java.security.Key;
-import java.security.Signature;
-import java.util.Objects;
+import java.util.Collections;
 
 /**
  * registration of stream consumer
  * Created by wayerr on 29.12.14.
  */
-public class StreamConsumerRegistration implements Closeable {
+public final class StreamConsumerRegistration extends StreamBasicRegistration {
 
-    private static final StateChecker.Graph<StreamMessageType> STATES = StateChecker.<StreamMessageType>builder()
-      .transit(StreamMessageType.HEAD, StreamMessageType.INIT, StreamMessageType.END)
-      .transit(StreamMessageType.INIT, StreamMessageType.DATA, StreamMessageType.END)
-      .transit(StreamMessageType.DATA, StreamMessageType.END)
-      .build();
-    private final StreamSupport streamSupport;
     private final StreamConsumer consumer;
-    private final short streamId;
-    private final long time;
-    private final Object lock = new Object();
-    private Int128 srcClientId;
-    private Key secretKey;
-    private IvParameterSpec iv;
-    private final StateChecker<StreamMessageType> checker = STATES.createChecker(StreamMessageType.HEAD);
 
     StreamConsumerRegistration(StreamSupport streamSupport, StreamConsumer consumer, short streamId) {
-        this.streamSupport = streamSupport;
+        super(streamSupport, StreamMessageType.HEAD, streamId);
         this.consumer = consumer;
-        this.streamId = streamId;
-        this.time = System.currentTimeMillis();
-    }
-
-    @Override
-    public String toString() {
-        return "StreamConsumerRegistration{" +
-          "streamSupport=" + streamSupport +
-          ", streamId=" + streamId +
-          ", time=" + DateUtils.toString(time) +
-          '}';
     }
 
     @Override
     public void close() {
+        super.close();
         this.streamSupport.unregisterConsumer(this);
+        //TODO send END if current state before END
     }
 
-    public short getStreamId() {
-        return streamId;
-    }
-
-    void process(IpcEntryHandlerContext<StreamMessage> context) {
-        final StreamMessage message = context.getMessage();
-        final StreamMessageType type = message.getType();
-        checker.checkPossibility(type);
-        updateSourceClientId(message);
-        final BinaryData decrypted;
-        try {
-            decrypted = verifyAndDecrypt(message, type);
-        } catch(GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
+    protected void processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception {
+        StreamMessageType type = message.getType();
         switch(type) {
             case HEAD:
-                throw new RuntimeException("Consumer not support HEAD stream message");
-            case INIT:
-                initStream(decrypted);
-                this.consumer.open();
+                readHead(decrypted);
+                this.consumer.open(this);
                 break;
             case DATA:
-                this.consumer.consume(decrypted);
+                this.consumer.consume(this, decrypted);
+                sendResponse(message.getId());
                 break;
             case END:
-                this.consumer.close();
+                this.consumer.close(this);
+                break;
+            default:
+                throw new RuntimeException("Consumer not support " + type + " stream message");
         }
     }
 
-    private void initStream(BinaryData decrypted) {
-
+    private void sendResponse(int messageId) throws Exception {
+        //in future we can send response after some timeout or after each N-th message
+        //TODO detect lost messages
+        final StreamResponse response = StreamResponse.builder()
+          .accepted(Collections.singletonList(messageId))
+          .build();
+        send(StreamMessageType.RESPONSE, serialize(response));
     }
 
-    private void updateSourceClientId(StreamMessage message) {
-        synchronized(this.lock) {
-            final Int128 src = message.getSrc();
-            if(this.srcClientId == null) {
-                this.srcClientId = src;
-            } else if(!Objects.equals(this.srcClientId, src)) {
-                throw new RuntimeException("Source client id was changed from " + this.srcClientId + " to " + src);
-            }
-        }
-    }
-
-    private BinaryData verifyAndDecrypt(StreamMessage message, StreamMessageType type) throws GeneralSecurityException {
-        //verify and decrypt
-        final Int128 clientId = message.getSrc();
-        final BinaryData data = message.getData();
-        final BinaryData sign = message.getMac();
-        if(type == StreamMessageType.HEAD || type == StreamMessageType.INIT) {
-            //while cipher not configured sign contains client signature
-            //check client sign
-            final AcquaintedClient client = this.streamSupport.clientsService.getClient(clientId);
-            if(client == null) {
-                throw new RuntimeException("Client " + clientId + " is not acquainted");
-            }
-            final Signature verifyService = this.streamSupport.cryptoService.getVerifyService(client.getKey());
-            verifyService.update(data.getData());
-            boolean verify = verifyService.verify(sign.getData());
-            if(!verify) {
-                throw new RuntimeException("Bad signature from " + clientId);
-            }
-            //decrypt
-            Cipher cipher = this.streamSupport.cryptoService.getDecipherAsymmetricService(OwnedKeyType.CLIENT);
-            cipher.update(data.getData());
-            return new BinaryData(cipher.doFinal());
-        } else {
-            //check MAC
-            final Key secretKey = this.getSecretKey();
-            final Mac mac = this.streamSupport.cryptoService.getMac(secretKey);
-            mac.update(data.getData());
-            boolean verify = Objects.deepEquals(sign.getData(), mac.doFinal());
-            if(!verify) {
-                throw new RuntimeException("Bad MAC from " + clientId);
-            }
-            //decrypt
-            Cipher cipher = this.streamSupport.cryptoService.getCipherService(secretKey, getInitializationVector());
-            cipher.update(data.getData());
-            return new BinaryData(cipher.doFinal());
-        }
-    }
-
-    private Key getSecretKey() {
-        synchronized(this.lock) {
-            return secretKey;
-        }
-    }
-
-    public IvParameterSpec getInitializationVector() {
-        synchronized(this.lock) {
-            return iv;
-        }
+    private void readHead(BinaryData decrypted) throws Exception {
+        final StreamHead head = (StreamHead)deserialize(decrypted);
+        final CipherOptions options = head.getOptions();
+        initStreamParameters(options, new IvParameterSpec(head.getIv().getData()), head.getSeed(), this.getOrCreateSeed());
     }
 }

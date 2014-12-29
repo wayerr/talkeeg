@@ -19,35 +19,31 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.common.model.IdSequenceGenerator;
-import talkeeg.common.util.Closeable;
-import talkeeg.common.util.DateUtils;
+import talkeeg.bf.BinaryData;
+import talkeeg.common.model.*;
+
+import javax.crypto.spec.IvParameterSpec;
+import java.security.SecureRandom;
+import java.util.List;
 
 /**
  * registration of stream provider
  * Created by wayerr on 29.12.14.
  */
-public final class StreamProviderRegistration implements Closeable {
+public final class StreamProviderRegistration extends StreamBasicRegistration {
     private static final IdSequenceGenerator GENERATOR = new IdSequenceGenerator(Integer.MAX_VALUE);
 
     private final StreamProvider provider;
-    private final long time;
-    private final short streamId;
-    private final StreamSupport streamSupport;
+    private final StreamOffer offer;
+    private static final int CHUNK_SIZE = 1024;
 
     StreamProviderRegistration(StreamSupport streamSupport, StreamProvider provider) {
-        this.streamSupport = streamSupport;
+        super(streamSupport, StreamMessageType.REQUEST, GENERATOR.next());
         this.provider = provider;
-        this.time = System.currentTimeMillis();
-        this.streamId = GENERATOR.next();
-    }
-
-    public short getStreamId() {
-        return streamId;
-    }
-
-    public long getTime() {
-        return time;
+        this.offer = StreamOffer.builder()
+          .length(provider.getLength())
+          .streamId(getStreamId())
+          .build();
     }
 
     public StreamProvider getProvider() {
@@ -55,12 +51,60 @@ public final class StreamProviderRegistration implements Closeable {
     }
 
     @Override
-    public String toString() {
-        return "StreamProviderRegistration{" +
-          "provider=" + provider +
-          ", time=" + DateUtils.toString(time) +
-          ", streamId=" + streamId +
-          '}';
+    protected void processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception {
+        StreamMessageType type = message.getType();
+        switch(type) {
+            case REQUEST:
+                processRequest((StreamRequest)deserialize(decrypted));
+                break;
+            case RESPONSE:
+                sendData();
+                break;
+            case END:
+                this.provider.abort(this);
+                break;
+            default:
+                throw new RuntimeException("Consumer not support " + type + " stream message");
+        }
+    }
+
+    private void sendData() throws Exception {
+        //in future we must send data in another stream
+        final BinaryData data = this.provider.provide(this, CHUNK_SIZE);
+        send(StreamMessageType.DATA, data);
+    }
+
+    private void processRequest(StreamRequest request) throws Exception {
+        this.provider.open(this);
+        final BinaryData seed = getOrCreateSeed();
+        final CipherOptions options = findSupportedOptions(request.getCiphers());
+
+        final byte[] ivBytes = SecureRandom.getSeed(options.getCipher().getBlockSize());
+        final IvParameterSpec iv = new IvParameterSpec(ivBytes);
+
+        initStreamParameters(options, iv, seed, request.getSeed());
+
+        final StreamHead.Builder builder = StreamHead.builder();
+        builder.setLength(this.provider.getLength());
+        builder.setSeed(seed);
+        builder.setIv(new BinaryData(ivBytes));
+        builder.setOptions(options);
+        send(StreamMessageType.HEAD, serialize(builder.build()));
+    }
+
+    private CipherOptions findSupportedOptions(List<CipherOptions> ciphers) {
+        final List<CipherOptions> supportedCiphers = getSupportedCiphers();
+        for(int i = 0; i < supportedCiphers.size(); ++i) {
+            CipherOptions options = supportedCiphers.get(i);
+            if(ciphers.contains(supportedCiphers)) {
+                return options;
+            }
+        }
+        throw new RuntimeException("Can not find supported ciphers: " + supportedCiphers + " in ciphers from request: " + ciphers);
+    }
+
+    public StreamOffer getOffer() {
+        return this.offer;
     }
 
     /**
@@ -68,6 +112,8 @@ public final class StreamProviderRegistration implements Closeable {
      */
     @Override
     public void close() {
+        super.close();
         this.streamSupport.unregisterProvider(this);
+        //TODO send END if current state before END
     }
 }

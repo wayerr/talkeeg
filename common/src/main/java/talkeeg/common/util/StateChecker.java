@@ -19,6 +19,8 @@
 
 package talkeeg.common.util;
 
+import talkeeg.common.model.StreamMessageType;
+
 import java.util.*;
 
 /**
@@ -117,7 +119,8 @@ public final class StateChecker<T> {
     }
 
     private final Graph<T> graph;
-    private volatile T current;
+    private final Object lock = new Object();
+    private T current;
 
     StateChecker(Graph<T> graph, T current) {
         this.graph = graph;
@@ -134,11 +137,13 @@ public final class StateChecker<T> {
      * @return
      */
     public Set<T> getTransitions() {
-        return this.graph.getTransitions(this.current);
+        return this.graph.getTransitions(this.getCurrent());
     }
 
     public T getCurrent() {
-        return current;
+        synchronized(this.lock) {
+            return current;
+        }
     }
 
     /**
@@ -148,7 +153,7 @@ public final class StateChecker<T> {
      * @return
      */
     public boolean isPossible(T destination) {
-        return this.graph.isPossible(this.current, destination);
+        return this.graph.isPossible(this.getCurrent(), destination);
     }
 
     /**
@@ -157,6 +162,17 @@ public final class StateChecker<T> {
      * @param destination
      */
     public void checkPossibility(T destination) {
-        this.graph.checkPossibility(this.current, destination);
+        this.graph.checkPossibility(this.getCurrent(), destination);
+    }
+
+    /**
+     * change current state to `destinationState`
+     * @param destinationState
+     */
+    public void transit(T destinationState) {
+        synchronized(this.lock) {
+            checkPossibility(destinationState);
+            this.current = destinationState;
+        }
     }
 }

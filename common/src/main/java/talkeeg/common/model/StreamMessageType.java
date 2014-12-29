@@ -29,7 +29,8 @@ public enum StreamMessageType implements EnumWithValue<Byte> {
     REQUEST(1),
     HEAD(2),
     DATA(3),
-    END(4);
+    RESPONSE(4),
+    END(5);
 
     private final byte value;
 

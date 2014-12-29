@@ -19,12 +19,12 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.bf.BinaryData;
+import talkeeg.bf.Bf;
+import talkeeg.bf.Int128;
 import talkeeg.common.core.AcquaintedClientsService;
 import talkeeg.common.core.CryptoService;
+import talkeeg.common.core.OwnedIdentityCardsService;
 import talkeeg.common.model.StreamMessage;
-import talkeeg.common.model.StreamMessageType;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,11 +42,18 @@ final class StreamSupport implements MessageReader<StreamMessage> {
     private final ConcurrentMap<Short, StreamConsumerRegistration> consumersMap = new ConcurrentHashMap<>();
     final CryptoService cryptoService;
     final AcquaintedClientsService clientsService;
+    final Bf bf;
+    private final OwnedIdentityCardsService ownedIdentityCardsService;
 
     @Inject
-    StreamSupport(CryptoService cryptoService, AcquaintedClientsService clientsService) {
+    StreamSupport(Bf bf,
+                  CryptoService cryptoService,
+                  AcquaintedClientsService clientsService,
+                  OwnedIdentityCardsService ownedIdentityCardsService) {
+        this.bf = bf;
         this.cryptoService = cryptoService;
         this.clientsService = clientsService;
+        this.ownedIdentityCardsService = ownedIdentityCardsService;
     }
 
     /**
@@ -107,4 +114,7 @@ final class StreamSupport implements MessageReader<StreamMessage> {
         return null;
     }
 
+    Int128 getOwnClientId() {
+        return this.ownedIdentityCardsService.getClientId();
+    }
 }

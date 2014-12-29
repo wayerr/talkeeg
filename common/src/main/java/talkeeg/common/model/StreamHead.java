@@ -41,6 +41,7 @@ public final class StreamHead {
         private CipherOptions options;
         private long length;
         private BinaryData iv;
+        private BinaryData seed;
 
         public CipherOptions getOptions() {
             return options;
@@ -74,6 +75,22 @@ public final class StreamHead {
             this.iv = iv;
         }
 
+        /**
+         * seed for secret key generation
+         * @return
+         */
+        public BinaryData getSeed() {
+            return seed;
+        }
+
+        /**
+         * seed for secret key generation
+         * @param seed
+         */
+        public void setSeed(BinaryData seed) {
+            this.seed = seed;
+        }
+
         public StreamHead build() {
             return new StreamHead(this);
         }
@@ -82,11 +99,13 @@ public final class StreamHead {
     private final CipherOptions options;
     private final long length;
     private final BinaryData iv;
+    private final BinaryData seed;
 
     private StreamHead(Builder b) {
         this.options = b.options;
         this.length = b.length;
         this.iv = b.iv;
+        this.seed = b.seed;
     }
 
     public static Builder builder() {
@@ -109,6 +128,14 @@ public final class StreamHead {
         return iv;
     }
 
+    /**
+     * seed for secret key generation
+     * @return
+     */
+    public BinaryData getSeed() {
+        return seed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if(this == o) {
@@ -118,15 +145,18 @@ public final class StreamHead {
             return false;
         }
 
-        StreamHead that = (StreamHead)o;
+        StreamHead head = (StreamHead)o;
 
-        if(length != that.length) {
+        if(length != head.length) {
             return false;
         }
-        if(iv != null? !iv.equals(that.iv) : that.iv != null) {
+        if(iv != null? !iv.equals(head.iv) : head.iv != null) {
             return false;
         }
-        if(options != null? !options.equals(that.options) : that.options != null) {
+        if(options != null? !options.equals(head.options) : head.options != null) {
+            return false;
+        }
+        if(seed != null? !seed.equals(head.seed) : head.seed != null) {
             return false;
         }
 
@@ -138,6 +168,7 @@ public final class StreamHead {
         int result = options != null? options.hashCode() : 0;
         result = 31 * result + (int)(length ^ (length >>> 32));
         result = 31 * result + (iv != null? iv.hashCode() : 0);
+        result = 31 * result + (seed != null? seed.hashCode() : 0);
         return result;
     }
 

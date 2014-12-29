@@ -20,9 +20,13 @@
 package talkeeg.common.model;
 
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableList;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * structure which represent request of stream stream transferring
@@ -42,6 +46,7 @@ public final class StreamRequest {
 
         private short streamId;
         private BinaryData seed;
+        private final List<CipherOptions> ciphers = new ArrayList<>();
 
         public short getStreamId() {
             return streamId;
@@ -59,6 +64,15 @@ public final class StreamRequest {
             this.seed = seed;
         }
 
+        public List<CipherOptions> getCiphers() {
+            return ciphers;
+        }
+
+        public void setCiphers(List<CipherOptions> ciphers) {
+            this.ciphers.clear();
+            this.ciphers.addAll(ciphers);
+        }
+
         public StreamRequest build() {
             return new StreamRequest(this);
         }
@@ -66,10 +80,12 @@ public final class StreamRequest {
 
     private final short streamId;
     private final BinaryData seed;
+    private final List<CipherOptions> ciphers;
 
     private StreamRequest(Builder b) {
         this.streamId = b.streamId;
         this.seed = b.seed;
+        this.ciphers = ImmutableList.copyOf(b.ciphers);
     }
 
     public short getStreamId() {
@@ -78,6 +94,10 @@ public final class StreamRequest {
 
     public BinaryData getSeed() {
         return seed;
+    }
+
+    public List<CipherOptions> getCiphers() {
+        return ciphers;
     }
 
     @Override
@@ -94,6 +114,9 @@ public final class StreamRequest {
         if(streamId != that.streamId) {
             return false;
         }
+        if(ciphers != null? !ciphers.equals(that.ciphers) : that.ciphers != null) {
+            return false;
+        }
         if(seed != null? !seed.equals(that.seed) : that.seed != null) {
             return false;
         }
@@ -105,14 +128,16 @@ public final class StreamRequest {
     public int hashCode() {
         int result = (int)streamId;
         result = 31 * result + (seed != null? seed.hashCode() : 0);
+        result = 31 * result + (ciphers != null? ciphers.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "StreamInit{" +
+        return "StreamRequest{" +
           "streamId=" + streamId +
           ", seed=" + seed +
+          ", ciphers=" + ciphers +
           '}';
     }
 }

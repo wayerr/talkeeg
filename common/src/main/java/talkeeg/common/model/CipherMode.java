@@ -26,18 +26,24 @@ import talkeeg.common.util.EnumWithValue;
  * Created by wayerr on 26.12.14.
  */
 public enum CipherMode implements EnumWithValue<Byte> {
-    NONE(0),
-    CTR(1);
+    NONE(0, "NONE"),
+    CTR(1, "CTR");
 
 
     private final byte value;
+    private final String name;
 
-    CipherMode(int value) {
+    CipherMode(int value, String name) {
         this.value = (byte)value;
+        this.name = name;
     }
 
     @Override
     public Byte getValue() {
         return value;
+    }
+
+    public String getName() {
+        return name;
     }
 }

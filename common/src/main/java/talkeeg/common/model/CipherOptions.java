@@ -48,12 +48,22 @@ public final class CipherOptions {
             return cipher;
         }
 
+        public Builder cipher(SymmetricCipherType cipher) {
+            setCipher(cipher);
+            return this;
+        }
+
         public void setCipher(SymmetricCipherType cipher) {
             this.cipher = cipher;
         }
 
         public CipherMode getMode() {
             return mode;
+        }
+
+        public Builder mode(CipherMode mode) {
+            setMode(mode);
+            return this;
         }
 
         public void setMode(CipherMode mode) {
@@ -64,12 +74,22 @@ public final class CipherOptions {
             return mac;
         }
 
+        public Builder mac(MacType mac) {
+            setMac(mac);
+            return this;
+        }
+
         public void setMac(MacType mac) {
             this.mac = mac;
         }
 
         public PaddingType getPadding() {
             return padding;
+        }
+
+        public Builder padding(PaddingType padding) {
+            setPadding(padding);
+            return this;
         }
 
         public void setPadding(PaddingType padding) {
@@ -93,7 +113,7 @@ public final class CipherOptions {
         this.padding = b.padding;
     }
 
-    public Builder builder() {
+    public static Builder builder() {
         return new Builder();
     }
 
