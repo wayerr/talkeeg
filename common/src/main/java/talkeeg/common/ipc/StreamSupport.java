@@ -20,8 +20,11 @@
 package talkeeg.common.ipc;
 
 import talkeeg.bf.BinaryData;
+import talkeeg.common.core.AcquaintedClientsService;
 import talkeeg.common.core.CryptoService;
 import talkeeg.common.model.StreamMessage;
+import talkeeg.common.model.StreamMessageType;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,11 +40,13 @@ final class StreamSupport implements MessageReader<StreamMessage> {
 
     private final ConcurrentMap<Short, StreamProviderRegistration> providersMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<Short, StreamConsumerRegistration> consumersMap = new ConcurrentHashMap<>();
-    private final CryptoService cryptoService;
+    final CryptoService cryptoService;
+    final AcquaintedClientsService clientsService;
 
     @Inject
-    StreamSupport(CryptoService cryptoService) {
+    StreamSupport(CryptoService cryptoService, AcquaintedClientsService clientsService) {
         this.cryptoService = cryptoService;
+        this.clientsService = clientsService;
     }
 
     /**
@@ -98,11 +103,7 @@ final class StreamSupport implements MessageReader<StreamMessage> {
         if(registration == null) {
             throw new RuntimeException("No registered consumer for streamId=" + streamId);
         }
-        //verify
-        final BinaryData mac = message.getMac();
-        if(mac == null || mac.getLength() == 0) {// no MAC
-
-        }
+        registration.process(context);
         return null;
     }
 

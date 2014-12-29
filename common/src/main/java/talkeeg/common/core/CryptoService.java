@@ -24,6 +24,7 @@ import talkeeg.common.conf.Config;
 import talkeeg.bf.Int128;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
+import javax.crypto.spec.IvParameterSpec;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.security.*;
@@ -119,6 +120,32 @@ public final class CryptoService {
         } catch(GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * configured cipher
+     * @param secretKey
+     * @param iv
+     * @return
+     * @throws GeneralSecurityException
+     */
+    public Cipher getCipherService(Key secretKey, IvParameterSpec iv) throws GeneralSecurityException {
+        Cipher cipher = Cipher.getInstance(CryptoConstants.CIPHER_SYMMETRIC);
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
+        return cipher;
+    }
+
+    /**
+     * configured decipher
+     * @param secretKey
+     * @param iv
+     * @return
+     * @throws GeneralSecurityException
+     */
+    public Cipher getDecipherService(Key secretKey, IvParameterSpec iv) throws GeneralSecurityException {
+        Cipher cipher = Cipher.getInstance(CryptoConstants.CIPHER_SYMMETRIC);
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
+        return cipher;
     }
 
     Int128 getFingerprint(Key key) {

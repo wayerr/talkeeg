@@ -115,6 +115,7 @@ public final class StreamMessage extends BaseMessage {
     }
     private final short streamId;
     private final int id;
+    private final StreamMessageType type;
     private final BinaryData mac;
     private final BinaryData data;
 
@@ -123,6 +124,7 @@ public final class StreamMessage extends BaseMessage {
 
         this.streamId = b.streamId;
         this.id = b.id;
+        this.type = b.type;
         this.mac = b.mac;
         this.data = b.data;
     }
@@ -141,6 +143,14 @@ public final class StreamMessage extends BaseMessage {
      */
     public int getId() {
         return id;
+    }
+
+    /**
+     * type of message
+     * @return
+     */
+    public StreamMessageType getType() {
+        return type;
     }
 
     /**
@@ -181,6 +191,9 @@ public final class StreamMessage extends BaseMessage {
         if(mac != null? !mac.equals(that.mac) : that.mac != null) {
             return false;
         }
+        if(type != that.type) {
+            return false;
+        }
 
         return true;
     }
@@ -190,6 +203,7 @@ public final class StreamMessage extends BaseMessage {
         int result = super.hashCode();
         result = 31 * result + (int)streamId;
         result = 31 * result + id;
+        result = 31 * result + (type != null? type.hashCode() : 0);
         result = 31 * result + (mac != null? mac.hashCode() : 0);
         result = 31 * result + (data != null? data.hashCode() : 0);
         return result;

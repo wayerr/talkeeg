@@ -19,9 +19,15 @@
 
 package talkeeg.common.ipc;
 
+import talkeeg.bf.BinaryData;
+import talkeeg.common.util.Closeable;
+
 /**
  * consumer of stream
  * Created by wayerr on 29.12.14.
  */
-public interface StreamConsumer {
+public interface StreamConsumer extends Closeable {
+    void open();
+    void consume(BinaryData data);
+
 }

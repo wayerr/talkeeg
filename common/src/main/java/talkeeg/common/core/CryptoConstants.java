@@ -47,4 +47,5 @@ final class CryptoConstants {
     public static final String ALG_MAC = "HmacSHA1";
 
     public static final String CIPHER_ASYMMETRIC = ALG_ASYMMETRIC + "/ECB/PKCS1Padding";
+    public static final String CIPHER_SYMMETRIC = "AES_128/CTR/PKCS5Padding";
 }

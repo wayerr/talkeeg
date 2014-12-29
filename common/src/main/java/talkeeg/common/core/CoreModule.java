@@ -106,7 +106,6 @@ public final class CoreModule {
             .putType(StreamInit.class, StreamInit.STRUCT_BUILDER_FACTORY)
             .putType(StreamHead.class, StreamHead.STRUCT_BUILDER_FACTORY)
             .putType(StreamResponse.class, StreamResponse.STRUCT_BUILDER_FACTORY)
-            .putType(StreamEnd.class, StreamEnd.STRUCT_BUILDER_FACTORY)
             .putType(StreamOffer.class, StreamOffer.STRUCT_BUILDER_FACTORY)
             .build();
     }

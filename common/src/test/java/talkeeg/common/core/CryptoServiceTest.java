@@ -24,6 +24,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import talkeeg.bf.Arrays;
+import talkeeg.common.conf.Config;
 
 import java.security.Signature;
 
@@ -38,7 +39,7 @@ public class CryptoServiceTest {
 
     @BeforeClass
     public static void setup() {
-        service = new CryptoService(Env.getInstance().getConfig(), new KeyLoader());
+        service = new CryptoService(Env.getInstance().get(Config.class), new KeyLoader());
         service.init();
     }
 
