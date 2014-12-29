@@ -76,6 +76,10 @@
         <list fieldName="needed"><integer storeAs="04_BYTE" /></list>
     </struct>
     <struct name="StreamEnd" structId="24" />
+    <struct name="StreamOffer" structId="25">
+        <integer fieldName="streamId" storeAs="02_BYTE" />
+        <integer fieldName="length" storeAs="08_BYTE" />
+    </struct>
 
     <message name="StreamMessage" structId="2">
         <!-- fingerprint of source public key -->
