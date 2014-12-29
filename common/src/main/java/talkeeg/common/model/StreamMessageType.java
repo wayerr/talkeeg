@@ -26,8 +26,8 @@ import talkeeg.common.util.EnumWithValue;
  * Created by wayerr on 29.12.14.
  */
 public enum StreamMessageType implements EnumWithValue<Byte> {
-    HEAD(1),
-    INIT(2),
+    REQUEST(1),
+    HEAD(2),
     DATA(3),
     END(4);
 

@@ -61,15 +61,17 @@
         <integer fieldName="mode" storeAs="01_BYTE"/>
         <integer fieldName="mac" storeAs="01_BYTE"/>
         <integer fieldName="padding" storeAs="01_BYTE"/>
-        <blob fieldName="iv"/>
     </struct>
     <struct name="StreamHead" structId="21">
         <struct fieldName="options" structId="20"/>
         <integer fieldName="length" storeAs="08_BYTE"/>
+        <blob fieldName="iv"/>
     </struct>
-    <struct name="StreamInit" structId="22">
+    <struct name="StreamRequest" structId="22">
         <integer fieldName="streamId" storeAs="02_BYTE"/>
         <blob fieldName="seed"/>
+        <!-- list of supported cipher options -->
+        <list fieldName="ciphers"><struct structId="20"/></list>
     </struct>
     <struct name="StreamResponse" structId="23">
         <list fieldName="accepted"><integer storeAs="04_BYTE" /></list>

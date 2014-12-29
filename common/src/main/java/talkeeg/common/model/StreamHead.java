@@ -20,6 +20,7 @@
 package talkeeg.common.model;
 
 import com.google.common.base.Supplier;
+import talkeeg.bf.BinaryData;
 import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
 
@@ -39,6 +40,7 @@ public final class StreamHead {
     public static final class Builder implements BuilderInterface {
         private CipherOptions options;
         private long length;
+        private BinaryData iv;
 
         public CipherOptions getOptions() {
             return options;
@@ -56,6 +58,22 @@ public final class StreamHead {
             this.length = length;
         }
 
+        /**
+         * initialization vector of cipher
+         * @return
+         */
+        public BinaryData getIv() {
+            return iv;
+        }
+
+        /**
+         * initialization vector of cipher
+         * @param iv
+         */
+        public void setIv(BinaryData iv) {
+            this.iv = iv;
+        }
+
         public StreamHead build() {
             return new StreamHead(this);
         }
@@ -63,10 +81,12 @@ public final class StreamHead {
 
     private final CipherOptions options;
     private final long length;
+    private final BinaryData iv;
 
     private StreamHead(Builder b) {
         this.options = b.options;
         this.length = b.length;
+        this.iv = b.iv;
     }
 
     public static Builder builder() {
@@ -79,6 +99,14 @@ public final class StreamHead {
 
     public long getLength() {
         return length;
+    }
+
+    /**
+     * initialization vector of cipher
+     * @return
+     */
+    public BinaryData getIv() {
+        return iv;
     }
 
     @Override
@@ -95,6 +123,9 @@ public final class StreamHead {
         if(length != that.length) {
             return false;
         }
+        if(iv != null? !iv.equals(that.iv) : that.iv != null) {
+            return false;
+        }
         if(options != null? !options.equals(that.options) : that.options != null) {
             return false;
         }
@@ -106,6 +137,7 @@ public final class StreamHead {
     public int hashCode() {
         int result = options != null? options.hashCode() : 0;
         result = 31 * result + (int)(length ^ (length >>> 32));
+        result = 31 * result + (iv != null? iv.hashCode() : 0);
         return result;
     }
 

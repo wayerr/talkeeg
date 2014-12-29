@@ -25,12 +25,11 @@ import talkeeg.bf.StructInfo;
 import talkeeg.bf.StructureBuilder;
 
 /**
- * structure which reference to stream (it`s appear as {@link talkeeg.common.model.Command } argument) and
- * used for initialization of stream transferring
+ * structure which represent request of stream stream transferring
  * Created by wayerr on 26.12.14.
  */
 @StructInfo(id = 22)
-public final class StreamInit {
+public final class StreamRequest {
 
     public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
         @Override
@@ -60,15 +59,15 @@ public final class StreamInit {
             this.seed = seed;
         }
 
-        public StreamInit build() {
-            return new StreamInit(this);
+        public StreamRequest build() {
+            return new StreamRequest(this);
         }
     }
 
     private final short streamId;
     private final BinaryData seed;
 
-    private StreamInit(Builder b) {
+    private StreamRequest(Builder b) {
         this.streamId = b.streamId;
         this.seed = b.seed;
     }
@@ -86,11 +85,11 @@ public final class StreamInit {
         if(this == o) {
             return true;
         }
-        if(!(o instanceof StreamInit)) {
+        if(!(o instanceof StreamRequest)) {
             return false;
         }
 
-        StreamInit that = (StreamInit)o;
+        StreamRequest that = (StreamRequest)o;
 
         if(streamId != that.streamId) {
             return false;

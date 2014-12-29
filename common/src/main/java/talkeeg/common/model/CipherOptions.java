@@ -43,7 +43,6 @@ public final class CipherOptions {
         private CipherMode mode;
         private MacType mac;
         private PaddingType padding;
-        private BinaryData iv;
 
         public SymmetricCipherType getCipher() {
             return cipher;
@@ -77,14 +76,6 @@ public final class CipherOptions {
             this.padding = padding;
         }
 
-        public BinaryData getIv() {
-            return iv;
-        }
-
-        public void setIv(BinaryData iv) {
-            this.iv = iv;
-        }
-
         public CipherOptions build() {
             return new CipherOptions(this);
         }
@@ -94,14 +85,12 @@ public final class CipherOptions {
     private final CipherMode mode;
     private final MacType mac;
     private final PaddingType padding;
-    private final BinaryData iv;
 
     private CipherOptions(Builder b) {
         this.cipher = b.cipher;
         this.mode = b.mode;
         this.mac = b.mac;
         this.padding = b.padding;
-        this.iv = b.iv;
     }
 
     public Builder builder() {
@@ -124,10 +113,6 @@ public final class CipherOptions {
         return padding;
     }
 
-    public BinaryData getIv() {
-        return iv;
-    }
-
     @Override
     public boolean equals(Object o) {
         if(this == o) {
@@ -140,9 +125,6 @@ public final class CipherOptions {
         CipherOptions that = (CipherOptions)o;
 
         if(cipher != that.cipher) {
-            return false;
-        }
-        if(iv != null? !iv.equals(that.iv) : that.iv != null) {
             return false;
         }
         if(mac != that.mac) {
@@ -164,7 +146,6 @@ public final class CipherOptions {
         result = 31 * result + (mode != null? mode.hashCode() : 0);
         result = 31 * result + (mac != null? mac.hashCode() : 0);
         result = 31 * result + (padding != null? padding.hashCode() : 0);
-        result = 31 * result + (iv != null? iv.hashCode() : 0);
         return result;
     }
 
@@ -175,7 +156,6 @@ public final class CipherOptions {
           ", mode=" + mode +
           ", mac=" + mac +
           ", padding=" + padding +
-          ", iv=" + iv +
           '}';
     }
 }
