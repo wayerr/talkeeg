@@ -19,12 +19,10 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.common.model.BaseMessage;
-
 /**
- * tool for reading message
- * Created by wayerr on 19.12.14.
+ * source of stream
+ * Created by wayerr on 29.12.14.
  */
-interface MessageReader<T extends BaseMessage> {
-    ReadResult<T> read(IpcEntryHandlerContext<T> context) throws Exception;
+public interface StreamProvider {
+    void provide();
 }

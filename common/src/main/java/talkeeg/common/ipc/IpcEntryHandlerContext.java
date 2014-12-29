@@ -20,6 +20,7 @@
 package talkeeg.common.ipc;
 
 import talkeeg.bf.Int128;
+import talkeeg.common.model.BaseMessage;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.MessageCipherType;
 import talkeeg.common.model.SingleMessage;
@@ -29,12 +30,12 @@ import talkeeg.common.model.SingleMessage;
  *
  * Created by wayerr on 18.12.14.
  */
-public final class IpcEntryHandlerContext {
-    private final SingleMessage message;
+public final class IpcEntryHandlerContext<T extends BaseMessage> {
+    private final T message;
     private final ClientAddress srcClientAddress;
     private final IpcService service;
 
-    IpcEntryHandlerContext(IpcService service, SingleMessage message, ClientAddress srcClientAddress) {
+    IpcEntryHandlerContext(IpcService service, T message, ClientAddress srcClientAddress) {
         this.service = service;
         this.message = message;
         this.srcClientAddress = srcClientAddress;
@@ -48,23 +49,11 @@ public final class IpcEntryHandlerContext {
         return this.message.getSrc();
     }
 
-    public MessageCipherType getCipherType() {
-        return this.message.getCipherType();
-    }
-
-    public boolean hasClientSign() {
-        return this.message.getClientSign() != null;
-    }
-
-    public boolean hasUserSign() {
-        return this.message.getUserSign() != null;
-    }
-
     public ClientAddress getSrcClientAddress() {
         return srcClientAddress;
     }
 
-    public SingleMessage getMessage() {
+    public T getMessage() {
         return message;
     }
 }

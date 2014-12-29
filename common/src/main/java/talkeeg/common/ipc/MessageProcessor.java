@@ -43,13 +43,16 @@ final class MessageProcessor {
     private final SingleMessageSupport singleMessageSupport;
     private final OwnedIdentityCardsService ownedIdentityCards;
     private final ServiceLocator serviceLocator;
+    private final StreamSupport streamSupport;
 
     @Inject
     MessageProcessor(OwnedIdentityCardsService ownedIdentityCards,
                      SingleMessageSupport singleMessageSupport,
+                     StreamSupport streamSupport,
                      ServiceLocator serviceLocator) {
         this.ownedIdentityCards = ownedIdentityCards;
         this.singleMessageSupport = singleMessageSupport;
+        this.streamSupport = streamSupport;
         this.serviceLocator = serviceLocator;
     }
 
@@ -69,11 +72,16 @@ final class MessageProcessor {
         Object message = ro.getMessage();
         ClientAddress address = ro.getSrcAddress();
         if(message instanceof SingleMessage) {
-            final IpcEntryHandlerContext ipcEntryHandlerContext = new IpcEntryHandlerContext(service, (SingleMessage)message, address);
-            consume(ipcEntryHandlerContext);
+            consumeSingleMessage(new IpcEntryHandlerContext<>(service, (SingleMessage)message, address));
+        } else if(message instanceof SingleMessage) {
+            consumeStreamMessage(new IpcEntryHandlerContext<>(service, (StreamMessage)message, address));
         } else {
             logConsumeError(address, "unsupported message type " + message.getClass());
         }
+    }
+
+    private void consumeStreamMessage(IpcEntryHandlerContext<StreamMessage> context) throws Exception {
+        this.streamSupport.read(context);
     }
 
     IoObject send(Parcel parcel) throws Exception {
@@ -82,7 +90,7 @@ final class MessageProcessor {
         return new IoObject(singleMessage, destination);
     }
 
-    private void consume(IpcEntryHandlerContext context) throws Exception {
+    private void consumeSingleMessage(IpcEntryHandlerContext<SingleMessage> context) throws Exception {
         final SingleMessage message = context.getMessage();
         final ClientAddress address = context.getSrcClientAddress();
         final Int128 dst = message.getDst();
@@ -94,7 +102,7 @@ final class MessageProcessor {
             processMessageWithStatus(context, status);
             return;
         }
-        final ReadResult<SingleMessage> result = this.singleMessageSupport.read(context, message);
+        final ReadResult<SingleMessage> result = this.singleMessageSupport.read(context);
         if(!result.isVerified()) {
             logConsumeError(address, "SingleMessage has errors:" + result.getErrors());
             final StatusCode statusCode = result.getStatusCode();

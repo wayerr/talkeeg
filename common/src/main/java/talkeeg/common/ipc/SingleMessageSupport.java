@@ -74,10 +74,11 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
     }
 
     @Override
-    public ReadResult<SingleMessage> read(IpcEntryHandlerContext context, SingleMessage message) throws Exception {
+    public ReadResult<SingleMessage> read(IpcEntryHandlerContext<SingleMessage> context) throws Exception {
+        final SingleMessage message = context.getMessage();
         ReadResult.Builder<SingleMessage> builder = ReadResult.builder();
         try {
-            checkSign(context, message, builder);
+            checkSign(message, builder);
         } catch(Exception e) {
             final String str = message + " validation failed, see log. It came from " + context.getSrcClientAddress();
             LOG.log(Level.SEVERE, str, e);
@@ -104,7 +105,7 @@ final class SingleMessageSupport implements MessageReader<SingleMessage>, Messag
         return builder.build();
     }
 
-    private void checkSign(IpcEntryHandlerContext context, SingleMessage message, ReadResult.Builder<SingleMessage> builder) throws Exception{
+    private void checkSign(SingleMessage message, ReadResult.Builder<SingleMessage> builder) throws Exception{
         BinaryData clientSign = message.getClientSign();
         BinaryData userSign = message.getUserSign();
         if(clientSign == null && userSign == null) {

@@ -46,8 +46,7 @@ public final class IpcServiceLoopback implements IpcService {
     public void push(Parcel parcel) {
         try {
             SingleMessage msg = this.singleMessageSupport.build(parcel);
-            IpcEntryHandlerContext context = new IpcEntryHandlerContext(this, msg, LOCALHOST);
-            this.singleMessageSupport.read(context, msg);
+            this.singleMessageSupport.read(new IpcEntryHandlerContext<>(this, msg, LOCALHOST));
         } catch(Exception e) {
             throw new RuntimeException(e);
         }

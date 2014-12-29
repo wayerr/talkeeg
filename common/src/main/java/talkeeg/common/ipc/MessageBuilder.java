@@ -19,13 +19,11 @@
 
 package talkeeg.common.ipc;
 
-import java.nio.ByteBuffer;
-
 /**
  * implement message building process
  * Created by wayerr on 19.12.14.
  */
-public interface MessageBuilder<T> {
+interface MessageBuilder<T> {
     /**
      * build message
      * @param parcel
