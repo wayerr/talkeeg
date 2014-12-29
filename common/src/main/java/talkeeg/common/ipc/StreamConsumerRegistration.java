@@ -19,55 +19,43 @@
 
 package talkeeg.common.ipc;
 
-import talkeeg.common.model.IdSequenceGenerator;
+
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.DateUtils;
 
 /**
- * registration of stream provider
+ * registration of stream consumer
  * Created by wayerr on 29.12.14.
  */
-public final class StreamProviderRegistration implements Closeable {
-    private static final IdSequenceGenerator GENERATOR = new IdSequenceGenerator(Integer.MAX_VALUE);
+public class StreamConsumerRegistration implements Closeable {
 
-    private final StreamProvider provider;
-    private final long time;
-    private final short streamId;
     private final StreamSupport streamSupport;
+    private final StreamConsumer consumer;
+    private final short streamId;
+    private final long time;
 
-    StreamProviderRegistration(StreamSupport streamSupport, StreamProvider provider) {
+    StreamConsumerRegistration(StreamSupport streamSupport, StreamConsumer consumer, short streamId) {
         this.streamSupport = streamSupport;
-        this.provider = provider;
+        this.consumer = consumer;
+        this.streamId = streamId;
         this.time = System.currentTimeMillis();
-        this.streamId = GENERATOR.next();
-    }
-
-    public short getStreamId() {
-        return streamId;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public StreamProvider getProvider() {
-        return provider;
     }
 
     @Override
     public String toString() {
-        return "StreamProviderRegistration{" +
-          "provider=" + provider +
-          ", time=" + DateUtils.toString(time) +
+        return "StreamConsumerRegistration{" +
+          "streamSupport=" + streamSupport +
           ", streamId=" + streamId +
+          ", time=" + DateUtils.toString(time) +
           '}';
     }
 
-    /**
-     * unregister stream provider
-     */
     @Override
     public void close() {
-        this.streamSupport.unregisterProvider(this);
+        this.streamSupport.unregisterConsumer(this);
+    }
+
+    public short getStreamId() {
+        return streamId;
     }
 }

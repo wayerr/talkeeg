@@ -41,6 +41,10 @@ final class CryptoConstants {
      * https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#MessageDigest
      */
     public static final String ALG_MESSAGE_DIGEST = "SHA-1";
+    /**
+     * algorithm of message authentication code
+     */
+    public static final String ALG_MAC = "HmacSHA1";
 
     public static final String CIPHER_ASYMMETRIC = ALG_ASYMMETRIC + "/ECB/PKCS1Padding";
 }

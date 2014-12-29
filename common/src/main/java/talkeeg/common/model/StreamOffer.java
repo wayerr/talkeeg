@@ -28,7 +28,7 @@ import talkeeg.bf.StructureBuilder;
  * used in IPC as argument for offering stream transfer <p/>
  * Created by wayerr on 29.12.14.
  */
-@StructInfo(id = 25)
+@StructInfo(id = 24)
 public final class StreamOffer {
 
     public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {

@@ -19,6 +19,8 @@
 
 package talkeeg.common.ipc;
 
+import talkeeg.bf.BinaryData;
+import talkeeg.common.core.CryptoService;
 import talkeeg.common.model.StreamMessage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,16 +33,23 @@ import java.util.concurrent.ConcurrentMap;
  * Created by wayerr on 29.12.14.
  */
 @Singleton
-final class StreamSupport implements MessageReader<StreamMessage>, MessageBuilder<StreamMessage> {
+final class StreamSupport implements MessageReader<StreamMessage> {
 
     private final ConcurrentMap<Short, StreamProviderRegistration> providersMap = new ConcurrentHashMap<>();
-    private final ConcurrentMap<Short, StreamConsumer> consumersMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Short, StreamConsumerRegistration> consumersMap = new ConcurrentHashMap<>();
+    private final CryptoService cryptoService;
 
     @Inject
-    StreamSupport() {
+    StreamSupport(CryptoService cryptoService) {
+        this.cryptoService = cryptoService;
     }
 
-    public StreamProviderRegistration provideStream(StreamProvider streamProvider) {
+    /**
+     * register stream provider
+     * @param streamProvider
+     * @return
+     */
+    public StreamProviderRegistration registerProvider(StreamProvider streamProvider) {
         final StreamProviderRegistration registration = new StreamProviderRegistration(this, streamProvider);
         final short streamId = registration.getStreamId();
         final StreamProviderRegistration old = this.providersMap.putIfAbsent(streamId, registration);
@@ -51,20 +60,50 @@ final class StreamSupport implements MessageReader<StreamMessage>, MessageBuilde
     }
 
     /**
-     * remove specified registration
+     * remove specified registration of provider
      * @param registration
      */
-    void unregister(StreamProviderRegistration registration) {
+    void unregisterProvider(StreamProviderRegistration registration) {
         this.providersMap.remove(registration.getStreamId(), registration);
     }
 
-    @Override
-    public StreamMessage build(Parcel parcel) throws Exception {
-        return null;
+    /**
+     * register stream consumer
+     * @param streamConsumer
+     * @param streamId id of stream which consumer must handle
+     * @return
+     */
+    public StreamConsumerRegistration registerConsumer(StreamConsumer streamConsumer, short streamId) {
+        final StreamConsumerRegistration registration = new StreamConsumerRegistration(this, streamConsumer, streamId);
+        final StreamConsumerRegistration old = this.consumersMap.putIfAbsent(streamId, registration);
+        if(old != null) {
+            throw new RuntimeException("we already has stream consumer for " + streamId + ": " + old);
+        }
+        return registration;
+    }
+
+    /**
+     * remove specified registration of consumer
+     * @param registration
+     */
+    void unregisterConsumer(StreamConsumerRegistration registration) {
+        this.consumersMap.remove(registration.getStreamId(), registration);
     }
 
     @Override
-    public ReadResult<StreamMessage> read(IpcEntryHandlerContext context) throws Exception {
+    public ReadResult<StreamMessage> read(IpcEntryHandlerContext<StreamMessage> context) throws Exception {
+        final StreamMessage message = context.getMessage();
+        final short streamId = message.getStreamId();
+        final StreamConsumerRegistration registration = this.consumersMap.get(streamId);
+        if(registration == null) {
+            throw new RuntimeException("No registered consumer for streamId=" + streamId);
+        }
+        //verify
+        final BinaryData mac = message.getMac();
+        if(mac == null || mac.getLength() == 0) {// no MAC
+
+        }
         return null;
     }
+
 }

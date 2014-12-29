@@ -75,8 +75,7 @@
         <list fieldName="accepted"><integer storeAs="04_BYTE" /></list>
         <list fieldName="needed"><integer storeAs="04_BYTE" /></list>
     </struct>
-    <struct name="StreamEnd" structId="24" />
-    <struct name="StreamOffer" structId="25">
+    <struct name="StreamOffer" structId="24">
         <integer fieldName="streamId" storeAs="02_BYTE" />
         <integer fieldName="length" storeAs="08_BYTE" />
     </struct>
@@ -90,6 +89,7 @@
         <integer fieldName="streamId" storeAs="02_BYTE"/>
         <!-- id of message in stream -->
         <integer fieldName="id" storeAs="04_BYTE"/>
+        <integer fieldName="type" storeAs="01_BYTE"/>
         <!-- id of message in stream -->
         <blob fieldName="mac" />
         <blob fieldName="data" />

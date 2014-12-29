@@ -19,34 +19,26 @@
 
 package talkeeg.common.model;
 
-import com.google.common.base.Supplier;
-import talkeeg.bf.StructInfo;
-import talkeeg.bf.StructureBuilder;
+import talkeeg.common.util.EnumWithValue;
 
 /**
- * empty structure which meaning end of stream
- * Created by wayerr on 26.12.14.
+ * type of stream messages
+ * Created by wayerr on 29.12.14.
  */
-@StructInfo(id = 24)
-public final class StreamEnd {
+public enum StreamMessageType implements EnumWithValue<Byte> {
+    HEAD(1),
+    INIT(2),
+    DATA(3),
+    END(4);
 
-    public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
-        @Override
-        public StructureBuilder get() {
-            return new ImmutableStructureBuilder(new Builder());
-        }
-    };
+    private final byte value;
 
-    public static final class Builder implements BuilderInterface {
-
-
-        @Override
-        public StreamEnd build() {
-            return new StreamEnd(this);
-        }
+    StreamMessageType(int value) {
+        this.value = (byte)value;
     }
 
-    public StreamEnd(Builder b) {
-
+    @Override
+    public Byte getValue() {
+        return value;
     }
 }

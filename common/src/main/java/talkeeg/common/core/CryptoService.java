@@ -23,6 +23,7 @@ import talkeeg.bf.BinaryData;
 import talkeeg.common.conf.Config;
 import talkeeg.bf.Int128;
 import javax.crypto.Cipher;
+import javax.crypto.Mac;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.security.*;
@@ -100,6 +101,21 @@ public final class CryptoService {
             final Cipher cipher = Cipher.getInstance(CryptoConstants.CIPHER_ASYMMETRIC);
             cipher.init(Cipher.PRIVATE_KEY, privateKey);
             return cipher;
+        } catch(GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * provide configured mac instance
+     * @param secretKey
+     * @return
+     */
+    public Mac getMac(Key secretKey) {
+        try {
+            Mac mac = Mac.getInstance(CryptoConstants.ALG_MAC);
+            mac.init(secretKey);
+            return mac;
         } catch(GeneralSecurityException e) {
             throw new RuntimeException(e);
         }

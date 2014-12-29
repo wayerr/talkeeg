@@ -41,6 +41,7 @@ public final class StreamMessage extends BaseMessage {
 
         private short streamId;
         private int id;
+        private StreamMessageType type;
         private BinaryData mac;
         private BinaryData data;
 
@@ -66,6 +67,22 @@ public final class StreamMessage extends BaseMessage {
          */
         public void setId(int id) {
             this.id = id;
+        }
+
+        /**
+         * type of message
+         * @return
+         */
+        public StreamMessageType getType() {
+            return type;
+        }
+
+        /**
+         * type of message
+         * @param type
+         */
+        public void setType(StreamMessageType type) {
+            this.type = type;
         }
 
         /**
