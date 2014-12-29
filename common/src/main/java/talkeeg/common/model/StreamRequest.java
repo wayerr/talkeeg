@@ -52,6 +52,11 @@ public final class StreamRequest {
             return streamId;
         }
 
+        public Builder streamId(short streamId) {
+            setStreamId(streamId);
+            return this;
+        }
+
         public void setStreamId(short streamId) {
             this.streamId = streamId;
         }
@@ -60,12 +65,22 @@ public final class StreamRequest {
             return seed;
         }
 
+        public Builder seed(BinaryData seed) {
+            setSeed(seed);
+            return this;
+        }
+
         public void setSeed(BinaryData seed) {
             this.seed = seed;
         }
 
         public List<CipherOptions> getCiphers() {
             return ciphers;
+        }
+
+        public Builder ciphers(List<CipherOptions> ciphers) {
+            setCiphers(ciphers);
+            return this;
         }
 
         public void setCiphers(List<CipherOptions> ciphers) {
@@ -86,6 +101,10 @@ public final class StreamRequest {
         this.streamId = b.streamId;
         this.seed = b.seed;
         this.ciphers = ImmutableList.copyOf(b.ciphers);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public short getStreamId() {

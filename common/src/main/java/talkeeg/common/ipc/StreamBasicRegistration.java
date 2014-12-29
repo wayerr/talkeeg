@@ -207,13 +207,14 @@ abstract class StreamBasicRegistration implements Closeable {
     }
 
     protected void send(StreamMessageType type, BinaryData binaryData) throws Exception {
-        StreamMessage.Builder builder = new StreamMessage.Builder();
+        final StreamMessage.Builder builder = new StreamMessage.Builder();
         builder.setStreamId(streamId);
         builder.setId(idGenerator.next());
         builder.setDst(getClientId());
         builder.setSrc(getOwnClientId());
         signAndEncrypt(builder, type, binaryData);
-        builder.build();
+        final StreamMessage streamMessage = builder.build();
+        this.streamSupport.send(streamMessage);
     }
 
     private void signAndEncrypt(StreamMessage.Builder builder, StreamMessageType type, BinaryData binaryData) {

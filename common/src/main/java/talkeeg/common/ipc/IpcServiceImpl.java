@@ -51,16 +51,20 @@ final class IpcServiceImpl implements IpcService {
     public void push(Parcel parcel) {
         try {
             IoObject ioObject = this.messageProcessor.send(parcel);
-            this.whirligig.push(ioObject);
+            push(ioObject);
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
+    public void push(IoObject ioObject) throws Exception {
+        this.whirligig.push(ioObject);
+    }
+
     void accept(final IoObject ioObject) {
         if(ioObject == null) {
-            LOG.log(Level.SEVERE, "at message from: " + ioObject.getSrcAddress());
-            return;
+            throw new NullPointerException("ioObject is null");
         }
         this.executor.submit(new ProcessMessageTask(ioObject));
     }

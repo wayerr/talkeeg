@@ -34,7 +34,8 @@ import javax.inject.Singleton;
     IpcServiceManager.class,
     IpcService.class,
     Io.class,
-    SingleMessageSupport.class
+    SingleMessageSupport.class,
+    StreamSupport.class
   }
 )
 public class IpcModule {

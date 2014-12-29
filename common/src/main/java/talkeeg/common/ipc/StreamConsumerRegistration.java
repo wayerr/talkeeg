@@ -33,6 +33,7 @@ import java.util.Collections;
 public final class StreamConsumerRegistration extends StreamBasicRegistration {
 
     private final StreamConsumer consumer;
+    private long _length = -1;
 
     StreamConsumerRegistration(StreamSupport streamSupport, StreamConsumer consumer, short streamId) {
         super(streamSupport, StreamMessageType.HEAD, streamId);
@@ -77,6 +78,35 @@ public final class StreamConsumerRegistration extends StreamBasicRegistration {
     private void readHead(BinaryData decrypted) throws Exception {
         final StreamHead head = (StreamHead)deserialize(decrypted);
         final CipherOptions options = head.getOptions();
+        synchronized(this.lock) {
+            this._length = head.getLength();
+        }
         initStreamParameters(options, new IvParameterSpec(head.getIv().getData()), head.getSeed(), this.getOrCreateSeed());
+    }
+
+    /**
+     * length of consumed stream, before receiving of stream head may be -1
+     * @return
+     */
+    public long getLength() {
+        synchronized(this.lock) {
+            return _length;
+        }
+    }
+
+    /**
+     * start stream consuming (send StreamRequest to provider)
+     */
+    public void start() {
+        try {
+            final StreamRequest streamRequest = StreamRequest.builder()
+              .ciphers(getSupportedCiphers())
+              .streamId(getStreamId())
+              .seed(getOrCreateSeed())
+              .build();
+            send(StreamMessageType.REQUEST, serialize(streamRequest));
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -36,6 +36,13 @@ public interface IpcService {
     void push(Parcel parcel);
 
     /**
+     * push low level protocol object into ipc
+     * @param ioObject
+     * @throws Exception
+     */
+    void push(IoObject ioObject) throws Exception;
+
+    /**
      * register handler for specific IPC layer action
      * @param action
      * @param handler

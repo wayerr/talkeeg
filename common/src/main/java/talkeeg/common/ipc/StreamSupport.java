@@ -22,11 +22,15 @@ package talkeeg.common.ipc;
 import talkeeg.bf.Bf;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.AcquaintedClientsService;
+import talkeeg.common.core.ClientsAddressesService;
 import talkeeg.common.core.CryptoService;
 import talkeeg.common.core.OwnedIdentityCardsService;
+import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.StreamMessage;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -44,16 +48,22 @@ final class StreamSupport implements MessageReader<StreamMessage> {
     final AcquaintedClientsService clientsService;
     final Bf bf;
     private final OwnedIdentityCardsService ownedIdentityCardsService;
+    private final ClientsAddressesService clientsAddressesService;
+    private final Provider<IpcService> ipcServiceProvider;
 
     @Inject
     StreamSupport(Bf bf,
                   CryptoService cryptoService,
                   AcquaintedClientsService clientsService,
-                  OwnedIdentityCardsService ownedIdentityCardsService) {
+                  OwnedIdentityCardsService ownedIdentityCardsService,
+                  ClientsAddressesService clientsAddressesService,
+                  Provider<IpcService> ipcServiceProvider) {
         this.bf = bf;
         this.cryptoService = cryptoService;
         this.clientsService = clientsService;
         this.ownedIdentityCardsService = ownedIdentityCardsService;
+        this.clientsAddressesService = clientsAddressesService;
+        this.ipcServiceProvider = ipcServiceProvider;
     }
 
     /**
@@ -116,5 +126,15 @@ final class StreamSupport implements MessageReader<StreamMessage> {
 
     Int128 getOwnClientId() {
         return this.ownedIdentityCardsService.getClientId();
+    }
+
+    void send(StreamMessage streamMessage) throws Exception {
+        // TODO message was sent to one specified address
+        List<ClientAddress> suitableAddress = this.clientsAddressesService.getSuitableAddress(streamMessage.getDst());
+        final IpcService ipcService = this.ipcServiceProvider.get();
+        for(ClientAddress clientAddress: suitableAddress) {
+            IoObject ioObject = new IoObject(streamMessage, clientAddress);
+            ipcService.push(ioObject);
+        }
     }
 }

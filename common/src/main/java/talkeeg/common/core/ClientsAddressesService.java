@@ -19,6 +19,7 @@
 
 package talkeeg.common.core;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Booleans;
@@ -125,6 +126,7 @@ public final class ClientsAddressesService {
      * @return
      */
     public List<ClientAddress> getSuitableAddress(Int128 clientId) {
+        Preconditions.checkNotNull(clientId, "clientId is null");
         Entry entry = map.get(clientId);
         if(entry == null) {
             return Collections.emptyList();

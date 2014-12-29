@@ -19,8 +19,10 @@
 
 package talkeeg.common.ipc;
 
+import talkeeg.common.model.BaseMessage;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.model.SingleMessage;
+import talkeeg.common.model.StreamMessage;
 import talkeeg.common.util.Closeable;
 import talkeeg.common.util.HandlersRegistry;
 
@@ -36,19 +38,35 @@ public final class IpcServiceLoopback implements IpcService {
 
     private final HandlersRegistry<IpcEntryHandler> registry = new HandlersRegistry<>();
     private final SingleMessageSupport singleMessageSupport;
+    private final StreamSupport streamSupport;
 
     @Inject
-    public IpcServiceLoopback(SingleMessageSupport singleMessageSupport) {
+    public IpcServiceLoopback(SingleMessageSupport singleMessageSupport, StreamSupport streamSupport) {
         this.singleMessageSupport = singleMessageSupport;
+        this.streamSupport = streamSupport;
     }
 
     @Override
     public void push(Parcel parcel) {
         try {
             SingleMessage msg = this.singleMessageSupport.build(parcel);
-            this.singleMessageSupport.read(new IpcEntryHandlerContext<>(this, msg, LOCALHOST));
+            readMessage(msg);
         } catch(Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void push(IoObject ioObject) throws Exception {
+        BaseMessage message = (BaseMessage)ioObject.getMessage();
+        readMessage(message);
+    }
+
+    protected void readMessage(BaseMessage message) throws Exception {
+        if(message instanceof SingleMessage) {
+            this.singleMessageSupport.read(new IpcEntryHandlerContext<>(this, (SingleMessage)message, LOCALHOST));
+        } else if(message instanceof StreamMessage) {
+            this.streamSupport.read(new IpcEntryHandlerContext<>(this, (StreamMessage)message, LOCALHOST));
         }
     }
 
