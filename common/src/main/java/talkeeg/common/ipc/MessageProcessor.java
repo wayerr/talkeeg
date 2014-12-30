@@ -73,7 +73,7 @@ final class MessageProcessor {
         ClientAddress address = ro.getSrcAddress();
         if(message instanceof SingleMessage) {
             consumeSingleMessage(new IpcEntryHandlerContext<>(service, (SingleMessage)message, address));
-        } else if(message instanceof SingleMessage) {
+        } else if(message instanceof StreamMessage) {
             consumeStreamMessage(new IpcEntryHandlerContext<>(service, (StreamMessage)message, address));
         } else {
             logConsumeError(address, "unsupported message type " + message.getClass());
