@@ -25,9 +25,7 @@ import org.junit.Test;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.conf.DefaultConfiguration;
-import talkeeg.common.core.CurrentAddressesService;
-import talkeeg.common.core.Env;
-import talkeeg.common.core.OwnedIdentityCardsService;
+import talkeeg.common.core.*;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.util.TgAddress;
 
@@ -59,7 +57,11 @@ public class StreamSupportTest {
     @Test
     public void testStreams() throws Exception {
         System.out.println("testStreams");
-        final Int128 secondClientId = secondEnv.get(OwnedIdentityCardsService.class).getClientId();
+
+        EnvUtils.acquaint(firstEnv, secondEnv);
+        EnvUtils.acquaint(secondEnv, firstEnv);
+
+
         final SampleStreamProvider provider = new SampleStreamProvider();
         StreamConfig.Builder builder = StreamConfig.builder()
           .streamId((short)1);
