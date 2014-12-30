@@ -32,10 +32,24 @@ public final class StateChecker<T> {
 
     public static class Builder<T> {
         private final Map<T, Set<T>> transitions = new HashMap<>();
+        private boolean allowNullState = false;
+
+        public boolean isAllowNullState() {
+            return allowNullState;
+        }
+
+        public Builder allowNullState(boolean allowNullState) {
+            setAllowNullState(allowNullState);
+            return this;
+        }
+
+        public void setAllowNullState(boolean allowNullState) {
+            this.allowNullState = allowNullState;
+        }
 
         @SafeVarargs
         public final Builder<T> transit(T source, T ... destinations) {
-            if(source == null) {
+            if(!allowNullState && source == null) {
                 throw new IllegalArgumentException("source state is null");
             }
             if(destinations == null || destinations.length == 0) {
@@ -56,8 +70,10 @@ public final class StateChecker<T> {
 
     public static final class Graph<T> {
         private final Map<T, Set<T>> transitions = new HashMap<>();
+        private final boolean allowNullState;
 
         Graph(Builder<T> b) {
+            this.allowNullState = b.allowNullState;
             for(Map.Entry<T, Set<T>> transition: b.transitions.entrySet()) {
                 this.transitions.put(transition.getKey(), Collections.unmodifiableSet(new HashSet<>(transition.getValue())));
             }
@@ -70,7 +86,7 @@ public final class StateChecker<T> {
          * @return
          */
         public boolean isPossible(T source, T destination) {
-            if(destination == null) {
+            if(!allowNullState && destination == null) {
                 throw new IllegalArgumentException("destination state is null");
             }
             final Set<T> possibles = getTransitions(source);
@@ -82,7 +98,7 @@ public final class StateChecker<T> {
          * @return
          */
         public Set<T> getTransitions(T source) {
-            if(source == null) {
+            if(!allowNullState && source == null) {
                 throw new IllegalArgumentException("source state is null");
             }
             final Set<T> set = this.transitions.get(source);
@@ -98,7 +114,7 @@ public final class StateChecker<T> {
          * @param destination
          */
         public void checkPossibility(T source, T destination) {
-            if(destination == null) {
+            if(!allowNullState && destination == null) {
                 throw new IllegalArgumentException("destination state is null");
             }
             final Set<T> possible = getTransitions(source);

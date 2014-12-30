@@ -35,7 +35,7 @@ public final class StreamConsumerRegistration extends StreamBasicRegistration {
     private long _length = -1;
 
     StreamConsumerRegistration(StreamSupport streamSupport, StreamConsumer consumer, StreamConfig config) {
-        super(streamSupport, StreamMessageType.HEAD, config);
+        super(streamSupport, null, config);
         this.consumer = consumer;
     }
 

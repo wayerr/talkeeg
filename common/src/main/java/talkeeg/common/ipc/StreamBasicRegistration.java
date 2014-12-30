@@ -36,7 +36,6 @@ import javax.crypto.spec.IvParameterSpec;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.Key;
-import java.security.SecureRandom;
 import java.security.Signature;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +47,9 @@ import java.util.Objects;
  */
 abstract class StreamBasicRegistration implements Closeable {
     private static final StateChecker.Graph<StreamMessageType> STATES = StateChecker.<StreamMessageType>builder()
-      .transit(StreamMessageType.REQUEST, StreamMessageType.HEAD, StreamMessageType.END)
+      .allowNullState(true)
+      .transit(null, StreamMessageType.HEAD, StreamMessageType.REQUEST, StreamMessageType.END)
+      .transit(StreamMessageType.REQUEST, StreamMessageType.DATA, StreamMessageType.END)
       .transit(StreamMessageType.HEAD, StreamMessageType.DATA, StreamMessageType.END)
       .transit(StreamMessageType.DATA, StreamMessageType.END)
       .build();

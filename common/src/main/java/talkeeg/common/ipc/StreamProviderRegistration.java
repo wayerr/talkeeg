@@ -37,7 +37,7 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
     private static final int CHUNK_SIZE = 1024;
 
     StreamProviderRegistration(StreamSupport streamSupport, StreamProvider provider, StreamConfig config) {
-        super(streamSupport, StreamMessageType.REQUEST, config);
+        super(streamSupport, null, config);
         this.provider = provider;
         this.offer = StreamOffer.builder()
           .length(provider.getLength())
