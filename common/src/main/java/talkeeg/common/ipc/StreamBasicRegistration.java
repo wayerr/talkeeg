@@ -59,11 +59,10 @@ abstract class StreamBasicRegistration implements Closeable {
       .mac(MacType.HMAC_SHA1)
       .build());
     protected final StreamSupport streamSupport;
-    protected final short streamId;
+    protected final StreamConfig config;
     protected final long time;
     protected final StateChecker<StreamMessageType> checker;
     protected final Object lock = new Object();
-    private final Int128 otherClientId;
     private Key _secretKey;
     private IvParameterSpec _iv;
     private CipherOptions _options;
@@ -74,22 +73,20 @@ abstract class StreamBasicRegistration implements Closeable {
     /**
      * @param streamSupport
      * @param initialState initial registration state
-     * @param otherClientId id of client with which do exchange
-     * @param streamId id of stream
+     * @param config parameters of stream
      */
-    StreamBasicRegistration(StreamSupport streamSupport, StreamMessageType initialState, Int128 otherClientId, short streamId) {
+    StreamBasicRegistration(StreamSupport streamSupport, StreamMessageType initialState, StreamConfig config) {
         this.checker = STATES.createChecker(initialState);
         this.streamSupport = streamSupport;
-        this.streamId = streamId;
+        this.config = config;
         this.time = System.currentTimeMillis();
-        this.otherClientId = otherClientId;
     }
 
     @Override
     public String toString() {
         return getClass().getName() + "{" +
           "streamSupport=" + streamSupport +
-          ", streamId=" + streamId +
+          ", config=" + config +
           ", time=" + DateUtils.toString(time) +
           '}';
     }
@@ -99,7 +96,7 @@ abstract class StreamBasicRegistration implements Closeable {
     }
 
     public final short getStreamId() {
-        return streamId;
+        return this.config.getStreamId();
     }
 
     /**
@@ -150,8 +147,9 @@ abstract class StreamBasicRegistration implements Closeable {
     }
 
     protected final void checkOtherClientId(Int128 clientId) {
-        if(!Objects.equals(this.otherClientId, clientId)) {
-            throw new RuntimeException("Client id was changed from " + this.otherClientId + " to " + clientId);
+        final Int128 otherClientId = this.config.getOtherClientId();
+        if(!Objects.equals(otherClientId, clientId)) {
+            throw new RuntimeException("Client id was changed from " + otherClientId + " to " + clientId);
         }
     }
 
@@ -216,7 +214,7 @@ abstract class StreamBasicRegistration implements Closeable {
 
     protected void send(StreamMessageType type, BinaryData binaryData) throws Exception {
         final StreamMessage.Builder builder = new StreamMessage.Builder();
-        builder.setStreamId(streamId);
+        builder.setStreamId(this.config.getStreamId());
         builder.setId(idGenerator.next());
         final Int128 clientId = getOtherClientId();
         Preconditions.checkNotNull(clientId, "clientId is null");
@@ -224,7 +222,7 @@ abstract class StreamBasicRegistration implements Closeable {
         builder.setSrc(getOwnClientId());
         signAndEncrypt(builder, type, binaryData);
         final StreamMessage streamMessage = builder.build();
-        this.streamSupport.send(streamMessage);
+        this.streamSupport.send(streamMessage, this.config.getOtherClientAddress());
     }
 
     private void signAndEncrypt(StreamMessage.Builder builder, StreamMessageType type, BinaryData binaryData) {
@@ -236,9 +234,7 @@ abstract class StreamBasicRegistration implements Closeable {
      * @return
      */
     public Int128 getOtherClientId() {
-        synchronized(this.lock) {
-            return otherClientId;
-        }
+        return this.config.getOtherClientId();
     }
 
     List<CipherOptions> getSupportedCiphers() {

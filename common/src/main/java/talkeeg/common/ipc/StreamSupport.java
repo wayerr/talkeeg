@@ -30,7 +30,6 @@ import talkeeg.common.model.StreamMessage;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -48,7 +47,6 @@ final class StreamSupport implements MessageReader<StreamMessage> {
     final AcquaintedClientsService clientsService;
     final Bf bf;
     private final OwnedIdentityCardsService ownedIdentityCardsService;
-    private final ClientsAddressesService clientsAddressesService;
     private final Provider<IpcService> ipcServiceProvider;
 
     @Inject
@@ -56,13 +54,11 @@ final class StreamSupport implements MessageReader<StreamMessage> {
                   CryptoService cryptoService,
                   AcquaintedClientsService clientsService,
                   OwnedIdentityCardsService ownedIdentityCardsService,
-                  ClientsAddressesService clientsAddressesService,
                   Provider<IpcService> ipcServiceProvider) {
         this.bf = bf;
         this.cryptoService = cryptoService;
         this.clientsService = clientsService;
         this.ownedIdentityCardsService = ownedIdentityCardsService;
-        this.clientsAddressesService = clientsAddressesService;
         this.ipcServiceProvider = ipcServiceProvider;
     }
 
@@ -71,8 +67,8 @@ final class StreamSupport implements MessageReader<StreamMessage> {
      * @param streamProvider
      * @return
      */
-    public StreamProviderRegistration registerProvider(StreamProvider streamProvider, Int128 otherClientId) {
-        final StreamProviderRegistration registration = new StreamProviderRegistration(this, streamProvider, otherClientId);
+    public StreamProviderRegistration registerProvider(StreamProvider streamProvider, StreamConfig config) {
+        final StreamProviderRegistration registration = new StreamProviderRegistration(this, streamProvider, config);
         final short streamId = registration.getStreamId();
         final StreamProviderRegistration old = this.providersMap.putIfAbsent(streamId, registration);
         if(old != null) {
@@ -92,11 +88,11 @@ final class StreamSupport implements MessageReader<StreamMessage> {
     /**
      * register stream consumer
      * @param streamConsumer
-     * @param streamId id of stream which consumer must handle
      * @return
      */
-    public StreamConsumerRegistration registerConsumer(StreamConsumer streamConsumer, Int128 otherClientId, short streamId) {
-        final StreamConsumerRegistration registration = new StreamConsumerRegistration(this, streamConsumer, otherClientId, streamId);
+    public StreamConsumerRegistration registerConsumer(StreamConsumer streamConsumer, StreamConfig config) {
+        final StreamConsumerRegistration registration = new StreamConsumerRegistration(this, streamConsumer, config);
+        final short streamId = registration.getStreamId();
         final StreamConsumerRegistration old = this.consumersMap.putIfAbsent(streamId, registration);
         if(old != null) {
             throw new RuntimeException("we already has stream consumer for " + streamId + ": " + old);
@@ -128,13 +124,9 @@ final class StreamSupport implements MessageReader<StreamMessage> {
         return this.ownedIdentityCardsService.getClientId();
     }
 
-    void send(StreamMessage streamMessage) throws Exception {
-        // TODO message was sent to one specified address
-        List<ClientAddress> suitableAddress = this.clientsAddressesService.getSuitableAddress(streamMessage.getDst());
+    void send(StreamMessage streamMessage, ClientAddress clientAddress) throws Exception {
         final IpcService ipcService = this.ipcServiceProvider.get();
-        for(ClientAddress clientAddress: suitableAddress) {
-            IoObject ioObject = new IoObject(streamMessage, clientAddress);
-            ipcService.push(ioObject);
-        }
+        IoObject ioObject = new IoObject(streamMessage, clientAddress);
+        ipcService.push(ioObject);
     }
 }

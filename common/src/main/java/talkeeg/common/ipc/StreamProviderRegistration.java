@@ -32,14 +32,12 @@ import java.util.List;
  * Created by wayerr on 29.12.14.
  */
 public final class StreamProviderRegistration extends StreamBasicRegistration {
-    private static final IdSequenceGenerator GENERATOR = new IdSequenceGenerator(Integer.MAX_VALUE);
-
     private final StreamProvider provider;
     private final StreamOffer offer;
     private static final int CHUNK_SIZE = 1024;
 
-    StreamProviderRegistration(StreamSupport streamSupport, StreamProvider provider, Int128 otherClientId) {
-        super(streamSupport, StreamMessageType.REQUEST, otherClientId, GENERATOR.next());
+    StreamProviderRegistration(StreamSupport streamSupport, StreamProvider provider, StreamConfig config) {
+        super(streamSupport, StreamMessageType.REQUEST, config);
         this.provider = provider;
         this.offer = StreamOffer.builder()
           .length(provider.getLength())
