@@ -169,7 +169,10 @@ abstract class StreamBasicRegistration implements Closeable {
             return null;
         }
         final BinaryData sign = message.getMac();
-        if(type == StreamMessageType.HEAD || type == StreamMessageType.REQUEST) {
+        if(sign == null) {
+            throw new RuntimeException("Message with non null data and null MAC");
+        }
+        if(isCipheredByPublicKey(type)) {
             //while cipher not configured sign contains client signature
             //check client sign
             final AcquaintedClient client = this.streamSupport.clientsService.getClient(clientId);
@@ -202,10 +205,14 @@ abstract class StreamBasicRegistration implements Closeable {
                 localIv = this._iv;
                 localOptions = this._options;
             }
-            Cipher cipher = this.streamSupport.cryptoService.getCipherService(localOptions, secretKey, localIv);
+            Cipher cipher = this.streamSupport.cryptoService.getDecipherService(localOptions, secretKey, localIv);
             cipher.update(data.getData());
             return new BinaryData(cipher.doFinal());
         }
+    }
+
+    private boolean isCipheredByPublicKey(StreamMessageType type) {
+        return type == StreamMessageType.HEAD || type == StreamMessageType.REQUEST;
     }
 
     protected final Object deserialize(BinaryData data) throws Exception {
@@ -238,8 +245,44 @@ abstract class StreamBasicRegistration implements Closeable {
         this.streamSupport.send(streamMessage, this.config.getOtherClientAddress());
     }
 
-    private void signAndEncrypt(StreamMessage.Builder builder, StreamMessageType type, BinaryData binaryData) {
-
+    private void signAndEncrypt(StreamMessage.Builder builder, StreamMessageType type, BinaryData data) throws GeneralSecurityException {
+        Int128 clientId = getOtherClientId();
+        final BinaryData result;
+        final BinaryData sign;
+        if(isCipheredByPublicKey(type)) {
+            final AcquaintedClient client = this.streamSupport.clientsService.getClient(clientId);
+            if(client == null) {
+                throw new RuntimeException("Client " + clientId + " is not acquainted");
+            }
+            //encrypt
+            Cipher cipher = this.streamSupport.cryptoService.getCipherAsymmetricService(client.getKey());
+            cipher.update(data.getData());
+            final byte[] cipheredData = cipher.doFinal();
+            result = new BinaryData(cipheredData);
+            //sign
+            final Signature signService = this.streamSupport.cryptoService.getSignService(OwnedKeyType.CLIENT);
+            signService.update(cipheredData);
+            sign = new BinaryData(signService.sign());
+        } else {
+            //encrypt
+            IvParameterSpec localIv;
+            CipherOptions localOptions;
+            synchronized(this.lock) {
+                localIv = this._iv;
+                localOptions = this._options;
+            }
+            final Key secretKey = this.getSecretKey();
+            Cipher cipher = this.streamSupport.cryptoService.getCipherService(localOptions, secretKey, localIv);
+            cipher.update(data.getData());
+            final byte[] cipheredData = cipher.doFinal();
+            result = new BinaryData(cipheredData);
+            //create MAC
+            final Mac mac = this.streamSupport.cryptoService.getMac(secretKey);
+            mac.update(cipheredData);
+            sign = new BinaryData(mac.doFinal());
+        }
+        builder.setData(result);
+        builder.setMac(sign);
     }
 
     /**
