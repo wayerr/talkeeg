@@ -68,6 +68,7 @@ abstract class StreamBasicRegistration implements Closeable {
     private CipherOptions _options;
     private BinaryData _seed;
     private final IdSequenceGenerator idGenerator = new IdSequenceGenerator(Integer.MAX_VALUE);
+    private final StreamKey streamKey;
 
 
     /**
@@ -80,6 +81,7 @@ abstract class StreamBasicRegistration implements Closeable {
         this.streamSupport = streamSupport;
         this.config = config;
         this.time = System.currentTimeMillis();
+        this.streamKey = new StreamKey(config.getOtherClientId(), config.getStreamId());
     }
 
     @Override
@@ -98,6 +100,10 @@ abstract class StreamBasicRegistration implements Closeable {
 
     public final short getStreamId() {
         return this.config.getStreamId();
+    }
+
+    public final StreamKey getStreamKey() {
+        return this.streamKey;
     }
 
     /**

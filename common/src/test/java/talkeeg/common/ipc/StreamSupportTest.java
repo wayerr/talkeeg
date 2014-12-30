@@ -46,13 +46,13 @@ public class StreamSupportTest {
         final Int128 clientId = instance.get(OwnedIdentityCardsService.class).getClientId();
         final StreamSupport support = instance.get(StreamSupport.class);
         final SampleStreamProvider provider = new SampleStreamProvider();
-        final StreamConfig streamConfig = StreamConfig.builder()
+        final Int128 secondClient = Int128.fromString("A4B782401761422B8D77BE9EE3E9FDAD");
+        StreamConfig.Builder builder = StreamConfig.builder()
           .streamId((short)1)
           .otherClientId(clientId)
-          .otherClientAddress(IpcServiceLoopback.LOCALHOST)
-          .build();
-        final StreamProviderRegistration providerRegistration = support.registerProvider(provider, streamConfig);
-        final StreamConsumerRegistration consumerRegistration = support.registerConsumer(new SampleStreamConsumer(provider), streamConfig);
+          .otherClientAddress(IpcServiceLoopback.LOCALHOST);
+        final StreamConsumerRegistration consumerRegistration = support.registerConsumer(new SampleStreamConsumer(provider), builder.build());
+        final StreamProviderRegistration providerRegistration = support.registerProvider(provider, builder.otherClientId(secondClient).build());
         consumerRegistration.start();
     }
 

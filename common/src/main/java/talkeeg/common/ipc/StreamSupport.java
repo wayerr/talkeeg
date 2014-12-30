@@ -39,8 +39,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Singleton
 final class StreamSupport implements MessageReader<StreamMessage> {
-
-    private final ConcurrentMap<Short, StreamBasicRegistration> streams = new ConcurrentHashMap<>();
+    private final ConcurrentMap<StreamKey, StreamBasicRegistration> streams = new ConcurrentHashMap<>();
     final CryptoService cryptoService;
     final AcquaintedClientsService clientsService;
     final Bf bf;
@@ -83,10 +82,10 @@ final class StreamSupport implements MessageReader<StreamMessage> {
     }
 
     private void registerStream(StreamBasicRegistration registration) {
-        final short streamId = registration.getStreamId();
-        final StreamBasicRegistration old = this.streams.putIfAbsent(streamId, registration);
+        final StreamKey key = registration.getStreamKey();
+        final StreamBasicRegistration old = this.streams.putIfAbsent(key, registration);
         if(old != null) {
-            throw new RuntimeException("we already has stream with id " + streamId + ": \n" + old);
+            throw new RuntimeException("we already has stream with id " + key + ": \n" + old);
         }
     }
 
@@ -101,10 +100,10 @@ final class StreamSupport implements MessageReader<StreamMessage> {
     @Override
     public ReadResult<StreamMessage> read(IpcEntryHandlerContext<StreamMessage> context) throws Exception {
         final StreamMessage message = context.getMessage();
-        final short streamId = message.getStreamId();
-        final StreamBasicRegistration registration = this.streams.get(streamId);
+        final StreamKey key = new StreamKey(message.getSrc(), message.getStreamId());
+        final StreamBasicRegistration registration = this.streams.get(key);
         if(registration == null) {
-            throw new RuntimeException("No registered consumer for streamId=" + streamId);
+            throw new RuntimeException("No registered consumer for streamKey=" + key);
         }
         registration.process(context);
         return null;
