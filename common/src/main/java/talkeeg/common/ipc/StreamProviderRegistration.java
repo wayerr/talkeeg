@@ -98,7 +98,7 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
         final List<CipherOptions> supportedCiphers = getSupportedCiphers();
         for(int i = 0; i < supportedCiphers.size(); ++i) {
             CipherOptions options = supportedCiphers.get(i);
-            if(ciphers.contains(supportedCiphers)) {
+            if(ciphers.contains(options)) {
                 return options;
             }
         }
