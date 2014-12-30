@@ -19,6 +19,7 @@
 
 package talkeeg.common.model;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.StructInfo;
@@ -124,6 +125,7 @@ public final class StreamMessage extends BaseMessage {
 
         this.streamId = b.streamId;
         this.id = b.id;
+        Preconditions.checkNotNull(b.type, "type is null");
         this.type = b.type;
         this.mac = b.mac;
         this.data = b.data;

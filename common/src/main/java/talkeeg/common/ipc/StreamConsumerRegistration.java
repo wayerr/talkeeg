@@ -21,9 +21,7 @@ package talkeeg.common.ipc;
 
 
 import talkeeg.bf.BinaryData;
-import talkeeg.bf.Int128;
 import talkeeg.common.model.*;
-
 import javax.crypto.spec.IvParameterSpec;
 import java.util.Collections;
 
@@ -44,7 +42,6 @@ public final class StreamConsumerRegistration extends StreamBasicRegistration {
     @Override
     public void close() {
         super.close();
-        this.streamSupport.unregisterConsumer(this);
         //TODO send END if current state before END
     }
 

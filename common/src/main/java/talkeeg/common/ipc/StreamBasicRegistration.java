@@ -93,6 +93,7 @@ abstract class StreamBasicRegistration implements Closeable {
 
     @Override
     public void close() {
+        this.streamSupport.unregister(this);
     }
 
     public final short getStreamId() {
@@ -213,7 +214,9 @@ abstract class StreamBasicRegistration implements Closeable {
     }
 
     protected void send(StreamMessageType type, BinaryData binaryData) throws Exception {
+        Preconditions.checkNotNull(type, "type is null");
         final StreamMessage.Builder builder = new StreamMessage.Builder();
+        builder.setType(type);
         builder.setStreamId(this.config.getStreamId());
         builder.setId(idGenerator.next());
         final Int128 clientId = getOtherClientId();

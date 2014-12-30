@@ -22,7 +22,6 @@ package talkeeg.common.ipc;
 import talkeeg.bf.Bf;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.AcquaintedClientsService;
-import talkeeg.common.core.ClientsAddressesService;
 import talkeeg.common.core.CryptoService;
 import talkeeg.common.core.OwnedIdentityCardsService;
 import talkeeg.common.model.ClientAddress;
@@ -41,8 +40,7 @@ import java.util.concurrent.ConcurrentMap;
 @Singleton
 final class StreamSupport implements MessageReader<StreamMessage> {
 
-    private final ConcurrentMap<Short, StreamProviderRegistration> providersMap = new ConcurrentHashMap<>();
-    private final ConcurrentMap<Short, StreamConsumerRegistration> consumersMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Short, StreamBasicRegistration> streams = new ConcurrentHashMap<>();
     final CryptoService cryptoService;
     final AcquaintedClientsService clientsService;
     final Bf bf;
@@ -69,20 +67,8 @@ final class StreamSupport implements MessageReader<StreamMessage> {
      */
     public StreamProviderRegistration registerProvider(StreamProvider streamProvider, StreamConfig config) {
         final StreamProviderRegistration registration = new StreamProviderRegistration(this, streamProvider, config);
-        final short streamId = registration.getStreamId();
-        final StreamProviderRegistration old = this.providersMap.putIfAbsent(streamId, registration);
-        if(old != null) {
-            throw new RuntimeException("we already has stream provider for " + streamId + ": " + old);
-        }
+        registerStream(registration);
         return registration;
-    }
-
-    /**
-     * remove specified registration of provider
-     * @param registration
-     */
-    void unregisterProvider(StreamProviderRegistration registration) {
-        this.providersMap.remove(registration.getStreamId(), registration);
     }
 
     /**
@@ -92,27 +78,31 @@ final class StreamSupport implements MessageReader<StreamMessage> {
      */
     public StreamConsumerRegistration registerConsumer(StreamConsumer streamConsumer, StreamConfig config) {
         final StreamConsumerRegistration registration = new StreamConsumerRegistration(this, streamConsumer, config);
-        final short streamId = registration.getStreamId();
-        final StreamConsumerRegistration old = this.consumersMap.putIfAbsent(streamId, registration);
-        if(old != null) {
-            throw new RuntimeException("we already has stream consumer for " + streamId + ": " + old);
-        }
+        registerStream(registration);
         return registration;
     }
 
+    private void registerStream(StreamBasicRegistration registration) {
+        final short streamId = registration.getStreamId();
+        final StreamBasicRegistration old = this.streams.putIfAbsent(streamId, registration);
+        if(old != null) {
+            throw new RuntimeException("we already has stream with id " + streamId + ": \n" + old);
+        }
+    }
+
     /**
-     * remove specified registration of consumer
+     * remove specified registration
      * @param registration
      */
-    void unregisterConsumer(StreamConsumerRegistration registration) {
-        this.consumersMap.remove(registration.getStreamId(), registration);
+    void unregister(StreamBasicRegistration registration) {
+        this.streams.remove(registration.getStreamId(), registration);
     }
 
     @Override
     public ReadResult<StreamMessage> read(IpcEntryHandlerContext<StreamMessage> context) throws Exception {
         final StreamMessage message = context.getMessage();
         final short streamId = message.getStreamId();
-        final StreamConsumerRegistration registration = this.consumersMap.get(streamId);
+        final StreamBasicRegistration registration = this.streams.get(streamId);
         if(registration == null) {
             throw new RuntimeException("No registered consumer for streamId=" + streamId);
         }

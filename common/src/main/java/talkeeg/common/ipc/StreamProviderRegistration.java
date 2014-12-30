@@ -112,7 +112,6 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
     @Override
     public void close() {
         super.close();
-        this.streamSupport.unregisterProvider(this);
         //TODO send END if current state before END
     }
 }
