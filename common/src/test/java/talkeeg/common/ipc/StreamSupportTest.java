@@ -32,6 +32,7 @@ import talkeeg.common.model.ClientAddress;
 import talkeeg.common.util.TgAddress;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -57,6 +58,7 @@ public class StreamSupportTest {
 
     @Test
     public void testStreams() throws Exception {
+        System.out.println("testStreams");
         final Int128 secondClientId = secondEnv.get(OwnedIdentityCardsService.class).getClientId();
         final SampleStreamProvider provider = new SampleStreamProvider();
         StreamConfig.Builder builder = StreamConfig.builder()
@@ -67,7 +69,10 @@ public class StreamSupportTest {
           .registerConsumer(new SampleStreamConsumer(provider), builder.build());
         configureBuilder(builder, secondEnv);
         firstEnv.get(StreamSupport.class).registerProvider(provider, builder.build());
+        System.out.println("testStreams start");
         consumerRegistration.start();
+
+        Thread.sleep(TimeUnit.SECONDS.toMillis(30));
     }
 
     protected void configureBuilder(StreamConfig.Builder builder, Env env) {
@@ -81,11 +86,12 @@ public class StreamSupportTest {
 
         @Override
         public void open(StreamProviderRegistration registration) {
-
+            System.out.println("provider: open");
         }
 
         @Override
         public BinaryData provide(StreamProviderRegistration registration, int size) {
+            System.out.println("provider: provide");
             byte[] bytes = sampleData.getBytes(StandardCharsets.UTF_8);
             byte dst[] = new byte[size];
             for(int i = 0; i < size; ++i) {
@@ -96,7 +102,7 @@ public class StreamSupportTest {
 
         @Override
         public void abort(StreamProviderRegistration registration) {
-
+            System.out.println("provider: abort");
         }
 
         @Override
@@ -114,16 +120,19 @@ public class StreamSupportTest {
 
         @Override
         public void open(StreamConsumerRegistration registration) {
+            System.out.println("consumer: open");
             assertEquals(provider.getLength(), registration.getLength());
         }
 
         @Override
         public void consume(StreamConsumerRegistration registration, BinaryData data) {
+            System.out.println("consumer: consume");
             System.out.println(new String(data.getData(), StandardCharsets.UTF_8));
         }
 
         @Override
         public void close(StreamConsumerRegistration registration) {
+            System.out.println("consumer: close");
 
         }
     }

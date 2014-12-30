@@ -35,7 +35,7 @@ public final class StreamMessage extends BaseMessage {
     public static final Supplier<StructureBuilder> STRUCT_BUILDER_FACTORY = new Supplier<StructureBuilder>() {
         @Override
         public StructureBuilder get() {
-            return new ImmutableStructureBuilder(SingleMessage.builder());
+            return new ImmutableStructureBuilder(new Builder());
         }
     };
     public static final class Builder extends BaseMessage.Builder implements BuilderInterface {
