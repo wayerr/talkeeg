@@ -20,6 +20,7 @@
 package talkeeg.common.ipc;
 
 import talkeeg.bf.BinaryData;
+import talkeeg.bf.Int128;
 import talkeeg.common.model.*;
 
 import javax.crypto.spec.IvParameterSpec;
@@ -37,8 +38,8 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
     private final StreamOffer offer;
     private static final int CHUNK_SIZE = 1024;
 
-    StreamProviderRegistration(StreamSupport streamSupport, StreamProvider provider) {
-        super(streamSupport, StreamMessageType.REQUEST, GENERATOR.next());
+    StreamProviderRegistration(StreamSupport streamSupport, StreamProvider provider, Int128 otherClientId) {
+        super(streamSupport, StreamMessageType.REQUEST, otherClientId, GENERATOR.next());
         this.provider = provider;
         this.offer = StreamOffer.builder()
           .length(provider.getLength())

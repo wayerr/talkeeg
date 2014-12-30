@@ -71,8 +71,8 @@ final class StreamSupport implements MessageReader<StreamMessage> {
      * @param streamProvider
      * @return
      */
-    public StreamProviderRegistration registerProvider(StreamProvider streamProvider) {
-        final StreamProviderRegistration registration = new StreamProviderRegistration(this, streamProvider);
+    public StreamProviderRegistration registerProvider(StreamProvider streamProvider, Int128 otherClientId) {
+        final StreamProviderRegistration registration = new StreamProviderRegistration(this, streamProvider, otherClientId);
         final short streamId = registration.getStreamId();
         final StreamProviderRegistration old = this.providersMap.putIfAbsent(streamId, registration);
         if(old != null) {
@@ -95,8 +95,8 @@ final class StreamSupport implements MessageReader<StreamMessage> {
      * @param streamId id of stream which consumer must handle
      * @return
      */
-    public StreamConsumerRegistration registerConsumer(StreamConsumer streamConsumer, short streamId) {
-        final StreamConsumerRegistration registration = new StreamConsumerRegistration(this, streamConsumer, streamId);
+    public StreamConsumerRegistration registerConsumer(StreamConsumer streamConsumer, Int128 otherClientId, short streamId) {
+        final StreamConsumerRegistration registration = new StreamConsumerRegistration(this, streamConsumer, otherClientId, streamId);
         final StreamConsumerRegistration old = this.consumersMap.putIfAbsent(streamId, registration);
         if(old != null) {
             throw new RuntimeException("we already has stream consumer for " + streamId + ": " + old);

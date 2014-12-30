@@ -22,7 +22,9 @@ package talkeeg.common.ipc;
 import org.junit.AfterClass;
 import org.junit.Test;
 import talkeeg.bf.BinaryData;
+import talkeeg.bf.Int128;
 import talkeeg.common.core.Env;
+import talkeeg.common.core.OwnedIdentityCardsService;
 
 import java.nio.charset.StandardCharsets;
 
@@ -40,10 +42,12 @@ public class StreamSupportTest {
 
     @Test
     public void testStreams() throws Exception {
-        final StreamSupport support = Env.getInstance().get(StreamSupport.class);
+        Env instance = Env.getInstance();
+        final Int128 clientId = instance.get(OwnedIdentityCardsService.class).getClientId();
+        final StreamSupport support = instance.get(StreamSupport.class);
         final SampleStreamProvider provider = new SampleStreamProvider();
-        final StreamProviderRegistration providerRegistration = support.registerProvider(provider);
-        final StreamConsumerRegistration consumerRegistration = support.registerConsumer(new SampleStreamConsumer(provider), providerRegistration.getStreamId());
+        final StreamProviderRegistration providerRegistration = support.registerProvider(provider, clientId);
+        final StreamConsumerRegistration consumerRegistration = support.registerConsumer(new SampleStreamConsumer(provider), clientId, providerRegistration.getStreamId());
         consumerRegistration.start();
     }
 

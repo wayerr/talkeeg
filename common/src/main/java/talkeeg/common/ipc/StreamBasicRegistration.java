@@ -19,6 +19,7 @@
 
 package talkeeg.common.ipc;
 
+import com.google.common.base.Preconditions;
 import talkeeg.bf.Arrays;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
@@ -62,7 +63,7 @@ abstract class StreamBasicRegistration implements Closeable {
     protected final long time;
     protected final StateChecker<StreamMessageType> checker;
     protected final Object lock = new Object();
-    private Int128 _clientId;
+    private final Int128 otherClientId;
     private Key _secretKey;
     private IvParameterSpec _iv;
     private CipherOptions _options;
@@ -70,11 +71,18 @@ abstract class StreamBasicRegistration implements Closeable {
     private final IdSequenceGenerator idGenerator = new IdSequenceGenerator(Integer.MAX_VALUE);
 
 
-    StreamBasicRegistration(StreamSupport streamSupport, StreamMessageType initialState, short streamId) {
+    /**
+     * @param streamSupport
+     * @param initialState initial registration state
+     * @param otherClientId id of client with which do exchange
+     * @param streamId id of stream
+     */
+    StreamBasicRegistration(StreamSupport streamSupport, StreamMessageType initialState, Int128 otherClientId, short streamId) {
         this.checker = STATES.createChecker(initialState);
         this.streamSupport = streamSupport;
         this.streamId = streamId;
         this.time = System.currentTimeMillis();
+        this.otherClientId = otherClientId;
     }
 
     @Override
@@ -118,11 +126,15 @@ abstract class StreamBasicRegistration implements Closeable {
         }
         final StreamMessageType type = message.getType();
         checker.transit(type);
-        updateClientId(message.getSrc());
+        checkOtherClientId(message.getSrc());
         final BinaryData decrypted = verifyAndDecrypt(message, type);
         processDecrypted(message, decrypted);
     }
 
+    /**
+     * own client id
+     * @return
+     */
     protected Int128 getOwnClientId() {
         return this.streamSupport.getOwnClientId();
     }
@@ -137,13 +149,9 @@ abstract class StreamBasicRegistration implements Closeable {
         }
     }
 
-    protected final void updateClientId(Int128 clientId) {
-        synchronized(this.lock) {
-            if(this._clientId == null) {
-                this._clientId = clientId;
-            } else if(!Objects.equals(this._clientId, clientId)) {
-                throw new RuntimeException("Client id was changed from " + this._clientId + " to " + clientId);
-            }
+    protected final void checkOtherClientId(Int128 clientId) {
+        if(!Objects.equals(this.otherClientId, clientId)) {
+            throw new RuntimeException("Client id was changed from " + this.otherClientId + " to " + clientId);
         }
     }
 
@@ -210,7 +218,9 @@ abstract class StreamBasicRegistration implements Closeable {
         final StreamMessage.Builder builder = new StreamMessage.Builder();
         builder.setStreamId(streamId);
         builder.setId(idGenerator.next());
-        builder.setDst(getClientId());
+        final Int128 clientId = getOtherClientId();
+        Preconditions.checkNotNull(clientId, "clientId is null");
+        builder.setDst(clientId);
         builder.setSrc(getOwnClientId());
         signAndEncrypt(builder, type, binaryData);
         final StreamMessage streamMessage = builder.build();
@@ -225,9 +235,9 @@ abstract class StreamBasicRegistration implements Closeable {
      * id of client with which does exchange
      * @return
      */
-    public Int128 getClientId() {
+    public Int128 getOtherClientId() {
         synchronized(this.lock) {
-            return _clientId;
+            return otherClientId;
         }
     }
 

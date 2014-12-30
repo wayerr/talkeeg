@@ -21,6 +21,7 @@ package talkeeg.common.ipc;
 
 
 import talkeeg.bf.BinaryData;
+import talkeeg.bf.Int128;
 import talkeeg.common.model.*;
 
 import javax.crypto.spec.IvParameterSpec;
@@ -35,8 +36,8 @@ public final class StreamConsumerRegistration extends StreamBasicRegistration {
     private final StreamConsumer consumer;
     private long _length = -1;
 
-    StreamConsumerRegistration(StreamSupport streamSupport, StreamConsumer consumer, short streamId) {
-        super(streamSupport, StreamMessageType.HEAD, streamId);
+    StreamConsumerRegistration(StreamSupport streamSupport, StreamConsumer consumer, Int128 otherClientId, short streamId) {
+        super(streamSupport, StreamMessageType.HEAD, otherClientId, streamId);
         this.consumer = consumer;
     }
 
