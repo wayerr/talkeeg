@@ -165,6 +165,9 @@ abstract class StreamBasicRegistration implements Closeable {
         //verify and decrypt
         final Int128 clientId = message.getSrc();
         final BinaryData data = message.getData();
+        if(data == null) {
+            return null;
+        }
         final BinaryData sign = message.getMac();
         if(type == StreamMessageType.HEAD || type == StreamMessageType.REQUEST) {
             //while cipher not configured sign contains client signature

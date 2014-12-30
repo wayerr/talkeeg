@@ -54,6 +54,9 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
         StreamMessageType type = message.getType();
         switch(type) {
             case REQUEST:
+                if(decrypted == null) {
+                    throw new RuntimeException("message with type " + type + " must contains non null data");
+                }
                 processRequest((StreamRequest)deserialize(decrypted));
                 break;
             case RESPONSE:
