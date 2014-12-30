@@ -20,11 +20,16 @@
 package talkeeg.common.ipc;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
+import talkeeg.common.conf.DefaultConfiguration;
+import talkeeg.common.core.CurrentAddressesService;
 import talkeeg.common.core.Env;
 import talkeeg.common.core.OwnedIdentityCardsService;
+import talkeeg.common.model.ClientAddress;
+import talkeeg.common.util.TgAddress;
 
 import java.nio.charset.StandardCharsets;
 
@@ -35,25 +40,39 @@ import static org.junit.Assert.assertEquals;
  */
 public class StreamSupportTest {
 
+    private static Env secondEnv;
+    private static Env firstEnv;
+
+    @BeforeClass
+    public static void beforeClass() {
+        firstEnv = new Env("first", DefaultConfiguration.builder().put("net.port", 11665).build());
+        secondEnv = new Env("second", DefaultConfiguration.builder().put("net.port", 11664).build());
+    }
+
     @AfterClass
     public static void afterClass() {
-        Env.getInstance().close();
+        firstEnv.close();
+        secondEnv.close();
     }
 
     @Test
     public void testStreams() throws Exception {
-        Env instance = Env.getInstance();
-        final Int128 clientId = instance.get(OwnedIdentityCardsService.class).getClientId();
-        final StreamSupport support = instance.get(StreamSupport.class);
+        final Int128 secondClientId = secondEnv.get(OwnedIdentityCardsService.class).getClientId();
         final SampleStreamProvider provider = new SampleStreamProvider();
-        final Int128 secondClient = Int128.fromString("A4B782401761422B8D77BE9EE3E9FDAD");
         StreamConfig.Builder builder = StreamConfig.builder()
-          .streamId((short)1)
-          .otherClientId(clientId)
-          .otherClientAddress(IpcServiceLoopback.LOCALHOST);
-        final StreamConsumerRegistration consumerRegistration = support.registerConsumer(new SampleStreamConsumer(provider), builder.build());
-        final StreamProviderRegistration providerRegistration = support.registerProvider(provider, builder.otherClientId(secondClient).build());
+          .streamId((short)1);
+
+        configureBuilder(builder, firstEnv);
+        final StreamConsumerRegistration consumerRegistration = secondEnv.get(StreamSupport.class)
+          .registerConsumer(new SampleStreamConsumer(provider), builder.build());
+        configureBuilder(builder, secondEnv);
+        firstEnv.get(StreamSupport.class).registerProvider(provider, builder.build());
         consumerRegistration.start();
+    }
+
+    protected void configureBuilder(StreamConfig.Builder builder, Env env) {
+        builder.setOtherClientId(env.get(OwnedIdentityCardsService.class).getClientId());
+        builder.setOtherClientAddress(new ClientAddress(false, TgAddress.to("127.0.0.1", env.get(IpcServiceManager.class).getPort())));
     }
 
     private static class SampleStreamProvider implements StreamProvider {

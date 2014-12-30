@@ -37,6 +37,7 @@ import talkeeg.mb.MessageBusRegistry;
 
 import javax.inject.Singleton;
 import java.io.File;
+import java.util.Map;
 
 /**
  * IoC container configuration module
@@ -46,8 +47,7 @@ import java.io.File;
   injects = {
     Config.class,
     ServiceLocator.class,
-    CacheDirsService.class,
-    IpcServiceLoopback.class,
+    CacheDirsService.class
   },
   includes = {
     CoreModule.class,
@@ -58,6 +58,13 @@ import java.io.File;
 public class EnvModule {
 
     private ObjectGraph objectGraph;
+    private final String appName;
+    private final Map<String, ?> defaults;
+
+    public EnvModule(String appName, Map<String, ?> defaults) {
+        this.appName = appName;
+        this.defaults = defaults;
+    }
 
     /**
      *  wee need that this method will be invoked before any `@Provides` marked methods
@@ -80,14 +87,14 @@ public class EnvModule {
     @Singleton
     Config provideConfg(MessageBusRegistry registry) {
         return ConfigImpl.builder()
-          .applicationName("talkeeg-test")
+          .applicationName("talkeeg-test-" + appName)
           .configDirFunction(new Function<String, File>() {
               @Override
               public File apply(String appName) {
                   return new File(System.getProperty("java.io.tmpdir"), appName);
               }
           })
-          .backend(new DefaultConfigBackend(registry, DefaultConfiguration.get()))
+          .backend(new DefaultConfigBackend(registry, this.defaults))
           .build();
     }
 
@@ -96,11 +103,5 @@ public class EnvModule {
     CacheDirsService provideCacheDirManager(Config config) {
         final CacheDirsService.DirectoryProvider provider = new DefaultTempDirProvider(config);
         return new CacheDirsService(provider, provider);
-    }
-
-    @Provides
-    @Singleton
-    IpcService provideCacheDirManager(IpcServiceLoopback serviceLoopback) {
-        return serviceLoopback;
     }
 }

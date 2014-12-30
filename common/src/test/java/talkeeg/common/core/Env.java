@@ -22,9 +22,12 @@ package talkeeg.common.core;
 import dagger.ObjectGraph;
 import talkeeg.bf.Bf;
 import talkeeg.common.conf.Config;
+import talkeeg.common.conf.DefaultConfiguration;
 import talkeeg.common.util.Fs;
 import talkeeg.common.util.ServiceLocator;
 import talkeeg.mb.MessageBusRegistry;
+
+import java.util.Map;
 
 /**
  * testing environment
@@ -32,13 +35,15 @@ import talkeeg.mb.MessageBusRegistry;
  */
 public final class Env implements AutoCloseable, ServiceLocator {
 
-    private static final Env INSTANCE = new Env();
+    private static final class IN {
+        private static final Env STANCE = new Env("main", DefaultConfiguration.get());
+    }
     private final MessageBusRegistry registry = new MessageBusRegistry();
     private final ObjectGraph objectGraph;
     private final ServiceLocator serviceLocator;
 
-    private Env() {
-        EnvModule envModule = new EnvModule();
+    public Env(String appName, Map<String, ?> defaults) {
+        EnvModule envModule = new EnvModule(appName, defaults);
         this.objectGraph = ObjectGraph.create(envModule);
         envModule.setObjectGraph(this.objectGraph);
         CoreModule.init(this.objectGraph.get(ServiceLocator.class));
@@ -46,7 +51,7 @@ public final class Env implements AutoCloseable, ServiceLocator {
     }
 
     public static Env getInstance() {
-        return INSTANCE;
+        return IN.STANCE;
     }
 
     @Override
