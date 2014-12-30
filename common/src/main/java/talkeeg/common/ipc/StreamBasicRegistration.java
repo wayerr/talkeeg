@@ -117,7 +117,7 @@ abstract class StreamBasicRegistration implements Closeable {
     protected BinaryData getOrCreateSeed() {
         synchronized(this.lock) {
             if(this._seed == null) {
-                this._seed = new BinaryData(SecureRandom.getSeed(128));
+                this._seed = this.streamSupport.createRandomData(16);
             }
         }
         return _seed;

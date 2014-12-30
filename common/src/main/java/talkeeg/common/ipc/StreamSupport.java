@@ -20,6 +20,7 @@
 package talkeeg.common.ipc;
 
 import talkeeg.bf.Bf;
+import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
 import talkeeg.common.core.AcquaintedClientsService;
 import talkeeg.common.core.CryptoService;
@@ -29,6 +30,7 @@ import talkeeg.common.model.StreamMessage;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import java.security.SecureRandom;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -45,6 +47,7 @@ final class StreamSupport implements MessageReader<StreamMessage> {
     final Bf bf;
     private final OwnedIdentityCardsService ownedIdentityCardsService;
     private final Provider<IpcService> ipcServiceProvider;
+    private final SecureRandom secureRandom = new SecureRandom();
 
     @Inject
     StreamSupport(Bf bf,
@@ -117,5 +120,11 @@ final class StreamSupport implements MessageReader<StreamMessage> {
         final IpcService ipcService = this.ipcServiceProvider.get();
         IoObject ioObject = new IoObject(streamMessage, clientAddress);
         ipcService.push(ioObject);
+    }
+
+    BinaryData createRandomData(int bytesCount) {
+        byte bytes[] = new byte[bytesCount];
+        secureRandom.nextBytes(bytes);
+        return new BinaryData(bytes);
     }
 }
