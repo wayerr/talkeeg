@@ -146,11 +146,13 @@ abstract class StreamBasicRegistration implements Closeable {
 
     protected abstract void processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception;
 
-    protected final void initStreamParameters(CipherOptions options, IvParameterSpec iv, BinaryData providerSeed, BinaryData consumerSeed) {
+    protected final void initStreamParameters(CipherOptions options, IvParameterSpec iv, BinaryData providerSeed, BinaryData consumerSeed) throws GeneralSecurityException {
         synchronized(this.lock) {
             this._iv = iv;
             this._options = options;
-            this._secretKey =this.streamSupport.cryptoService.generateSecretKey(providerSeed, consumerSeed, options.getCipher());
+            short streamId = getStreamId();
+            BinaryData salt = new BinaryData(new byte[]{(byte)(streamId >>> 8), (byte)streamId});
+            this._secretKey =this.streamSupport.cryptoService.generateSecretKey(salt, providerSeed, consumerSeed, options.getCipher());
         }
     }
 

@@ -24,6 +24,7 @@ import talkeeg.common.conf.Config;
 import talkeeg.bf.Int128;
 import talkeeg.common.model.CipherOptions;
 import talkeeg.common.model.SymmetricCipherType;
+import talkeeg.common.util.HKDF;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
@@ -181,17 +182,23 @@ public final class CryptoService {
         return ownedKeysManager;
     }
 
-    public Key generateSecretKey(BinaryData providerSeed, BinaryData consumerSeed, SymmetricCipherType cipherType)  {
+    public Key generateSecretKey(BinaryData salt, BinaryData providerSeed, BinaryData consumerSeed, SymmetricCipherType cipherType) throws GeneralSecurityException {
+        checkBinaryData(salt, "salt");
+        checkBinaryData(providerSeed, "providerSeed");
+        checkBinaryData(consumerSeed, "consumerSeed");
         final String name = cipherType.getName();
-        final int providerSeedLen = providerSeed.getLength();
-        final int consumerSeedLen = consumerSeed.getLength();
-        final int keyLen = providerSeedLen + consumerSeedLen;
-        if(keyLen != cipherType.getKeySize()) {
-            throw new RuntimeException("Expected key len: " + cipherType.getKeySize() + " but receive: " + keyLen);
-        }
-        final byte key[] = new byte[keyLen];
-        System.arraycopy(providerSeed.getData(), 0, key, 0, providerSeedLen);
-        System.arraycopy(consumerSeed.getData(), 0, key, providerSeedLen, consumerSeedLen);
+        byte[] key = HKDF.createKey(CryptoConstants.ALG_MAC,
+          salt.getData(),
+          "tg secret key".getBytes(),
+          cipherType.getKeySize(),
+          providerSeed.getData(),
+          consumerSeed.getData());
         return new SecretKeySpec(key, name);
+    }
+
+    private static void checkBinaryData(BinaryData salt, String name) {
+        if(salt == null || salt.getLength() == 0) {
+            throw new IllegalArgumentException(name + " is null or empty");
+        }
     }
 }
