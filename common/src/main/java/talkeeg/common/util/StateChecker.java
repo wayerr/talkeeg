@@ -38,7 +38,7 @@ public final class StateChecker<T> {
             return allowNullState;
         }
 
-        public Builder allowNullState(boolean allowNullState) {
+        public Builder<T> allowNullState(boolean allowNullState) {
             setAllowNullState(allowNullState);
             return this;
         }
