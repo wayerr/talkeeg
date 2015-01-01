@@ -19,6 +19,7 @@
 
 package talkeeg.common.model;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.StructInfo;
@@ -102,6 +103,9 @@ public final class StreamHead {
     private final BinaryData seed;
 
     private StreamHead(Builder b) {
+        Preconditions.checkNotNull(b.options, "options");
+        Preconditions.checkNotNull(b.iv, "iv");
+        Preconditions.checkNotNull(b.seed, "seed");
         this.options = b.options;
         this.length = b.length;
         this.iv = b.iv;

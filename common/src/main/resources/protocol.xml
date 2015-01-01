@@ -66,6 +66,7 @@
         <struct fieldName="options" structId="20"/>
         <integer fieldName="length" storeAs="08_BYTE"/>
         <blob fieldName="iv"/>
+        <blob fieldName="seed"/>
     </struct>
     <struct name="StreamRequest" structId="22">
         <integer fieldName="streamId" storeAs="02_BYTE"/>
