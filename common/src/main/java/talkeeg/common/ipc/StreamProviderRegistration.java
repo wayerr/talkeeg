@@ -34,10 +34,10 @@ import java.util.List;
 public final class StreamProviderRegistration extends StreamBasicRegistration {
     private final StreamProvider provider;
     private final StreamOffer offer;
-    private static final int CHUNK_SIZE = 128;
+    private static final int CHUNK_SIZE = 1024;
 
     StreamProviderRegistration(StreamSupport streamSupport, StreamProvider provider, StreamConfig config) {
-        super(streamSupport, null, config);
+        super(streamSupport, StreamState.WAIT_REQUEST, config);
         this.provider = provider;
         this.offer = StreamOffer.builder()
           .length(provider.getLength())
@@ -50,34 +50,39 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
     }
 
     @Override
-    protected void processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception {
-        StreamMessageType type = message.getType();
+    protected StreamState processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception {
+        final StreamMessageType type = message.getType();
+        StreamState newState;
         switch(type) {
             case REQUEST:
                 if(decrypted == null) {
                     throw new RuntimeException("message with type " + type + " must contains non null data");
                 }
                 processRequest((StreamRequest)deserialize(decrypted));
-                sendData();
+                newState = sendData();
                 break;
             case RESPONSE:
-                sendData();
+                newState = sendData();
                 break;
             case END:
                 this.provider.abort(this);
+                newState = StreamState.END;
                 break;
             default:
                 throw new RuntimeException("Consumer not support " + type + " stream message");
         }
+        return newState;
     }
 
-    private void sendData() throws Exception {
+    private StreamState sendData() throws Exception {
         //in future we must send data in another stream
         final BinaryData data = this.provider.provide(this, CHUNK_SIZE);
         send(StreamMessageType.DATA, data);
         if(this.provider.isEnded()) {
             send(StreamMessageType.END, null);
+            return StreamState.WAIT_END;
         }
+        return StreamState.WAIT_RESPONSE;
     }
 
     private void processRequest(StreamRequest request) throws Exception {

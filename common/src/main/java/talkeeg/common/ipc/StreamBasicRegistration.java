@@ -49,13 +49,11 @@ import java.util.logging.Logger;
  * Created by wayerr on 29.12.14.
  */
 abstract class StreamBasicRegistration implements Closeable {
-    private static final StateChecker.Graph<StreamMessageType> STATES = StateChecker.<StreamMessageType>builder()
-      .allowNullState(true)
-      .transit(null, StreamMessageType.HEAD, StreamMessageType.REQUEST, StreamMessageType.END)
-      .transit(StreamMessageType.REQUEST, StreamMessageType.RESPONSE, StreamMessageType.DATA, StreamMessageType.END)
-      .transit(StreamMessageType.HEAD, StreamMessageType.DATA, StreamMessageType.END)
-      .transit(StreamMessageType.RESPONSE, StreamMessageType.DATA, StreamMessageType.RESPONSE, StreamMessageType.END)
-      .transit(StreamMessageType.DATA,     StreamMessageType.DATA, StreamMessageType.RESPONSE, StreamMessageType.END)
+    private static final StateChecker.Graph<StreamState> STATES = StateChecker.<StreamState>builder()
+      .transit(StreamState.WAIT_HEAD, StreamState.WAIT_DATA, StreamState.WAIT_END)
+      .transit(StreamState.WAIT_DATA, StreamState.WAIT_DATA, StreamState.WAIT_END)
+      .transit(StreamState.WAIT_REQUEST, StreamState.WAIT_RESPONSE, StreamState.WAIT_END)
+      .transit(StreamState.WAIT_END, StreamState.END)
       .build();
     private static final List<CipherOptions> SUPPORTED_CIPHERS = Collections.singletonList(CipherOptions.builder()
       .cipher(SymmetricCipherType.AES_128)
@@ -66,7 +64,7 @@ abstract class StreamBasicRegistration implements Closeable {
     protected final StreamSupport streamSupport;
     protected final StreamConfig config;
     protected final long time;
-    protected final StateChecker<StreamMessageType> checker;
+    protected final StateChecker<StreamState> checker;
     protected final Object lock = new Object();
     private Key _secretKey;
     private IvParameterSpec _iv;
@@ -81,7 +79,7 @@ abstract class StreamBasicRegistration implements Closeable {
      * @param initialState initial registration state
      * @param config parameters of stream
      */
-    StreamBasicRegistration(StreamSupport streamSupport, StreamMessageType initialState, StreamConfig config) {
+    StreamBasicRegistration(StreamSupport streamSupport, StreamState initialState, StreamConfig config) {
         this.checker = STATES.createChecker(initialState);
         this.streamSupport = streamSupport;
         this.config = config;
@@ -140,11 +138,14 @@ abstract class StreamBasicRegistration implements Closeable {
             throw new RuntimeException("Destination client id: " + message.getDst() + " not equals with current client id: " + getOwnClientId());
         }
         updateLastTime();
-        final StreamMessageType type = message.getType();
-        checker.transit(type);
         checkOtherClientId(message.getSrc());
-        final BinaryData decrypted = verifyAndDecrypt(message, type);
-        processDecrypted(message, decrypted);
+        final BinaryData decrypted = verifyAndDecrypt(message);
+        final StreamState state = processDecrypted(message, decrypted);
+        try {
+            checker.transit(state);
+        } catch(StateChecker.StateCheckerException e) {
+            throw new RuntimeException("on " + this, e);
+        }
     }
 
     private void updateLastTime() {
@@ -161,7 +162,7 @@ abstract class StreamBasicRegistration implements Closeable {
         return this.streamSupport.getOwnClientId();
     }
 
-    protected abstract void processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception;
+    protected abstract StreamState processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception;
 
     protected final void initStreamParameters(CipherOptions options, IvParameterSpec iv, BinaryData providerSeed, BinaryData consumerSeed) throws GeneralSecurityException {
         synchronized(this.lock) {
@@ -180,7 +181,7 @@ abstract class StreamBasicRegistration implements Closeable {
         }
     }
 
-    private BinaryData verifyAndDecrypt(StreamMessage message, StreamMessageType type) throws GeneralSecurityException {
+    private BinaryData verifyAndDecrypt(StreamMessage message) throws GeneralSecurityException {
         //verify and decrypt
         final Int128 clientId = message.getSrc();
         final BinaryData data = message.getData();
@@ -191,7 +192,7 @@ abstract class StreamBasicRegistration implements Closeable {
         if(sign == null) {
             throw new RuntimeException("Message with non null data and null MAC");
         }
-        if(isCipheredByPublicKey(type)) {
+        if(isCipheredByPublicKey(message.getType())) {
             //while cipher not configured sign contains client signature
             //check client sign
             final AcquaintedClient client = this.streamSupport.clientsService.getClient(clientId);

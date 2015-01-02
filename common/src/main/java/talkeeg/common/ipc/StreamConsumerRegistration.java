@@ -20,10 +20,18 @@
 package talkeeg.common.ipc;
 
 
+import com.google.common.collect.ImmutableList;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.model.*;
 import javax.crypto.spec.IvParameterSpec;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.logging.Logger;
 
 /**
  * registration of stream consumer
@@ -33,9 +41,11 @@ public final class StreamConsumerRegistration extends StreamBasicRegistration {
 
     private final StreamConsumer consumer;
     private long _length = -1;
+    private int _lastId;
+    private final Set<Integer> expected = new ConcurrentSkipListSet<>();
 
     StreamConsumerRegistration(StreamSupport streamSupport, StreamConsumer consumer, StreamConfig config) {
-        super(streamSupport, null, config);
+        super(streamSupport, StreamState.WAIT_HEAD, config);
         this.consumer = consumer;
     }
 
@@ -45,30 +55,61 @@ public final class StreamConsumerRegistration extends StreamBasicRegistration {
         //TODO send END if current state before END
     }
 
-    protected void processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception {
-        StreamMessageType type = message.getType();
+    protected StreamState processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception {
+        final StreamMessageType type = message.getType();
+        StreamState newState;
+        final int messageId = message.getId();
+        updateLost(messageId);
         switch(type) {
             case HEAD:
                 readHead(decrypted);
                 this.consumer.open(this);
+                newState = StreamState.WAIT_DATA;
                 break;
             case DATA:
                 this.consumer.consume(this, decrypted);
-                sendResponse(message.getId());
+                sendResponse(messageId);
+                newState = StreamState.WAIT_DATA;
                 break;
             case END:
-                this.consumer.close(this);
+                if(!this.expected.isEmpty()) {
+                    Logger.getLogger(getClass().getName()).severe("Stream is broken, lost: " + this.expected);
+                    newState = StreamState.WAIT_DATA;
+                } else {
+                    newState = StreamState.WAIT_END;
+                    this.consumer.close(this);
+                }
                 break;
             default:
                 throw new RuntimeException("Consumer not support " + type + " stream message");
+        }
+        return newState;
+    }
+
+    private void updateLost(int messageId) {
+        synchronized(this.lock) {
+            final int lastId = this._lastId;
+            if(messageId > lastId) {
+                this._lastId = messageId;
+            }
+            if(messageId == lastId || messageId - lastId == 1) {
+                return;
+            }
+            if(messageId < lastId) {
+                this.expected.remove(messageId);
+            } else {
+                for(int i = lastId + 1; i < (messageId - 1); ++i) {
+                    this.expected.add(i);
+                }
+            }
         }
     }
 
     private void sendResponse(int messageId) throws Exception {
         //in future we can send response after some timeout or after each N-th message
-        //TODO detect lost messages
         final StreamResponse response = StreamResponse.builder()
           .accepted(Collections.singletonList(messageId))
+          .needed(ImmutableList.copyOf(this.expected))
           .build();
         send(StreamMessageType.RESPONSE, serialize(response));
     }

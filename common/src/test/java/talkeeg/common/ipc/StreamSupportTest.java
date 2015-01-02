@@ -33,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by wayerr on 29.12.14.
@@ -74,6 +75,7 @@ public class StreamSupportTest {
         System.out.println("testStreams start");
 
         consumer.waitClose();
+        assertEquals(provider.getLength(), consumer.getConsumed());
     }
 
     protected void configureBuilder(StreamConfig.Builder builder, Env env) {
@@ -132,6 +134,7 @@ public class StreamSupportTest {
 
     private static class SampleStreamConsumer implements StreamConsumer {
         private final SampleStreamProvider provider;
+        private volatile long consumed;
 
         public SampleStreamConsumer(SampleStreamProvider provider) {
             this.provider = provider;
@@ -146,6 +149,7 @@ public class StreamSupportTest {
         @Override
         public void consume(StreamConsumerRegistration registration, BinaryData data) {
             System.out.println("consumer: consume");
+            this.consumed += data.getLength();
             System.out.println(new String(data.getData(), StandardCharsets.UTF_8));
         }
 
@@ -161,6 +165,10 @@ public class StreamSupportTest {
             synchronized(this) {
                 this.wait(TimeUnit.MINUTES.toMillis(10));
             }
+        }
+
+        public long getConsumed() {
+            return this.consumed;
         }
     }
 }

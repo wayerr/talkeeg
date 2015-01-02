@@ -30,6 +30,23 @@ import java.util.*;
  */
 public final class StateChecker<T> {
 
+    public static class StateCheckerException extends RuntimeException {
+        public StateCheckerException() {
+        }
+
+        public StateCheckerException(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public StateCheckerException(String detailMessage, Throwable throwable) {
+            super(detailMessage, throwable);
+        }
+
+        public StateCheckerException(Throwable throwable) {
+            super(throwable);
+        }
+    }
+
     public static class Builder<T> {
         private final Map<T, Set<T>> transitions = new HashMap<>();
         private boolean allowNullState = false;
@@ -119,7 +136,7 @@ public final class StateChecker<T> {
             }
             final Set<T> possible = getTransitions(source);
             if(!possible.contains(destination)) {
-                throw new RuntimeException("Impossible transition:\n" + source + " -> " + destination +
+                throw new StateCheckerException("Impossible transition:\n" + source + " -> " + destination +
                   "\n possible destinations: " + Arrays.toString(possible.toArray()));
             }
         }
