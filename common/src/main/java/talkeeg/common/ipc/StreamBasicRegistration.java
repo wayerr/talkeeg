@@ -53,6 +53,7 @@ abstract class StreamBasicRegistration implements Closeable {
       .transit(StreamState.WAIT_HEAD, StreamState.WAIT_DATA, StreamState.WAIT_END)
       .transit(StreamState.WAIT_DATA, StreamState.WAIT_DATA, StreamState.WAIT_END)
       .transit(StreamState.WAIT_REQUEST, StreamState.WAIT_RESPONSE, StreamState.WAIT_END)
+      .transit(StreamState.WAIT_RESPONSE, StreamState.WAIT_RESPONSE, StreamState.WAIT_END)
       .transit(StreamState.WAIT_END, StreamState.END)
       .build();
     private static final List<CipherOptions> SUPPORTED_CIPHERS = Collections.singletonList(CipherOptions.builder()
