@@ -67,14 +67,13 @@ public class StreamSupportTest {
           .streamId((short)1);
 
         configureBuilder(builder, firstEnv);
-        final StreamConsumerRegistration consumerRegistration = secondEnv.get(StreamSupport.class)
-          .registerConsumer(new SampleStreamConsumer(provider), builder.build());
+        final SampleStreamConsumer consumer = new SampleStreamConsumer(provider);
+        secondEnv.get(StreamSupport.class).registerConsumer(consumer, builder.build());
         configureBuilder(builder, secondEnv);
         firstEnv.get(StreamSupport.class).registerProvider(provider, builder.build());
         System.out.println("testStreams start");
-        consumerRegistration.start();
 
-        Thread.sleep(TimeUnit.SECONDS.toMillis(30));
+        consumer.waitClose();
     }
 
     protected void configureBuilder(StreamConfig.Builder builder, Env env) {
@@ -85,6 +84,11 @@ public class StreamSupportTest {
     private static class SampleStreamProvider implements StreamProvider {
 
         private final String sampleData = "пример utf данных";
+        private long count;
+
+        public SampleStreamProvider() {
+
+        }
 
         @Override
         public void open(StreamProviderRegistration registration) {
@@ -93,7 +97,15 @@ public class StreamSupportTest {
 
         @Override
         public BinaryData provide(StreamProviderRegistration registration, int size) {
-            System.out.println("provider: provide");
+            System.out.println("provider: provide " + size + " bytes");
+            final long remain = getLength() - this.count;
+            if(remain <= 0) {
+                return new BinaryData(new byte[0]);
+            }
+            if(remain < size) {
+                size = (int)remain;
+            }
+            this.count += size;
             byte[] bytes = sampleData.getBytes(StandardCharsets.UTF_8);
             byte dst[] = new byte[size];
             for(int i = 0; i < size; ++i) {
@@ -109,7 +121,12 @@ public class StreamSupportTest {
 
         @Override
         public long getLength() {
-            return 2*1024*sampleData.length();
+            return 256*sampleData.length();
+        }
+
+        @Override
+        public boolean isEnded() {
+            return count >= getLength();
         }
     }
 
@@ -135,7 +152,15 @@ public class StreamSupportTest {
         @Override
         public void close(StreamConsumerRegistration registration) {
             System.out.println("consumer: close");
+            synchronized(this) {
+                this.notify();
+            }
+        }
 
+        public void waitClose() throws InterruptedException {
+            synchronized(this) {
+                this.wait(TimeUnit.MINUTES.toMillis(10));
+            }
         }
     }
 }

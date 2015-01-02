@@ -95,7 +95,7 @@ public final class StreamConsumerRegistration extends StreamBasicRegistration {
     /**
      * start stream consuming (send StreamRequest to provider)
      */
-    public void start() {
+    protected void onStart() {
         try {
             final StreamRequest streamRequest = StreamRequest.builder()
               .ciphers(getSupportedCiphers())

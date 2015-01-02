@@ -34,7 +34,7 @@ import java.util.List;
 public final class StreamProviderRegistration extends StreamBasicRegistration {
     private final StreamProvider provider;
     private final StreamOffer offer;
-    private static final int CHUNK_SIZE = 1024;
+    private static final int CHUNK_SIZE = 128;
 
     StreamProviderRegistration(StreamSupport streamSupport, StreamProvider provider, StreamConfig config) {
         super(streamSupport, null, config);
@@ -58,6 +58,7 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
                     throw new RuntimeException("message with type " + type + " must contains non null data");
                 }
                 processRequest((StreamRequest)deserialize(decrypted));
+                sendData();
                 break;
             case RESPONSE:
                 sendData();
@@ -74,6 +75,9 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
         //in future we must send data in another stream
         final BinaryData data = this.provider.provide(this, CHUNK_SIZE);
         send(StreamMessageType.DATA, data);
+        if(this.provider.isEnded()) {
+            send(StreamMessageType.END, null);
+        }
     }
 
     private void processRequest(StreamRequest request) throws Exception {

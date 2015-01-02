@@ -30,5 +30,5 @@ public interface StreamProvider {
     BinaryData provide(StreamProviderRegistration registration, int size);
     void abort(StreamProviderRegistration registration);
     long getLength();
-
+    boolean isEnded();
 }

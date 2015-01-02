@@ -30,7 +30,9 @@ import talkeeg.common.util.Closeable;
 import talkeeg.common.util.DateUtils;
 import talkeeg.common.util.StateChecker;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.Mac;
 import javax.crypto.spec.IvParameterSpec;
 import java.nio.ByteBuffer;
@@ -40,6 +42,7 @@ import java.security.Signature;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * basic class for stream registrations
@@ -49,9 +52,10 @@ abstract class StreamBasicRegistration implements Closeable {
     private static final StateChecker.Graph<StreamMessageType> STATES = StateChecker.<StreamMessageType>builder()
       .allowNullState(true)
       .transit(null, StreamMessageType.HEAD, StreamMessageType.REQUEST, StreamMessageType.END)
-      .transit(StreamMessageType.REQUEST, StreamMessageType.DATA, StreamMessageType.END)
+      .transit(StreamMessageType.REQUEST, StreamMessageType.RESPONSE, StreamMessageType.DATA, StreamMessageType.END)
       .transit(StreamMessageType.HEAD, StreamMessageType.DATA, StreamMessageType.END)
-      .transit(StreamMessageType.DATA, StreamMessageType.END)
+      .transit(StreamMessageType.RESPONSE, StreamMessageType.DATA, StreamMessageType.RESPONSE, StreamMessageType.END)
+      .transit(StreamMessageType.DATA,     StreamMessageType.DATA, StreamMessageType.RESPONSE, StreamMessageType.END)
       .build();
     private static final List<CipherOptions> SUPPORTED_CIPHERS = Collections.singletonList(CipherOptions.builder()
       .cipher(SymmetricCipherType.AES_128)
@@ -68,9 +72,9 @@ abstract class StreamBasicRegistration implements Closeable {
     private IvParameterSpec _iv;
     private CipherOptions _options;
     private BinaryData _seed;
+    private long _lastUpdate;
     private final IdSequenceGenerator idGenerator = new IdSequenceGenerator(Integer.MAX_VALUE);
     private final StreamKey streamKey;
-
 
     /**
      * @param streamSupport
@@ -111,8 +115,14 @@ abstract class StreamBasicRegistration implements Closeable {
      * creation time of stream registration
      * @return
      */
-    public long getTime() {
+    public long getCreationTime() {
         return time;
+    }
+
+    public long getLastUpdateTime() {
+        synchronized(this.lock) {
+            return this._lastUpdate;
+        }
     }
 
     protected BinaryData getOrCreateSeed() {
@@ -129,11 +139,18 @@ abstract class StreamBasicRegistration implements Closeable {
         if(!Objects.equals(message.getDst(), getOwnClientId())) {
             throw new RuntimeException("Destination client id: " + message.getDst() + " not equals with current client id: " + getOwnClientId());
         }
+        updateLastTime();
         final StreamMessageType type = message.getType();
         checker.transit(type);
         checkOtherClientId(message.getSrc());
         final BinaryData decrypted = verifyAndDecrypt(message, type);
         processDecrypted(message, decrypted);
+    }
+
+    private void updateLastTime() {
+        synchronized(this.lock) {
+            _lastUpdate = System.currentTimeMillis();
+        }
     }
 
     /**
@@ -189,8 +206,8 @@ abstract class StreamBasicRegistration implements Closeable {
             }
             //decrypt
             Cipher cipher = this.streamSupport.cryptoService.getDecipherAsymmetricService(OwnedKeyType.CLIENT);
-            cipher.update(data.getData());
-            return new BinaryData(cipher.doFinal());
+            byte[] decipheredData = ciphering(data, cipher);
+            return new BinaryData(decipheredData);
         } else {
             //check MAC
             final Key secretKey = this.getSecretKey();
@@ -208,8 +225,8 @@ abstract class StreamBasicRegistration implements Closeable {
                 localOptions = this._options;
             }
             Cipher cipher = this.streamSupport.cryptoService.getDecipherService(localOptions, secretKey, localIv);
-            cipher.update(data.getData());
-            return new BinaryData(cipher.doFinal());
+            byte[] decipheredData = ciphering(data, cipher);
+            return new BinaryData(decipheredData);
         }
     }
 
@@ -258,8 +275,7 @@ abstract class StreamBasicRegistration implements Closeable {
             }
             //encrypt
             Cipher cipher = this.streamSupport.cryptoService.getCipherAsymmetricService(client.getKey());
-            cipher.update(data.getData());
-            final byte[] cipheredData = cipher.doFinal();
+            byte[] cipheredData = ciphering(data, cipher);
             result = new BinaryData(cipheredData);
             //sign
             final Signature signService = this.streamSupport.cryptoService.getSignService(OwnedKeyType.CLIENT);
@@ -275,8 +291,7 @@ abstract class StreamBasicRegistration implements Closeable {
             }
             final Key secretKey = this.getSecretKey();
             Cipher cipher = this.streamSupport.cryptoService.getCipherService(localOptions, secretKey, localIv);
-            cipher.update(data.getData());
-            final byte[] cipheredData = cipher.doFinal();
+            byte[] cipheredData = ciphering(data, cipher);
             result = new BinaryData(cipheredData);
             //create MAC
             final Mac mac = this.streamSupport.cryptoService.getMac(secretKey);
@@ -285,6 +300,24 @@ abstract class StreamBasicRegistration implements Closeable {
         }
         builder.setData(result);
         builder.setMac(sign);
+    }
+
+    private byte[] ciphering(BinaryData data, Cipher cipher) throws GeneralSecurityException {
+        if(data == null) {
+            return new byte[0];
+        }
+        byte[] bytes = cipher.update(data.getData());
+        byte[] end = cipher.doFinal();
+        if(end.length == 0) {
+            if(bytes == null) {
+                return new byte[0];
+            }
+            return bytes;
+        }
+        byte[] res = new byte[bytes.length + end.length];
+        System.arraycopy(bytes, 0, res, 0, bytes.length);
+        System.arraycopy(end, 0, res, bytes.length, end.length);
+        return res;
     }
 
     /**
@@ -297,5 +330,23 @@ abstract class StreamBasicRegistration implements Closeable {
 
     List<CipherOptions> getSupportedCiphers() {
         return SUPPORTED_CIPHERS;
+    }
+
+    final void start() {
+        this.onStart();
+    }
+
+    protected void onStart() {
+
+    }
+
+    void closeIfTimeExceed(final long maxTime) {
+        synchronized(this.lock) {
+            final long timeout = this._lastUpdate - this.time;
+            if(timeout >= maxTime) {
+                Logger.getLogger(getClass().getName()).warning("stream time exceeded, closing: " + this);
+                close();
+            }
+        }
     }
 }

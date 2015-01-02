@@ -19,6 +19,8 @@
 
 package talkeeg.common.ipc;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import talkeeg.bf.Bf;
 import talkeeg.bf.BinaryData;
 import talkeeg.bf.Int128;
@@ -31,8 +33,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.security.SecureRandom;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * supporting of stream
@@ -41,6 +43,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Singleton
 final class StreamSupport implements MessageReader<StreamMessage> {
+    private static final long TIMEOUT = 5 * 60 * 1000;//5 min
     private final ConcurrentMap<StreamKey, StreamBasicRegistration> streams = new ConcurrentHashMap<>();
     final CryptoService cryptoService;
     final AcquaintedClientsService clientsService;
@@ -48,6 +51,17 @@ final class StreamSupport implements MessageReader<StreamMessage> {
     private final OwnedIdentityCardsService ownedIdentityCardsService;
     private final Provider<IpcService> ipcServiceProvider;
     private final SecureRandom secureRandom = new SecureRandom();
+    final ScheduledExecutorService scheduledExecutorService;
+    private final Runnable watchDog = new Runnable() {
+        @Override
+        public void run() {
+            List<StreamBasicRegistration> registrations = ImmutableList.copyOf(streams.values());
+            for(int i = 0; i < registrations.size(); ++i) {
+                StreamBasicRegistration registration = registrations.get(i);
+                registration.closeIfTimeExceed(TIMEOUT);
+            }
+        }
+    };
 
     @Inject
     StreamSupport(Bf bf,
@@ -60,6 +74,12 @@ final class StreamSupport implements MessageReader<StreamMessage> {
         this.clientsService = clientsService;
         this.ownedIdentityCardsService = ownedIdentityCardsService;
         this.ipcServiceProvider = ipcServiceProvider;
+        final ThreadFactory factory = new ThreadFactoryBuilder()
+          .setDaemon(true)
+          .setNameFormat(getClass().getSimpleName() + "-%d")
+          .build();
+        this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1, factory);
+        this.scheduledExecutorService.scheduleWithFixedDelay(watchDog, TIMEOUT, TIMEOUT, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -90,6 +110,7 @@ final class StreamSupport implements MessageReader<StreamMessage> {
         if(old != null) {
             throw new RuntimeException("we already has stream with id " + key + ": \n" + old);
         }
+        registration.start();
     }
 
     /**

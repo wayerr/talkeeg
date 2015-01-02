@@ -31,7 +31,7 @@ public enum SymmetricCipherType implements EnumWithValue<Byte> {
     /**
      * AES with 128 bit key
      */
-    AES_128(1, "AES_128", 16, 16);
+    AES_128(1, "AES", 16, 16);
 
     private final byte value;
     private final String algorithm;
