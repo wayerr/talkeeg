@@ -103,7 +103,7 @@ public final class OS {
 
             }
         }
-        // obliviously, we don`t need names like `localhost`
+        // obviously, we don`t need names like `localhost`
         if(name != null && (name.equalsIgnoreCase("localhost") || name.equalsIgnoreCase("localhost.localdomain"))) {
             name = null;
         }
@@ -111,7 +111,7 @@ public final class OS {
     }
 
     /**
-     * operting system family
+     * operating system family
      * @return
      */
     public Family getFamily() {
