@@ -129,7 +129,13 @@ final class StreamSupport implements MessageReader<StreamMessage> {
         if(registration == null) {
             throw new RuntimeException("No registered consumer for streamKey=" + key);
         }
-        registration.process(context);
+        try {
+            registration.process(context);
+        } catch(Exception e) {
+            //close stream registration at error
+            registration.close();
+            throw e;
+        }
         return null;
     }
 

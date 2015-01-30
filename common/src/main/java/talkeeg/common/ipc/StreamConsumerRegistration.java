@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -53,6 +54,11 @@ public final class StreamConsumerRegistration extends StreamBasicRegistration {
     public void close() {
         super.close();
         //TODO send END if current state before END
+        try {
+            consumer.close(this);
+        } catch(Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "", e);
+        }
     }
 
     protected StreamState processDecrypted(StreamMessage message, BinaryData decrypted) throws Exception {

@@ -28,7 +28,12 @@ import talkeeg.bf.BinaryData;
 public interface StreamProvider {
     void open(StreamProviderRegistration registration);
     BinaryData provide(StreamProviderRegistration registration, int size);
-    void abort(StreamProviderRegistration registration);
+
+    /**
+     * always invoked at end of stream transferring, and can be invoked for aborting stream producing
+     * @param registration
+     */
+    void close(StreamProviderRegistration registration);
     long getLength();
     boolean isEnded();
 }

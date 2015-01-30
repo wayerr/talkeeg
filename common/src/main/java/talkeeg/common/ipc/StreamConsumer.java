@@ -26,8 +26,8 @@ import talkeeg.bf.BinaryData;
  * Created by wayerr on 29.12.14.
  */
 public interface StreamConsumer {
-    void open(StreamConsumerRegistration registration);
-    void consume(StreamConsumerRegistration registration, BinaryData data);
-    void close(StreamConsumerRegistration registration);
+    void open(StreamConsumerRegistration registration) throws Exception;
+    void consume(StreamConsumerRegistration registration, BinaryData data) throws Exception;
+    void close(StreamConsumerRegistration registration) throws Exception;
 
 }

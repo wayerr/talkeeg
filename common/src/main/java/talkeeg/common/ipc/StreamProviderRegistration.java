@@ -20,12 +20,13 @@
 package talkeeg.common.ipc;
 
 import talkeeg.bf.BinaryData;
-import talkeeg.bf.Int128;
 import talkeeg.common.model.*;
 
 import javax.crypto.spec.IvParameterSpec;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * registration of stream provider
@@ -65,7 +66,7 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
                 newState = sendData();
                 break;
             case END:
-                this.provider.abort(this);
+                this.provider.close(this);
                 newState = StreamState.END;
                 break;
             default:
@@ -125,5 +126,10 @@ public final class StreamProviderRegistration extends StreamBasicRegistration {
     public void close() {
         super.close();
         //TODO send END if current state before END
+        try {
+            provider.close(this);
+        } catch(Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "", e);
+        }
     }
 }

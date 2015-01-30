@@ -19,6 +19,7 @@
 
 package talkeeg.common.ipc;
 
+import com.google.common.base.Charsets;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,9 +30,16 @@ import talkeeg.common.core.*;
 import talkeeg.common.model.ClientAddress;
 import talkeeg.common.util.TgAddress;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -42,6 +50,8 @@ public class StreamSupportTest {
 
     private static Env secondEnv;
     private static Env firstEnv;
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
 
     @BeforeClass
     public static void beforeClass() {
@@ -74,8 +84,8 @@ public class StreamSupportTest {
         firstEnv.get(StreamSupport.class).registerProvider(provider, builder.build());
         System.out.println("testStreams start");
 
-        consumer.waitClose();
-        assertEquals(provider.getLength(), consumer.getConsumed());
+        waitClose();
+        assertArrayEquals(provider.array, consumer.stream.toByteArray());
     }
 
     protected void configureBuilder(StreamConfig.Builder builder, Env env) {
@@ -83,13 +93,19 @@ public class StreamSupportTest {
         builder.setOtherClientAddress(new ClientAddress(false, TgAddress.to("127.0.0.1", env.get(IpcServiceManager.class).getPort())));
     }
 
-    private static class SampleStreamProvider implements StreamProvider {
+    private  class SampleStreamProvider implements StreamProvider {
 
         private final String sampleData = "пример utf данных";
-        private long count;
+        private final byte[] array;
+        private int count = 0;
 
         public SampleStreamProvider() {
-
+            byte[] pattern = sampleData.getBytes(StandardCharsets.UTF_8);
+            final int repeats = 256;
+            array = new byte[256 * pattern.length];
+            for(int i = 0; i < repeats; ++i) {
+                System.arraycopy(pattern, 0, array, i * pattern.length, pattern.length);
+            }
         }
 
         @Override
@@ -107,23 +123,20 @@ public class StreamSupportTest {
             if(remain < size) {
                 size = (int)remain;
             }
+            BinaryData binaryData = new BinaryData(Arrays.copyOfRange(array, this.count, this.count + size));
             this.count += size;
-            byte[] bytes = sampleData.getBytes(StandardCharsets.UTF_8);
-            byte dst[] = new byte[size];
-            for(int i = 0; i < size; ++i) {
-                dst[i] = bytes[i % bytes.length];
-            }
-            return new BinaryData(dst);
+            return binaryData;
         }
 
         @Override
-        public void abort(StreamProviderRegistration registration) {
-            System.out.println("provider: abort");
+        public void close(StreamProviderRegistration registration) {
+            System.out.println("provider: close");
+            wakeup();
         }
 
         @Override
         public long getLength() {
-            return 256*sampleData.length();
+            return array.length;
         }
 
         @Override
@@ -132,43 +145,49 @@ public class StreamSupportTest {
         }
     }
 
-    private static class SampleStreamConsumer implements StreamConsumer {
+    private  class SampleStreamConsumer implements StreamConsumer {
         private final SampleStreamProvider provider;
-        private volatile long consumed;
+        private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
         public SampleStreamConsumer(SampleStreamProvider provider) {
             this.provider = provider;
         }
 
         @Override
-        public void open(StreamConsumerRegistration registration) {
+        public void open(StreamConsumerRegistration registration)  throws Exception {
             System.out.println("consumer: open");
             assertEquals(provider.getLength(), registration.getLength());
         }
 
         @Override
-        public void consume(StreamConsumerRegistration registration, BinaryData data) {
+        public void consume(StreamConsumerRegistration registration, BinaryData data) throws Exception {
             System.out.println("consumer: consume");
-            this.consumed += data.getLength();
+            stream.write(data.getData());
             System.out.println(new String(data.getData(), StandardCharsets.UTF_8));
         }
 
         @Override
-        public void close(StreamConsumerRegistration registration) {
+        public void close(StreamConsumerRegistration registration) throws Exception {
             System.out.println("consumer: close");
-            synchronized(this) {
-                this.notify();
-            }
+            wakeup();
         }
+    }
 
-        public void waitClose() throws InterruptedException {
-            synchronized(this) {
-                this.wait(TimeUnit.MINUTES.toMillis(10));
-            }
+    private void waitClose() throws InterruptedException {
+        lock.lock();
+        try {
+            condition.await(1, TimeUnit.MINUTES);
+        } finally {
+            lock.unlock();
         }
+    }
 
-        public long getConsumed() {
-            return this.consumed;
+    private void wakeup() {
+        lock.lock();
+        try {
+            condition.signalAll();
+        } finally {
+            lock.unlock();
         }
     }
 }
