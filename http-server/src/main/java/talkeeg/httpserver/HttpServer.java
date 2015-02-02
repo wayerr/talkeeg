@@ -21,6 +21,9 @@ package talkeeg.httpserver;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +31,7 @@ import org.apache.http.config.ConnectionConfig;
 import org.apache.http.impl.nio.DefaultHttpServerIODispatch;
 import org.apache.http.impl.nio.DefaultNHttpServerConnection;
 import org.apache.http.impl.nio.DefaultNHttpServerConnectionFactory;
+import org.apache.http.impl.nio.SSLNHttpServerConnectionFactory;
 import org.apache.http.impl.nio.reactor.DefaultListeningIOReactor;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.nio.NHttpConnectionFactory;
@@ -41,8 +45,13 @@ import org.apache.http.protocol.ResponseConnControl;
 import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
+import talkeeg.common.core.CryptoService;
+import talkeeg.common.core.OwnedKeyType;
+import talkeeg.common.core.OwnedKeysManager;
+import talkeeg.common.core.OwnedCertManager;
 
 import javax.inject.Inject;
+import javax.net.ssl.*;
 
 /**
  * HTTP server based on hc.apache.org components <p/>
@@ -69,10 +78,14 @@ public final class HttpServer {
     private final UriHttpAsyncRequestHandlerMapper registry = new UriHttpAsyncRequestHandlerMapper();
     private final HttpAsyncService protocolHandler = new HttpAsyncService(httpproc, registry);
     private final HttpServerConfig config;
+    private final OwnedKeysManager ownedKeysManager;
+    private final OwnedCertManager certManager;
 
     @Inject
-    HttpServer(HttpServerConfig config) {
+    HttpServer(HttpServerConfig config, CryptoService cryptoService, OwnedCertManager certManager) {
         this.config = config;
+        this.ownedKeysManager = cryptoService.getOwnedKeysManager();
+        this.certManager = certManager;
     }
 
     public UriHttpAsyncRequestHandlerMapper getRegistry() {
@@ -99,32 +112,27 @@ public final class HttpServer {
     private NHttpConnectionFactory<DefaultNHttpServerConnection> createConnectionFactory() {
         NHttpConnectionFactory<DefaultNHttpServerConnection> connFactory;
         if(config.isUseTLS()) {
-            // Initialize SSL context
-            throw new UnsupportedOperationException("TODO implement loading keys!");
-            /*
-            ClassLoader cl = HttpServer.class.getClassLoader();
-            URL url = cl.getResource("my.keystore");
-            if(url == null) {
-                System.out.println("Keystore not found");
-                System.exit(1);
-            }
             try {
                 KeyStore keystore = KeyStore.getInstance("jks");
-                keystore.load(url.openStream(), "secret".toCharArray());
-                KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(
-                  KeyManagerFactory.getDefaultAlgorithm());
-                kmfactory.init(keystore, "secret".toCharArray());
-                KeyManager[] keymanagers = kmfactory.getKeyManagers();
+                char[] password = new char[0];
+                keystore.load(null, password);
+                final X509Certificate certificate = certManager.getCertificate(OwnedKeyType.USER);
+                KeyStore.PrivateKeyEntry entry = new KeyStore.PrivateKeyEntry(ownedKeysManager.getPrivateKey(OwnedKeyType.USER), new Certificate[] {
+                    certificate
+                });
+
+                keystore.setEntry("", entry, new KeyStore.PasswordProtection(password));
+                KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                kmfactory.init(keystore, password);
+                final KeyManager[] keymanagers = kmfactory.getKeyManagers();
                 SSLContext sslcontext = SSLContext.getInstance("TLS");
                 sslcontext.init(keymanagers, null, null);
-                connFactory = new SSLNHttpServerConnectionFactory(sslcontext,
-                  null, ConnectionConfig.DEFAULT);
+                connFactory = new SSLNHttpServerConnectionFactory(sslcontext, null, ConnectionConfig.DEFAULT);
             } catch(Exception e) {
                 throw new RuntimeException("Can not initialise SSL.", e);
-            }*/
+            }
         } else {
-            connFactory = new DefaultNHttpServerConnectionFactory(
-              ConnectionConfig.DEFAULT);
+            connFactory = new DefaultNHttpServerConnectionFactory(ConnectionConfig.DEFAULT);
         }
         return connFactory;
     }

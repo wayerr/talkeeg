@@ -16,6 +16,8 @@
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="tgbf" />
     <orderEntry type="module" module-name="pojo" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.51" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.51" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.dagger:dagger:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.dagger:dagger-compiler:1.2.2" level="project" />

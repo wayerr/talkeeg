@@ -35,6 +35,7 @@ import talkeeg.common.model.*;
 import talkeeg.common.util.*;
 import talkeeg.mb.MessageBusRegistry;
 import javax.inject.Singleton;
+import java.security.Security;
 import java.util.List;
 
 /**
@@ -57,10 +58,16 @@ import java.util.List;
         ClientsAddressesService.class,
         DataService.class,
         Stringifiers.class,
-        CurrentDestinationService.class
+        CurrentDestinationService.class,
+        OwnedCertManager.class
     }
 )
 public final class CoreModule {
+
+    public CoreModule() {
+        // we use BouncyCastleProvider in OwnedCertManager
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+    }
 
     @Provides
     @Singleton

@@ -20,10 +20,13 @@
 package talkeeg.httpserver;
 
 import dagger.Module;
+import talkeeg.common.core.OwnedCertManager;
+
+import java.security.Security;
 
 /**
  * dagger module for http server
- *
+ * <p/>
  * Created by wayerr on 02.02.15.
  */
 @Module(
@@ -36,5 +39,4 @@ import dagger.Module;
   complete = false
 )
 public class HttpServerModule {
-
 }

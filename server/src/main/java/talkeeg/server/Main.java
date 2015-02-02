@@ -30,7 +30,12 @@ public final class Main {
         final ServerApp serverApp = ServerApp.getInstance();
         serverApp.start();
 
-        final Thread atShutdownThread = new Thread(serverApp::stop);
+        final Thread atShutdownThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                serverApp.stop();
+            }
+        });
         Runtime.getRuntime().addShutdownHook(atShutdownThread);
     }
 }

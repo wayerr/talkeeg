@@ -30,7 +30,7 @@
       <excludeFolder url="file://$MODULE_DIR$/target/maven-status" />
       <excludeFolder url="file://$MODULE_DIR$/target/surefire" />
     </content>
-    <orderEntry type="jdk" jdkName="Maven Android API 20 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Maven Android API 20 Platform (1)" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.android:android:4.1.1.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
@@ -44,6 +44,8 @@
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="tgbf" />
     <orderEntry type="module" module-name="pojo" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.51" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.51" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.dagger:dagger:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.dagger:dagger-compiler:1.2.2" level="project" />

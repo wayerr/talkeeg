@@ -59,6 +59,10 @@ public final class CryptoService {
         this.ownedKeysManager.loadKeys();
     }
 
+    public String getSignatureAlgorithm() {
+        return ALG_SIGN;
+    }
+
     public Signature getSignService(OwnedKeyType keyType) {
         try {
             Signature signature = Signature.getInstance(ALG_SIGN);

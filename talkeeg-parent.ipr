@@ -77,7 +77,7 @@
       <module name="desktop-client" target="1.8" />
       <module name="http-server" target="1.7" />
       <module name="pojo" target="1.7" />
-      <module name="server" target="1.8" />
+      <module name="server" target="1.7" />
       <module name="tgbf" target="1.7" />
     </bytecodeTargetLevel>
   </component>
@@ -284,7 +284,7 @@
       <module fileurl="file://$PROJECT_DIR$/tgbf/tgbf.iml" filepath="$PROJECT_DIR$/tgbf/tgbf.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="VcsDirectoryMappings">
@@ -465,6 +465,28 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpcore/4.4/httpcore-4.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.bouncycastle:bcpkix-jdk15on:1.51">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/bouncycastle/bcpkix-jdk15on/1.51/bcpkix-jdk15on-1.51.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/bouncycastle/bcpkix-jdk15on/1.51/bcpkix-jdk15on-1.51-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/bouncycastle/bcpkix-jdk15on/1.51/bcpkix-jdk15on-1.51-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.bouncycastle:bcprov-jdk15on:1.51">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/bouncycastle/bcprov-jdk15on/1.51/bcprov-jdk15on-1.51.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/bouncycastle/bcprov-jdk15on/1.51/bcprov-jdk15on-1.51-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/bouncycastle/bcprov-jdk15on/1.51/bcprov-jdk15on-1.51-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.hamcrest:hamcrest-core:1.3">

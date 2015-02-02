@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  *
  * Created by wayerr on 28.11.14.
  */
-class OwnedKeysManager {
+public class OwnedKeysManager {
     private static final Logger LOG = Logger.getLogger(OwnedKeysManager.class.getName());
     private final File keysDir;
     private final KeyLoader keyLoader;
@@ -88,7 +88,7 @@ class OwnedKeysManager {
         }
     }
 
-    PrivateKey getPrivateKey(OwnedKeyType keyType) {
+    public PrivateKey getPrivateKey(OwnedKeyType keyType) {
         KeyPair keyPair = getKeyPair(keyType);
         if(keyPair == null) {
             throw new NullPointerException("Key type " + keyType + " is not loaded.");
@@ -96,7 +96,7 @@ class OwnedKeysManager {
         return keyPair.getPrivate();
     }
 
-    PublicKey getPublicKey(OwnedKeyType keyType) {
+    public PublicKey getPublicKey(OwnedKeyType keyType) {
         KeyPair keyPair = getKeyPair(keyType);
         if(keyPair == null) {
             throw new NullPointerException("Key type " + keyType + " is not loaded.");

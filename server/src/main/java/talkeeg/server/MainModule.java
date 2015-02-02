@@ -84,6 +84,6 @@ final class MainModule {
     @Provides
     @Singleton
     HttpServerConfig provideHttpServerConfig() {
-        return HttpServerConfig.builder().build();
+        return HttpServerConfig.builder()/**/.useTLS(true)/**/.build();
     }
 }
