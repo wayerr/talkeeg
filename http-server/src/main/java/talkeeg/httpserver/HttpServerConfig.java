@@ -21,6 +21,8 @@ package talkeeg.httpserver;
 
 import com.google.common.base.Preconditions;
 
+import java.nio.charset.Charset;
+
 /**
  * config of http server <p/>
  * Created by wayerr on 30.01.15.
@@ -28,8 +30,9 @@ import com.google.common.base.Preconditions;
 public class HttpServerConfig {
 
     public static final class Builder {
-        public boolean useTLS = false;
-        public int portNumber = 8080;
+        private boolean useTLS = false;
+        private int portNumber = 8080;
+        private Charset charset = Charset.forName("UTF-8");
 
         public boolean isUseTLS() {
             return useTLS;
@@ -57,6 +60,19 @@ public class HttpServerConfig {
             this.portNumber = portNumber;
         }
 
+        public Charset getCharset() {
+            return charset;
+        }
+
+        public Builder charset(Charset charset) {
+            setCharset(charset);
+            return this;
+        }
+
+        public void setCharset(Charset charset) {
+            this.charset = charset;
+        }
+
         public HttpServerConfig build() {
             return new HttpServerConfig(this);
         }
@@ -65,11 +81,14 @@ public class HttpServerConfig {
 
     private int portNumber;
     private boolean useTLS;
+    private Charset charset;
 
     private HttpServerConfig(Builder b) {
         this.portNumber = b.portNumber;
         Preconditions.checkArgument(this.portNumber > 0 && this.portNumber <= 0xffff, "Invalid portNumber: %s", this.portNumber);
         this.useTLS = b.useTLS;
+        this.charset = b.charset;
+        Preconditions.checkNotNull(this.charset == null, "Charset is null");
     }
 
     public static Builder builder() {
@@ -82,5 +101,9 @@ public class HttpServerConfig {
 
     public boolean isUseTLS() {
         return useTLS;
+    }
+
+    public Charset getCharset() {
+        return charset;
     }
 }

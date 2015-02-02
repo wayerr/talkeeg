@@ -17,25 +17,31 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.httpserver.fs;
+package talkeeg.httpserver;
+
+import org.apache.http.nio.entity.HttpAsyncContentProducer;
+import org.apache.http.nio.entity.NStringEntity;
+
+import javax.inject.Inject;
 
 /**
- * virtual file system <p/>
- * Created by wayerr on 30.01.15.
+ * template evaluator <p/>
+ * Created by wayerr on 02.02.15.
  */
-public interface VirtualFileSystem<T extends VirtualFile> {
+class TemplateEvaluator {
 
-    /**
-     * retrieve file by relatively this VFS root file name
-     * @param name
-     * @return
-     */
-    T fromPath(String name) throws Exception ;
+    private HttpServerConfig serverConfig;
 
-    /**
-     * get relatively this VFS root file name
-     * @param childFile
-     * @return
-     */
-    String toPath(T childFile) throws Exception;
+    @Inject
+    public TemplateEvaluator(HttpServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
+    }
+
+    HttpAsyncContentProducer evaluate(String templateId, Object arg) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html><body>");
+        sb.append("<pre>").append(arg).append("</pre>");
+        sb.append("</body></html>");
+        return new NStringEntity(sb.toString(), this.serverConfig.getCharset());
+    }
 }

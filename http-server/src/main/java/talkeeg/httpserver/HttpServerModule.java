@@ -17,25 +17,24 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.httpserver.fs;
+package talkeeg.httpserver;
+
+import dagger.Module;
 
 /**
- * virtual file system <p/>
- * Created by wayerr on 30.01.15.
+ * dagger module for http server
+ *
+ * Created by wayerr on 02.02.15.
  */
-public interface VirtualFileSystem<T extends VirtualFile> {
+@Module(
+  injects = {
+    HttpServer.class,
+    TemplateEvaluator.class,
+    ErrorHandler.class
+  },
+  library = true,
+  complete = false
+)
+public class HttpServerModule {
 
-    /**
-     * retrieve file by relatively this VFS root file name
-     * @param name
-     * @return
-     */
-    T fromPath(String name) throws Exception ;
-
-    /**
-     * get relatively this VFS root file name
-     * @param childFile
-     * @return
-     */
-    String toPath(T childFile) throws Exception;
 }

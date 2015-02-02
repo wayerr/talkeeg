@@ -10,7 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/annotations" isTestSource="false" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="tgbf" />
@@ -18,7 +18,6 @@
     <orderEntry type="module" module-name="http-server" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore-nio:4.4" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore-niossl:4.4" level="project" />
     <orderEntry type="library" name="Maven: com.github.spullara.mustache.java:compiler:0.9.0" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.dagger:dagger:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />

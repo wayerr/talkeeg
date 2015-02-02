@@ -21,20 +21,13 @@ package talkeeg.httpserver;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.URL;
-import java.security.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
 
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.impl.nio.DefaultHttpServerIODispatch;
 import org.apache.http.impl.nio.DefaultNHttpServerConnection;
 import org.apache.http.impl.nio.DefaultNHttpServerConnectionFactory;
-import org.apache.http.impl.nio.SSLNHttpServerConnectionFactory;
 import org.apache.http.impl.nio.reactor.DefaultListeningIOReactor;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.nio.NHttpConnectionFactory;
@@ -49,6 +42,8 @@ import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
 
+import javax.inject.Inject;
+
 /**
  * HTTP server based on hc.apache.org components <p/>
  * <p/>
@@ -61,7 +56,7 @@ public final class HttpServer {
     // Create HTTP protocol processing chain
     private final HttpProcessor httpproc = HttpProcessorBuilder.create()
       .add(new ResponseDate())
-      .add(new ResponseServer("Test/1.1"))
+      .add(new ResponseServer("Talkeeg HTTP/1.1"))
       .add(new ResponseContent())
       .add(new ResponseConnControl()).build();
 
@@ -71,16 +66,17 @@ public final class HttpServer {
       .setConnectTimeout(3000)
       .build();
 
-    private final UriHttpAsyncRequestHandlerMapper reqistry = new UriHttpAsyncRequestHandlerMapper();
-    private final HttpAsyncService protocolHandler = new HttpAsyncService(httpproc, reqistry);
+    private final UriHttpAsyncRequestHandlerMapper registry = new UriHttpAsyncRequestHandlerMapper();
+    private final HttpAsyncService protocolHandler = new HttpAsyncService(httpproc, registry);
     private final HttpServerConfig config;
 
-    public HttpServer(HttpServerConfig config) {
+    @Inject
+    HttpServer(HttpServerConfig config) {
         this.config = config;
     }
 
-    public UriHttpAsyncRequestHandlerMapper getReqistry() {
-        return reqistry;
+    public UriHttpAsyncRequestHandlerMapper getRegistry() {
+        return registry;
     }
 
     public void run() {

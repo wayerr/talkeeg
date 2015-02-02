@@ -17,25 +17,31 @@
  *      along with talkeeg-parent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package talkeeg.httpserver.fs;
+package talkeeg.httpserver;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.nio.entity.NStringEntity;
+
+import javax.inject.Inject;
 
 /**
- * virtual file system <p/>
- * Created by wayerr on 30.01.15.
+ * tool for handling error and expose it's to http as status line and human readable text messages
+ *
+ * Created by wayerr on 02.02.15.
  */
-public interface VirtualFileSystem<T extends VirtualFile> {
+final class ErrorHandler {
 
-    /**
-     * retrieve file by relatively this VFS root file name
-     * @param name
-     * @return
-     */
-    T fromPath(String name) throws Exception ;
+    private final HttpServerConfig config;
 
-    /**
-     * get relatively this VFS root file name
-     * @param childFile
-     * @return
-     */
-    String toPath(T childFile) throws Exception;
+    @Inject
+    ErrorHandler(HttpServerConfig config) {
+        this.config = config;
+    }
+
+    void handle(HttpResponse response, Exception e) {
+        // not in all states we can change status line!
+        response.setStatusLine(response.getProtocolVersion(), HttpStatus.SC_INTERNAL_SERVER_ERROR, e.toString());
+        response.setEntity(new NStringEntity("<html><body>", config.getCharset()));
+    }
 }

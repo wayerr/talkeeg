@@ -28,6 +28,11 @@ import java.util.List;
  * Created by wayerr on 30.01.15.
  */
 public interface VirtualFile {
+    /**
+     * name of file
+     * @return
+     * @throws Exception
+     */
     public String getName() throws Exception;
     public long getSize() throws Exception;
 

@@ -7,20 +7,22 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target" />
+      <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/annotations" isTestSource="false" generated="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="tgbf" />
     <orderEntry type="module" module-name="pojo" />
-    <orderEntry type="library" name="Maven: com.squareup.dagger:dagger:1.2.2" level="project" />
-    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Maven: com.google.zxing:core:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore-nio:4.4" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore-niossl:4.4" level="project" />
     <orderEntry type="library" name="Maven: com.github.spullara.mustache.java:compiler:0.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.dagger:dagger:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.dagger:dagger-compiler:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup:javawriter:2.5.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:18.0" level="project" />

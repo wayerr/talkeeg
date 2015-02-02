@@ -29,6 +29,8 @@ import talkeeg.common.core.CoreModule;
 import talkeeg.common.ipc.IpcModule;
 import talkeeg.common.util.DaggerServiceLocator;
 import talkeeg.common.util.ServiceLocator;
+import talkeeg.httpserver.HttpServerConfig;
+import talkeeg.httpserver.HttpServerModule;
 import talkeeg.mb.MessageBusRegistry;
 
 import javax.inject.Singleton;
@@ -45,7 +47,8 @@ import javax.inject.Singleton;
   },
   includes = {
     CoreModule.class,
-    IpcModule.class
+    IpcModule.class,
+    HttpServerModule.class
   }
 )
 final class MainModule {
@@ -76,5 +79,11 @@ final class MainModule {
           .applicationName("talkeeg-dc")
           .backend(new ConfigBackendBasedOnProperties(registry, DefaultConfiguration.get()))
           .build();
+    }
+
+    @Provides
+    @Singleton
+    HttpServerConfig provideHttpServerConfig() {
+        return HttpServerConfig.builder().build();
     }
 }

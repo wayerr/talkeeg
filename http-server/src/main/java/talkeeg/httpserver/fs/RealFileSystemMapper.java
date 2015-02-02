@@ -65,11 +65,17 @@ public final class RealFileSystemMapper implements VirtualFileSystem<RealFileSys
 
         @Override
         public long getSize() {
+            if(file.isDirectory()) {
+                return -1l;
+            }
             return file.length();
         }
 
         @Override
         public String getMimeType() throws Exception {
+            if(file.isDirectory()) {
+                return null;
+            }
             return Files.probeContentType(this.file.toPath());
         }
 
@@ -87,7 +93,9 @@ public final class RealFileSystemMapper implements VirtualFileSystem<RealFileSys
         public VirtualFile getParent() throws Exception {
             final File parentFile = file.getParentFile();
             final File canonicalParentFile = parentFile.getCanonicalFile();
-            checkThatInRoot(canonicalParentFile);
+            if(isExternal(canonicalParentFile)) {
+                return null;
+            }
             return new RealFile(canonicalParentFile);
         }
 
@@ -99,9 +107,13 @@ public final class RealFileSystemMapper implements VirtualFileSystem<RealFileSys
 
     protected void checkThatInRoot(File canonicalFile) throws IOException {
         //we apologise than `canonicalFile` does not contains any '.' characters
-        if(!canonicalFile.getPath().startsWith(this.root.getPath())) {
-            throw new IOException("Try to listen external path.");
+        if(isExternal(canonicalFile)) {
+            throw new IOException("Try to list external path.");
         }
+    }
+
+    private boolean isExternal(File canonicalFile) {
+        return !canonicalFile.getPath().startsWith(this.root.getPath());
     }
 
     private static final Pattern PATTERN;
@@ -121,13 +133,23 @@ public final class RealFileSystemMapper implements VirtualFileSystem<RealFileSys
     }
 
     @Override
-    public RealFile get(String name) throws Exception {
+    public RealFile fromPath(String name) throws Exception {
         if(PATTERN.matcher(name).find()) {
             throw new RuntimeException("Invalid filename: " + name);
         }
         final File canonicalFile = new File(this.root, name).getCanonicalFile();
         checkThatInRoot(canonicalFile);
         return new RealFile(canonicalFile);
+    }
+
+    @Override
+    public String toPath(RealFile childFile) throws Exception {
+        String path = childFile.file.getCanonicalPath();
+        String rootPath = this.root.getPath();
+        if(!path.startsWith(rootPath)) {
+            throw new IOException("Try to access external path.");
+        }
+        return path.substring(rootPath.length());
     }
 
     private void list(RealFile element, List<VirtualFile> childs) {
@@ -142,12 +164,11 @@ public final class RealFileSystemMapper implements VirtualFileSystem<RealFileSys
         }
         File[] files = dir.listFiles();
         Arrays.sort(files, COMPARATOR);
-        List<RealFile> filesList = new ArrayList<>(files.length);
         for(File file: files) {
             if(deny(file)) {
                 continue;
             }
-            filesList.add(new RealFile(file));
+            childs.add(new RealFile(file));
         }
     }
 

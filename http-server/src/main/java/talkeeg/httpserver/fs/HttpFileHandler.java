@@ -29,10 +29,12 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpCoreContext;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -41,18 +43,17 @@ import java.util.logging.Logger;
  * Created by wayerr on 30.01.15.
  */
 public final class HttpFileHandler implements HttpAsyncRequestHandler<HttpRequest> {
-
+    private static final char FILE_BEGIN = ':';
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private final VirtualFileSystem<?> vfs;
+    private final VirtualFileSystem<VirtualFile> vfs;
 
+    @SuppressWarnings("unchecked")
     public HttpFileHandler(final VirtualFileSystem<?> vfs) {
         super();
-        this.vfs = vfs;
+        this.vfs = (VirtualFileSystem<VirtualFile>)vfs;
     }
 
-    public HttpAsyncRequestConsumer<HttpRequest> processRequest(
-      final HttpRequest request,
-      final HttpContext context) {
+    public HttpAsyncRequestConsumer<HttpRequest> processRequest(final HttpRequest request, final HttpContext context) {
         // Buffer request content in memory for simplicity
         return new BasicAsyncRequestConsumer();
     }
@@ -61,10 +62,9 @@ public final class HttpFileHandler implements HttpAsyncRequestHandler<HttpReques
         HttpResponse response = httpexchange.getResponse();
         try {
             handleInternal(request, response, context);
-        } catch(IOException | HttpException | RuntimeException e) {
-            throw e;
         } catch(Exception e) {
-            throw new RuntimeException(e);
+            logger.log(Level.SEVERE, "", e);
+
         }
         httpexchange.submitResponse(new BasicAsyncResponseProducer(response));
     }
@@ -78,10 +78,11 @@ public final class HttpFileHandler implements HttpAsyncRequestHandler<HttpReques
             throw new MethodNotSupportedException(method + " method not supported");
         }
 
-        final String target = request.getRequestLine().getUri();
-        final String fileName = URLDecoder.decode(target, "UTF-8");
+        final String uri = decodeUri(request);
+        final String fileName = resolveFileName(uri);
+        final String prefix = resolvePrefix(uri);
 
-        final VirtualFile file = this.vfs.get(fileName);
+        final VirtualFile file = this.vfs.fromPath(fileName);
         if(file == null) {
             response.setStatusCode(HttpStatus.SC_NOT_FOUND);
             NStringEntity entity = new NStringEntity(
@@ -91,34 +92,79 @@ public final class HttpFileHandler implements HttpAsyncRequestHandler<HttpReques
             response.setEntity(entity);
             logger.info("File " + fileName + " not found");
         } else {
-            NHttpConnection conn = coreContext.getConnection(NHttpConnection.class);
             response.setStatusCode(HttpStatus.SC_OK);
-            logger.info(conn + ": serving file " + fileName);
             if(file.isDirectory()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("<body><html>\n");
-                sb.append("list files:<br/>\n");
-                sb.append("<table>\n");
-                sb.append("<tr><th>name</th><th>size</th><th>type</th></tr>\n");
-                List<VirtualFile> virtualFiles = new ArrayList<>();
-                file.getChilds(virtualFiles);
-                for(VirtualFile childFile : virtualFiles) {
-                    sb.append("<tr><td>");
-                    sb.append("<a href=\"").append(childFile).append("\">").append(childFile);
-                    if(childFile.isDirectory()) {
-                        sb.append('/');
-                    }
-                    sb.append("</a><br/></th><th>");
-                    file.getSize();
-                    sb.append("</th><th>type</th></tr>\n");
-                }
-                sb.append("</body></html>");
-                response.setEntity(new NStringEntity(sb.toString(), ContentType.create("text/html", "UTF-8")));
+                listFiles(response, prefix, file);
             } else {
-                InputStreamEntity body = new InputStreamEntity(file.openInputStream(), ContentType.APPLICATION_OCTET_STREAM);
+                String mimeType = file.getMimeType();
+                ContentType contentType;
+                if(mimeType != null) {
+                    contentType = ContentType.create(mimeType, "UTF-8");
+                } else {
+                    contentType = ContentType.APPLICATION_OCTET_STREAM;
+                }
+                InputStreamEntity body = new InputStreamEntity(file.openInputStream(), contentType);
                 response.setEntity(body);
             }
         }
+    }
+
+    private void listFiles(HttpResponse response, String prefix, VirtualFile file) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html><body>\n");
+        sb.append("list files:<br/>\n");
+        sb.append("<table>\n");
+        sb.append("<tr><th>name</th><th>size</th><th>type</th></tr>\n");
+        VirtualFile parent = file.getParent();
+        if(parent != null) {
+            sb.append("<tr><td><a href=\"").append(prefix)
+              .append(this.vfs.toPath(parent))
+              .append("\">..</a><br/></td><td></td><td></td></tr>\n");
+        }
+        List<VirtualFile> virtualFiles = new ArrayList<>();
+        file.getChilds(virtualFiles);
+        for(VirtualFile childFile : virtualFiles) {
+            sb.append("<tr><td>");
+            sb.append("<a href=\"").append(prefix)
+              .append(this.vfs.toPath(childFile))
+              .append("\">")
+              .append(childFile.getName());
+            final boolean directory = childFile.isDirectory();
+            if(directory) {
+                sb.append('/');
+            }
+            sb.append("</a><br/></td><td>");
+            if(!directory) {
+                sb.append(childFile.getSize());
+            }
+            sb.append("</td><td>");
+            if(!directory) {
+                sb.append(childFile.getMimeType());
+            }
+            sb.append("</td></tr>\n");
+        }
+        sb.append("</body></html>");
+        response.setEntity(new NStringEntity(sb.toString(), ContentType.create("text/html", "UTF-8")));
+    }
+
+    private String resolveFileName(String name) {
+        final int i = name.lastIndexOf(FILE_BEGIN);
+        if(i < 0) {
+            throw new IllegalArgumentException("Bad uri: " + name);
+        }
+        return name.substring(i + 1);
+    }
+
+    private String resolvePrefix(String name) {
+        final int i = name.lastIndexOf(FILE_BEGIN);
+        if(i < 0) {
+            throw new IllegalArgumentException("Bad uri: " + name);
+        }
+        return name.substring(0, i + 1);
+    }
+
+    private String decodeUri(HttpRequest request) throws UnsupportedEncodingException {
+        return URLDecoder.decode(request.getRequestLine().getUri(), "UTF-8");
     }
 
 }

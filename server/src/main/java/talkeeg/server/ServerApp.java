@@ -31,6 +31,7 @@ import talkeeg.httpserver.HttpServerConfig;
 import talkeeg.httpserver.fs.HttpFileHandler;
 import talkeeg.httpserver.fs.RealFileSystemMapper;
 
+import javax.inject.Inject;
 import java.io.File;
 
 /**
@@ -61,9 +62,9 @@ public final class ServerApp {
     }
 
     void start() {
-        this.httpServer = new HttpServer(HttpServerConfig.builder().build());
-        UriHttpAsyncRequestHandlerMapper reqistry = this.httpServer.getReqistry();
-        registerHttpHandlers(reqistry);
+        this.httpServer = this.graph.get(HttpServer.class);
+        UriHttpAsyncRequestHandlerMapper registry = this.httpServer.getRegistry();
+        registerHttpHandlers(registry);
         CoreModule.init(this.graph.get(ServiceLocator.class));
         this.httpServer.run();
     }
