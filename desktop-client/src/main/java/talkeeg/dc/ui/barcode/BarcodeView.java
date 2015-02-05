@@ -22,15 +22,13 @@ package talkeeg.dc.ui.barcode;
 import com.google.zxing.common.BitMatrix;
 import talkeeg.bf.BinaryData;
 import talkeeg.common.barcode.BarcodeService;
+import talkeeg.common.barcode.BarcodeUtilsSE;
 import talkeeg.common.core.HelloService;
 import talkeeg.dc.ui.ImageViewer;
 import talkeeg.dc.ui.View;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.util.Arrays;
 
 /**
  * view for data barcodes
@@ -38,7 +36,6 @@ import java.util.Arrays;
  * Created by wayerr on 03.12.14.
  */
 public final class BarcodeView implements View {
-    private static final int PIXEL_FACTOR = 4;
     private final ImageViewer viewer;
     private final BarcodeService service;
     private final HelloService helloService;
@@ -56,27 +53,8 @@ public final class BarcodeView implements View {
 
     public void setData(BinaryData data) {
         BitMatrix matrix = this.service.encode(data);
-        Image image = toBufferedImage(matrix);
+        Image image = BarcodeUtilsSE.toBufferedImage(matrix);
         this.viewer.setImage(image);
-    }
-
-    private Image toBufferedImage(BitMatrix matrix) {
-        final int width = matrix.getWidth();
-        final int height = matrix.getHeight();
-
-        final BufferedImage image = new BufferedImage(width * PIXEL_FACTOR, height * PIXEL_FACTOR, BufferedImage.TYPE_BYTE_BINARY);
-        final int whiteArr[] = new int[PIXEL_FACTOR * PIXEL_FACTOR];
-        final int blackArr[] = new int[PIXEL_FACTOR * PIXEL_FACTOR];
-        Arrays.fill(blackArr, 1);
-        WritableRaster raster = image.getRaster();
-        for(int x = 0; x < width; ++x) {
-            for(int y = 0; y < height; ++y) {
-                final int arr[] = matrix.get(x, y)? whiteArr : blackArr;
-                raster.setPixels(x * PIXEL_FACTOR, y * PIXEL_FACTOR, PIXEL_FACTOR, PIXEL_FACTOR, arr);
-            }
-        }
-
-        return image;
     }
 
     @Override

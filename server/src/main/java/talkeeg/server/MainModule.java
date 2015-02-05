@@ -43,7 +43,8 @@ import javax.inject.Singleton;
 @Module(
   injects = {
     Config.class,
-    ServiceLocator.class
+    ServiceLocator.class,
+    BarcodeProvider.class
   },
   includes = {
     CoreModule.class,
@@ -84,6 +85,6 @@ final class MainModule {
     @Provides
     @Singleton
     HttpServerConfig provideHttpServerConfig() {
-        return HttpServerConfig.builder()/**/.useTLS(true)/**/.build();
+        return HttpServerConfig.builder()/** /.useTLS(true)/**/.build();
     }
 }

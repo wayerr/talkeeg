@@ -134,7 +134,7 @@ public final class ResourceFileSystem implements VirtualFileSystem<ResourceFileS
     private final String prefix;
     private final ClassLoader cl;
 
-    public ResourceFileSystem(String prefix) throws Exception {
+    public ResourceFileSystem(String prefix) {
         Preconditions.checkNotNull(prefix, "prefix is null");
         // if resource start with '/' then classLoader never provide resource, root resource is ''
         if(prefix.startsWith("/")) {

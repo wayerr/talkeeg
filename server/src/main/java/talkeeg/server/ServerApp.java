@@ -27,12 +27,8 @@ import talkeeg.common.core.CryptoService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.util.ServiceLocator;
 import talkeeg.httpserver.HttpServer;
-import talkeeg.httpserver.HttpServerConfig;
 import talkeeg.httpserver.fs.HttpFileHandler;
-import talkeeg.httpserver.fs.RealFileSystemMapper;
-
-import javax.inject.Inject;
-import java.io.File;
+import talkeeg.httpserver.fs.ResourceFileSystem;
 
 /**
  * Server application
@@ -69,8 +65,9 @@ public final class ServerApp {
         this.httpServer.run();
     }
 
-    private void registerHttpHandlers(UriHttpAsyncRequestHandlerMapper reqistry) {
-        reqistry.register("/files/*", new HttpFileHandler(new RealFileSystemMapper(new File(System.getProperty("user.dir")))));
+    private void registerHttpHandlers(UriHttpAsyncRequestHandlerMapper registry) {
+        registry.register("/res/*", new HttpFileHandler(new ResourceFileSystem("/web/")));
+        registry.register("/barcode.png", this.graph.get(BarcodeProvider.class));
     }
 
     void stop() {
