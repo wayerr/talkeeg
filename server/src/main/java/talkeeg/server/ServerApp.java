@@ -26,6 +26,7 @@ import talkeeg.common.core.CoreModule;
 import talkeeg.common.core.CryptoService;
 import talkeeg.common.ipc.IpcServiceManager;
 import talkeeg.common.util.ServiceLocator;
+import talkeeg.httpserver.HandlerPrefixLenFunctions;
 import talkeeg.httpserver.HttpServer;
 import talkeeg.httpserver.fs.HttpFileHandler;
 import talkeeg.httpserver.fs.ResourceFileSystem;
@@ -66,7 +67,7 @@ public final class ServerApp {
     }
 
     private void registerHttpHandlers(UriHttpAsyncRequestHandlerMapper registry) {
-        registry.register("/res/*", new HttpFileHandler(new ResourceFileSystem("/web/")));
+        registry.register("/res/*", new HttpFileHandler(HandlerPrefixLenFunctions.from("/res/"), new ResourceFileSystem("/web/")));
         registry.register("/barcode.png", this.graph.get(BarcodeProvider.class));
     }
 

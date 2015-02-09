@@ -19,14 +19,13 @@
 
 package talkeeg.httpserver.fs;
 
+import com.google.common.base.Function;
 import org.apache.http.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.nio.NHttpConnection;
 import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.nio.protocol.*;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.HttpCoreContext;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -43,13 +42,14 @@ import java.util.logging.Logger;
  * Created by wayerr on 30.01.15.
  */
 public final class HttpFileHandler implements HttpAsyncRequestHandler<HttpRequest> {
-    private static final char FILE_BEGIN = ':';
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final VirtualFileSystem<VirtualFile> vfs;
+    private final Function<String, Integer> prefixLenFunc;
 
     @SuppressWarnings("unchecked")
-    public HttpFileHandler(final VirtualFileSystem<?> vfs) {
+    public HttpFileHandler(Function<String, Integer> prefixLenFunc, final VirtualFileSystem<?> vfs) {
         super();
+        this.prefixLenFunc = prefixLenFunc;
         this.vfs = (VirtualFileSystem<VirtualFile>)vfs;
     }
 
@@ -71,23 +71,25 @@ public final class HttpFileHandler implements HttpAsyncRequestHandler<HttpReques
 
     private void handleInternal(HttpRequest request, HttpResponse response, HttpContext context) throws Exception {
 
-        HttpCoreContext coreContext = HttpCoreContext.adapt(context);
-
         String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
         if(!method.equals("GET") && !method.equals("HEAD") && !method.equals("POST")) {
             throw new MethodNotSupportedException(method + " method not supported");
         }
 
         final String uri = decodeUri(request);
-        final String fileName = resolveFileName(uri);
-        final String prefix = resolvePrefix(uri);
+        final int i = prefixLenFunc.apply(uri);
+        if(i < 0) {
+            throw new IllegalArgumentException("Bad uri: " + uri);
+        }
+        final String fileName = uri.substring(i);
+        final String prefix = uri.substring(0, i);
 
         final VirtualFile file = this.vfs.fromPath(fileName);
         if(file == null) {
             response.setStatusCode(HttpStatus.SC_NOT_FOUND);
             NStringEntity entity = new NStringEntity(
-              "<html><body><h1>File" + fileName +
-                " not found</h1></body></html>",
+              "<html><body><h3>File " + fileName +
+                " not found</h3></body></html>",
               ContentType.create("text/html", "UTF-8"));
             response.setEntity(entity);
             logger.info("File " + fileName + " not found");
@@ -145,22 +147,6 @@ public final class HttpFileHandler implements HttpAsyncRequestHandler<HttpReques
         }
         sb.append("</body></html>");
         response.setEntity(new NStringEntity(sb.toString(), ContentType.create("text/html", "UTF-8")));
-    }
-
-    private String resolveFileName(String name) {
-        final int i = name.lastIndexOf(FILE_BEGIN);
-        if(i < 0) {
-            throw new IllegalArgumentException("Bad uri: " + name);
-        }
-        return name.substring(i + 1);
-    }
-
-    private String resolvePrefix(String name) {
-        final int i = name.lastIndexOf(FILE_BEGIN);
-        if(i < 0) {
-            throw new IllegalArgumentException("Bad uri: " + name);
-        }
-        return name.substring(0, i + 1);
     }
 
     private String decodeUri(HttpRequest request) throws UnsupportedEncodingException {
